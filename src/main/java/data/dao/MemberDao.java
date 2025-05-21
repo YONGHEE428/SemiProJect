@@ -113,7 +113,7 @@ public class MemberDao {
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
 		
-		String sql="select * from member order by id";
+		String sql="select * from member where role = 'user' order by id ";
 		
 		try {
 			pstmt=conn.prepareStatement(sql);

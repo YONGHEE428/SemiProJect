@@ -38,7 +38,7 @@
    String root=request.getContextPath();
 %>
 	<link rel="stylesheet" type="text/css" href="<%=root%>/menu/css/font-awesome.css">
-	<link rel="stylesheet" type="text/css" href="<%=root%>/menu/css/menu.css?v=20240520">
+	<link rel="stylesheet" type="text/css" href="<%=root%>/menu/css/menu.css?v=20240521">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 	<script type="text/javascript" src="<%=root %>/menu/js/jquery.js"></script>
 	<script type="text/javascript" src="<%=root %>/menu/js/function.js"></script>

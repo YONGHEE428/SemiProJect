@@ -85,7 +85,6 @@ ol, ul {
     left: 320px;
   }
  .search>.textbox{
-	box-shadow: 21px 21px 20px 0px rgba(0,0,0,0.1);
 	height:40px;
 	padding-right:40px;
 }
