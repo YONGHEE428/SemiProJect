@@ -41,13 +41,13 @@
 	}
 </style>
 
-<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel"data-bs-interval="5000">
   <div class="carousel-inner">
     <div class="carousel-item active">
       <img src="SemiImg/test.png" class="d-block w-100" alt="...">
     </div>
     <div class="carousel-item">
-      <img src="SemiImg/test.png" class="d-block w-100" alt="...">
+      <img src="SemiImg/test2.png" class="d-block w-100" alt="...">
     </div>
     <div class="carousel-item">
       <img src="SemiImg/test.png" class="d-block w-100" alt="...">

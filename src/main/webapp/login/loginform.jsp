@@ -10,22 +10,87 @@
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <title>Insert title here</title>
 </head>
+<style>
+	.login-main{
+		margin: auto;
+		width: 22%;
+		height: 80%;
+		margin-top: 30px; 
+		
+		font-weight: bold;
+	}
+	.login-title{
+		text-align: center;
+	}
+	.login-span {
+		font-size: 0.8em;
+		font-weight: bolder;
+	}
+	.field {
+    	margin-bottom: 20px;
+    	}
+    .login-btn{
+    	width: 100%;
+    	height: 50px;
+	    font-weight: 500;
+	    line-height: 1.5;
+	    text-align: center;
+	    text-decoration: none;
+	    white-space: nowrap;
+	    vertical-align: middle;
+	    cursor: pointer;
+	    border: 0;
+	    border-radius: .313rem;
+	    background-color: #d9d9d9;
+	    color: #fff;
+    }
+</style>
+
+<script type="text/javascript">
+	$(function(){
+	  function checkInput() {
+	    const idVal = $("input[name='id']").val().trim();
+	    const passVal = $("input[name='pass']").val().trim();
+	    
+	    if(idVal !== "" && passVal !== "") {
+	      $(".login-btn").prop("disabled", false).css("background-color", "#000");
+	    } else {
+	      $(".login-btn").prop("disabled", true).css("background-color", "#d9d9d9");
+	    }
+	  }
+	
+	  $("input[name='id'], input[name='pass']").on("input", checkInput);
+	  
+	  // 초기 체크 (만약 값이 세션에서 자동으로 들어왔을 경우 대비)
+	  //checkInput();
+	});
+
+
+</script>
+<%
+  String saveok=(String)session.getAttribute("saveok");
+  String myid="";
+  if(saveok!=null){
+	  myid=(String)session.getAttribute("myid");
+  }
+%>
 <body>
-<div style="margin: 100px 300px; width: 200px;">
-   <h2 class="alert alert-success">회원로그인</h2>
+<div class="login-main">
+	<div class="login-title">
+   <p style="font-size: 1.5em">로그인</p>
+   </div>
+
    <form action="login/loginaction.jsp" method="post">
-     <input type="text" name="id" class="form-control"
-     style="width: 200px;" placeholder="로그인할 아이디"
-     required="required" ><br>
-     <input type="password" name="pass" class="form-control"
-     style="width: 200px;" placeholder="로그인할 비밀번호"
-     required="required">
-     <br>
-     <button type="submit" class="btn btn-success btn-lg"
-     style="width: 200px;">로그인</button><br>
+    <span class="login-span"><p>아이디</p></span>
+     <input type="text" name="id" class="form-control field" placeholder="" required="required" value="<%=myid%>" >
+    <span class="login-span"><p>비밀번호</p></span>
+     <input type="password" name="pass" class="form-control field" placeholder="" required="required">
      
-     <input type="checkbox" name="savechk"> 아이디저장
-    
+	
+     <button type="submit" class="login-btn" disabled>로그인</button><br>
+     <div class="login-bottom">
+     <input type="checkbox" name="savechk" <%=saveok==null?"":"checked" %>> 아이디저장
+     </div>
    </form>
 </div>
 </body>

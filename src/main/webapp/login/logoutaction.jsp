@@ -13,7 +13,6 @@
 <body>
 <%
 	session.setAttribute("loginok", "no");
-	session.setAttribute("myid", null);
 	session.setAttribute("name", null);
 %>
 </body>

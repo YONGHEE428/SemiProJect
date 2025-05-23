@@ -31,14 +31,14 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	
+	<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 	<%
 	
    //프로젝트 경로구해기
    String root=request.getContextPath();
 %>
 	<link rel="stylesheet" type="text/css" href="<%=root%>/menu/css/font-awesome.css">
-	<link rel="stylesheet" type="text/css" href="<%=root%>/menu/css/menu.css?v=20240521">
+	<link rel="stylesheet" type="text/css" href="<%=root%>/menu/css/menu.css?v=20240522">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 	<script type="text/javascript" src="<%=root %>/menu/js/jquery.js"></script>
 	<script type="text/javascript" src="<%=root %>/menu/js/function.js"></script>
@@ -48,59 +48,98 @@
 	alert("로그아웃 하셨습니다.");
 	location.href = "login/logoutform.jsp";
 	}
+	
+	
+	$(function(){
+		$(".searchpage").hide();
+		const originalText = $("#logouting span").text(); // 원래 텍스트 저장
 
+		  $("#logouting").hover(function() {
+		    $(this).find("span").text("로그아웃");
+		  }, function() {
+		    $(this).find("span").text(originalText);
+		  });
+		
+		  $("#search").click(function() {
+			  $(".overlay").fadeIn();
+			  $(".searchpage").fadeIn();
+			  $("body").css("overflow", "hidden");
+			});
+
+			// 배경 클릭 시 닫기
+			$(".overlay").click(function() {
+			  $(".overlay").fadeOut();
+			  $(".searchpage").fadeOut();
+			  $("body").css("overflow", "auto"); // 스크롤 복원
+			});
+
+			// 닫기 버튼 클릭 시 닫기
+			$(".close-btn").click(function() {
+			  $(".overlay").fadeOut();
+			  $(".searchpage").fadeOut();
+			  $("body").css("overflow", "auto"); // 스크롤 복원
+			});
+
+			// ESC 키 누르면 닫기
+			$(document).on("keydown", function(e) {
+			  if (e.key === "Escape") {
+			    $(".overlay").fadeOut();
+			    $(".searchpage").fadeOut();
+			    $("body").css("overflow", "auto"); // 스크롤 복원
+			  }
+			});
+
+	});
+	
 </script>
 <body>
-
 <div id="wrap">
 	<header>
 		<div class="inner relative">
 			<div class="logoimg">
 			<a href="<%=root%>/"><img src="<%=root%>/SemiImg/mainLogo.png" class="logo"></a>
 			<div class="search">
-			<input type="text" id="query" class="form-control textbox" name="" value="" placeholder="상품 검색">
+			<input type="text" id="search" class="form-control textbox" name="" value="" placeholder="상품 검색" readonly style="cursor: pointer;">
 			<i class="bi bi-search" onclick="submit"></i>
+			
 			</div>
 			</div>
 			<nav id="navigation">
 				<ul id="main-menu">
 					<li class="current-menu-item"><a href="<%=root%>/">Home</a></li>
-					<li><a href="index.jsp?main=guest/guestform.jsp">방문인사</a></li>
-					<li class="parent">
-						<a href="#">게시판</a>
-						<ul class="sub-menu">
-							<li><a href="#">Q&A 게시판</a></li>
-							<li><a href="<%=root%>/board/boardlist.jsp">고객게시판</a></li>
-							<li><a href="#">Smart게시판</a></li>
-						</ul>
-					</li>
+					<li><a href="#">고객센터</a></li>
 					<li><a href="<%=root%>/shop/shoplist.jsp">Shop</a></li>
-							<%
-							String loginok = (String)session.getAttribute("loginok");
-						  	String name = (String)session.getAttribute("name");
-							String role = (String)session.getAttribute("role");
-							if(loginok == null){ %>
-							<li><a href="index.jsp?main=member/memberform.jsp">회원가입</a></li>
-							<%} %>
+					<%
+					String loginok = (String)session.getAttribute("loginok");
+					String name = (String)session.getAttribute("name");
+					String role = (String)session.getAttribute("role");
+					if(loginok == null){ %>
+						<li><a href="index.jsp?main=member/memberform.jsp">회원가입</a></li>
+					<%}else{ %>
+						<%if(role !=null && role.equals("user")){%>
+							<li><a href="index.jsp?main=member/mypage.jsp">마이페이지</a></li>
+							<li><a href="#">장바구니</a></li>
+							
+					<%}if(role !=null && role.equals("admin")){%>
+							<li><a href="#">매장관리</a>
+					<%} 
+					}%>
 					<li>
 					  <%
 					    if(loginok != null && loginok.equals("yes")) {
 					  %>
-					  <a href="#"><%=name%>님 어서오세요!</a>
-						<ul class="sub-menu">
-						<%if(role !=null && role.equals("user")){%>
-							<li><a href="index.jsp?main=member/mypage.jsp">마이페이지</a></li>
-						<%}if(role !=null && role.equals("admin")){%>
-							<li><a href="index.jsp?main=member/memberlist.jsp">회원목록</a></li>
-						<%}%>
+					  <a href="#" id="logouting" onclick="logout()"><span><%=name%>님</span></a>
+						<!-- <ul class="sub-menu">
+						
 							<li><a href="#" onclick="logout()">로그아웃</a></li>
-						</ul>
+						</ul> -->
 					  <%
 					    } else {
 					  %>
 					    <a href="index.jsp?main=login/loginform.jsp">로그인</a>
 					  <%
 					    }
+					  
 					  %>
 					</li>
 				</ul>
@@ -108,5 +147,15 @@
 			<div class="clear"></div>
 		</div>
 	</header>	
-</div>    
+</div>
+<!-- 배경 어둡게 -->
+<div class="overlay"></div>
+
+<!-- 검색창 팝업 -->
+<div class="searchpage">
+  <button class="close-btn">❌</button>
+  <h4>검색어를 입력하세요</h4>
+  <input type="text" class="form-control" placeholder="예: 가방, 신발 등">
+</div>
+
 </body></html>

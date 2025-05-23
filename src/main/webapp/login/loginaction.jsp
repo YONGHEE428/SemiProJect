@@ -16,15 +16,19 @@
 <%
 	String id = request.getParameter("id");
 	String pass = request.getParameter("pass");
+	String cbsave=request.getParameter("savechk");
 
 	MemberDao dao = new MemberDao();
 	MemberDto dto = dao.loginmember(id, pass);
 	String name = dao.getName(id);
 	
 	if(dao.login(id, pass)==true){
+		session.setMaxInactiveInterval(60*60*8); //8시간,생략시 30분
+		
 		session.setAttribute("loginok", "yes");
 		session.setAttribute("myid", id);
 		session.setAttribute("name", name);
+		session.setAttribute("saveok", cbsave==null?null:"yes");
 		if(dto.getRole().equals("admin")){
 			session.setAttribute("role", "admin");
 		}else{

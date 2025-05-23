@@ -12,6 +12,7 @@
 <style>
 	 .gaip {
 		font-family:monospace;
+		margin-bottom:-200px;
 	}
 	div>b{
 		color: black;
@@ -238,7 +239,7 @@
        <label width="100" class="member-info">휴대폰 번호</label>
        <input type="text" value="" id ="pinpass">
        <div class="input-group">
-         <input type="text" name="hp" class="form-control"required="required" style="max-width: 330px;" maxlength="10">&nbsp;&nbsp;&nbsp;
+         <input type="text" name="hp" class="form-control"required="required" style="max-width: 330px;" maxlength="11">&nbsp;&nbsp;&nbsp;
           <button type="button" id="hpCheck">인증번호 발송</button>
        </div>
      </div>
