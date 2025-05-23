@@ -37,7 +37,9 @@
 	    background-color: #d9d9d9;
 	    color: #fff;
 	}
-	#hpCheck:hover,#pinCheck:hover,#btnCheck:hover{
+	 #selemail{
+	 background-color: white;}
+	#hpCheck:hover,#pinCheck:hover,#btnCheck:hover,{
 		 background-color: black;
 
 	}
@@ -70,12 +72,11 @@
 		//인증번호 입력창 숨기기
 	   $(".pinfield").hide();
 	   //id중복체크
-	   $("#btnCheck").click(function(){
-		   
+	   //$("#btnCheck").click(function(){
+		  function checkId(){
 		   //id읽기
 		   var id=$("#id").val().trim();
 		   //alert(id);
-		   
 		   $.ajax({
 			   
 			   type:"get",
@@ -83,20 +84,19 @@
 			   dataType:"json",
 			   data:{"id":id},
 			   success:function(res){
-				   console.log(res.count);
 				   if(res.count==1){
-					   alert("이미 가입된 아이디입니다");
-					   $("span.idsuccess").text("fail");
-					   $("#id").val(" "); 
+					   $(".idsuccess").text("이미 사용 중인 아이디입니다").css("color", "red").show();
+					   //$("#id").val(" "); 
+				   }else if (res.count==0 && id.length==0){
+					   //$('#btnCheck').hide();
+					    $(".idsuccess").text("아이디를 입력해주세요").css("color", "red").show();
 				   }else{
-					   alert("가입가능한 아이디입니다");
-					   $('#btnCheck').hide();
-					   $("span.idsuccess").text("OK");
+					   $(".idsuccess").text("사용 가능한 아이디입니다").css("color", "green").show();
 				   }
 			   }
 		   });
-	   });
-	   
+	   };
+  			$("input[name='id']").on("input",checkId);
 	   //이메일선택 이벤트
 	   $("#selemail").change(function(){
 		   
@@ -107,6 +107,19 @@
 		   
 	   });
 	   
+	   //비밀번호 확인
+	   function checkPass() {
+		    const pass = $("input[name='pass']").val().trim();
+		    const pass2 = $("input[name='pass2']").val().trim();
+		    
+		    if(pass == pass2 && pass !== "") {
+		      $(".passsuccess").hide();
+		    }else{
+		    	$(".passsuccess").show();
+			} 	
+		  }
+		
+		  $("input[name='pass'], input[name='pass2']").on("input", checkPass);
    })
    
    function check(f){
@@ -211,34 +224,33 @@
        <label width="100" class="member-info">아이디</label>
        <div class="input-group">
          <input type="text" name="id" id="id" class="form-control"
-         maxlength="10" required="required" style="max-width: 350px;">&nbsp;&nbsp;&nbsp;
-         <button type="button" class="btn btn-outline-danger"
-         id="btnCheck">중복체크</button>&nbsp;&nbsp;&nbsp;
-         <span class="idsuccess" style="color: green;"></span>
+         maxlength="10" required="required" style="width: 500px;">
        </div>
+       <span class="idsuccess" style="color: red; font-size:0.8em;">아이디를 입력해주세요.</span>
      </div>
      <div>
         <label width="100" class="member-info">비밀번호</label>
         <div class="input-group">
           <input type="password" name="pass" class="form-control"
-          required="required" style="max-width: 350px;" placeholder="비밀번호를 입력해주세요">
+          required="required" style="max-width: 500px;" placeholder="비밀번호를 입력해주세요">
           </div>
           <div>
         <label width="100" class="member-info">비밀번호 확인</label>
           <input type="password" name="pass2" class="form-control"
-          required="required" style="max-width: 350px;" placeholder="비밀번호를 입력해주세요">
+          required="required" style="max-width: 500px;" placeholder="비밀번호를 입력해주세요">
+          <span class="passsuccess" style="color:red; font-size: 0.8em; ">비밀번호가 일치하지 않습니다.</span>
         </div>
      </div>
      <div>
        <label width="100" class="member-info">이름</label>
        <div class="input-group">
          <input type="text" name="name" class="form-control"
-          required="required" style="max-width: 350px;">
+          required="required" style="max-width: 500px;">
          </div>
      </div>
      <div>
        <label width="100" class="member-info">휴대폰 번호</label>
-       <input type="text" value="" id ="pinpass">
+       <input type="hidden" value="" id ="pinpass">
        <div class="input-group">
          <input type="text" name="hp" class="form-control"required="required" style="max-width: 330px;" maxlength="11">&nbsp;&nbsp;&nbsp;
           <button type="button" id="hpCheck">인증번호 발송</button>
@@ -268,11 +280,11 @@
        <label width="100" class="member-info">이메일</label>
        <div class="input-group">
          <input type="text" name="email1"  class="form-control"
-          required="required" style="max-width: 150px;">&nbsp;
+          required="required" style="max-width: 180px;">&nbsp;
           <b style="margin-top: 8px;">@</b>&nbsp;
           <input type="text" name="email2" id="email2"  class="form-control"
-          required="required" style="max-width: 150px;">&nbsp;&nbsp;
-          <select id="selemail" class="form-control" style="max-width: 100px;">
+          required="required" style="max-width: 180px;">&nbsp;&nbsp;
+          <select id="selemail" class="form-control" style="max-width: 120px;">
              <option value="-">직접입력</option>
              <option value="naver.com">네이버</option>
              <option value="gmail.com">구글</option>
@@ -282,7 +294,7 @@
      </div>
      <div>
      	<div>
-     		<label style="font-size: 0.8em"><b>※생년월일/휴대폰번호 인증을 통해 14세 이상시 회원가입이 처리됩니다.</b><br></label>
+     		<label style="font-size: 0.784em"><b>※생년월일/휴대폰번호 인증을 통해 14세 이상시 회원가입이 처리됩니다.</b><br></label>
 			<label style="color: gray;font-size: 0.8em">* 회원가입에 필요한 최소한의 정보만 입력 받음으로써<br> 고객님의 개인정보 수집을 최소화하고 편리한 회원가입을 제공합니다.</label>
      	</div>
      </div>
