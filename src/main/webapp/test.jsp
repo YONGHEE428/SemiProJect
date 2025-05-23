@@ -339,6 +339,9 @@ header {
                 <button class="payment-method-btn">카드결제</button>
                 <button class="payment-method-btn">네이버페이</button>
                 <button class="payment-method-btn">카카오페이</button>
+                <button class="payment-method-btn">카카오페이</button>
+                <button class="payment-method-btn">카카오페이</button>
+                <button class="payment-method-btn">카카오페이</button>
             </div>
             <div class="payment-details">
                 <!-- 결제 상세 정보가 여기에 들어갑니다 -->
