@@ -53,16 +53,16 @@
 <div class="title-main">
 	<div class="marquee">
 	  <div class="marquee-content">
-	   <a href="index.jsp?main=member/memberform.jsp"><p>첫 구매 20%할인 쿠폰 #즉시사용 가능 #중복할인 불가 &nbsp;&nbsp;&nbsp;
-	   첫 구매 20%할인 쿠폰 #즉시사용 가능 #중복할인 불가&nbsp;&nbsp;&nbsp;
-	   첫 구매 20%할인 쿠폰 #즉시사용 가능 #중복할인 불가&nbsp;&nbsp;&nbsp;
-	   첫 구매 20%할인 쿠폰 #즉시사용 가능 #중복할인 불가&nbsp;&nbsp;&nbsp;
-	   첫 구매 20%할인 쿠폰 #즉시사용 가능 #중복할인 불가&nbsp;&nbsp;&nbsp;
-	   첫 구매 20%할인 쿠폰 #즉시사용 가능 #중복할인 불가&nbsp;&nbsp;&nbsp;
-	   첫 구매 20%할인 쿠폰 #즉시사용 가능 #중복할인 불가&nbsp;&nbsp;&nbsp;
-	   첫 구매 20%할인 쿠폰 #즉시사용 가능 #중복할인 불가&nbsp;&nbsp;&nbsp;
-	   첫 구매 20%할인 쿠폰 #즉시사용 가능 #중복할인 불가&nbsp;&nbsp;&nbsp;
-	   첫 구매 20%할인 쿠폰 #즉시사용 가능 #중복할인 불가&nbsp;&nbsp;&nbsp;</p></a>
+	   <a href="index.jsp?main=member/memberform.jsp"><p>회원가입시 첫 구매 20%할인 쿠폰 증정 #즉시사용 가능 #중복할인 불가 &nbsp;&nbsp;&nbsp;
+	   회원가입시 첫 구매 20%할인 쿠폰 증정 #즉시사용 가능 #중복할인 불가 &nbsp;&nbsp;&nbsp;
+	   회원가입시 첫 구매 20%할인 쿠폰 증정 #즉시사용 가능 #중복할인 불가 &nbsp;&nbsp;&nbsp;
+	   회원가입시 첫 구매 20%할인 쿠폰 증정 #즉시사용 가능 #중복할인 불가 &nbsp;&nbsp;&nbsp;
+	   회원가입시 첫 구매 20%할인 쿠폰 증정 #즉시사용 가능 #중복할인 불가 &nbsp;&nbsp;&nbsp;
+	   회원가입시 첫 구매 20%할인 쿠폰 증정 #즉시사용 가능 #중복할인 불가 &nbsp;&nbsp;&nbsp;
+	   회원가입시 첫 구매 20%할인 쿠폰 증정 #즉시사용 가능 #중복할인 불가 &nbsp;&nbsp;&nbsp;
+	   회원가입시 첫 구매 20%할인 쿠폰 증정 #즉시사용 가능 #중복할인 불가 &nbsp;&nbsp;&nbsp;
+	   회원가입시 첫 구매 20%할인 쿠폰 증정 #즉시사용 가능 #중복할인 불가 &nbsp;&nbsp;&nbsp;
+	   회원가입시 첫 구매 20%할인 쿠폰 증정 #즉시사용 가능 #중복할인 불가 &nbsp;&nbsp;&nbsp;;</p></a>
 	  </div>
 	</div>
 </div>
