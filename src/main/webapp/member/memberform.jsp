@@ -23,7 +23,7 @@
 		font-weight: bold;
 		padding-top: 20px ;
 	}
-	#hpCheck,#pinCheck,#hewongaip{
+	#hpCheck,#pinCheck,#hewongaip,#btnCheck{
 		width:110px;
 	    font-weight: 500;
 	    line-height: 1.5;
@@ -37,7 +37,7 @@
 	    background-color: #d9d9d9;
 	    color: #fff;
 	}
-	#hpCheck:hover,#pinCheck:hover{
+	#hpCheck:hover,#pinCheck:hover,#btnCheck:hover{
 		 background-color: black;
 
 	}
@@ -85,12 +85,13 @@
 			   success:function(res){
 				   console.log(res.count);
 				   if(res.count==1){
-					   //alert("이미 가입된 아이디입니다 \n다시입력해주세요");
+					   alert("이미 가입된 아이디입니다");
 					   $("span.idsuccess").text("fail");
 					   $("#id").val(" "); 
 				   }else{
-					   //alert("가입가능한 아이디입니다");
-					   $("span.idsuccess").text("ok");
+					   alert("가입가능한 아이디입니다");
+					   $('#btnCheck').hide();
+					   $("span.idsuccess").text("OK");
 				   }
 			   }
 		   });

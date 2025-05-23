@@ -38,7 +38,7 @@
 	} else {
 	    // 로그인 실패 시 메시지와 함께 로그인폼으로 이동
 	    out.println("<script>");
-	    out.println("alert('아이디 또는 비밀번호가 틀렸습니다');");
+	    out.println("alert('아이디 또는 비밀번호를 다시 확인해주세요');");
 	    out.println("history.back();");  // 이전 페이지로 돌아가기
 	    out.println("</script>");
 	}
