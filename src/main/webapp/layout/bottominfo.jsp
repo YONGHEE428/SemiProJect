@@ -76,7 +76,7 @@
    		<li><a class="Footer-link" href="#" rel="noopener noreferrer" onclick="openTermsWindow()"><b>이용약관</b></a></li>
 		<li><a class="Footer-link" href="#" rel="noopener noreferrer" onclick="openPrivacy()">개인정보방침</a></li>
 		<li><a class="Footer-link" href="#" rel="noopener noreferrer" target="_blank">회사소개</a></li>		
-		<li><a class="Footer-link" href="#" rel="noopener noreferrer" target="_blank">이용안내</a></li>
+		<li><a class="Footer-link" href="index.jsp?main=Guide.jsp">이용안내</a></li>
   </ul>
 <div class="footer-content">
 	<p><b>(주)쌍용빈티지·대표이사</b> 김쌍용 / <b>소재지</b> 서울특별시 강남구 테헤란로 132 8층 / <b>사업자 등록번호</b> 000-00-0000 / <b>고객센터</b> 000-1111-1111 / <b>이메일</b> ssangyong@gmail.com</p>
