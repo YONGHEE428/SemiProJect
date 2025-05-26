@@ -107,7 +107,7 @@
 			<nav id="navigation">
 				<ul id="main-menu">
 					<li class="current-menu-item"><a href="<%=root%>/">Home</a></li>
-					<li><a href="#">고객센터</a></li>
+					<li><a href="index.jsp?main=s_boardlist/boardlist.jsp">고객센터</a></li>
 					<li><a href="<%=root%>/shop/shoplist.jsp">Shop</a></li>
 					<%
 					String loginok = (String)session.getAttribute("loginok");
