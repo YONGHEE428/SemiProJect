@@ -1,29 +1,3 @@
-<%-- <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<link href="https://fonts.googleapis.com/css2?family=Dongle&family=Gaegu&family=Hi+Melody&family=Nanum+Myeongjo&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-<title>Insert title here</title>
-</head>
-<%
-   //프로젝트 경로구해기
-   String root=request.getContextPath();
-%>
-<body>
-   <a href="<%=root%>/">메인(홈)</a>&nbsp;&nbsp;&nbsp;
-   <a href="<%=root%>/">로그인</a>&nbsp;&nbsp;&nbsp;
-   <a href="<%=root%>/">회원가입</a>&nbsp;&nbsp;&nbsp;
-   <a href="<%=root%>/">방명록</a>&nbsp;&nbsp;&nbsp;
-   <a href="<%=root%>/">Q&A</a>&nbsp;&nbsp;&nbsp;
-   <a href="<%=root%>/">고객게시판</a>&nbsp;&nbsp;&nbsp;
-   <a href="<%=root%>/">Shop</a>&nbsp;&nbsp;&nbsp;
-</body>
-</html> --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -107,8 +81,8 @@
 			<nav id="navigation">
 				<ul id="main-menu">
 					<li class="current-menu-item"><a href="<%=root%>/">Home</a></li>
-					<li><a href="#">고객센터</a></li>
-					<li><a href="<%=root%>/shop/shoplist.jsp">Shop</a></li>
+					<li><a href="index.jsp?main=s_boardlist/boardlist.jsp">고객센터</a></li>
+					<li><a href="#">Shop</a></li>
 					<%
 					String loginok = (String)session.getAttribute("loginok");
 					String name = (String)session.getAttribute("name");
@@ -153,9 +127,47 @@
 
 <!-- 검색창 팝업 -->
 <div class="searchpage">
-  <button class="close-btn">❌</button>
-  <h4>검색어를 입력하세요</h4>
-  <input type="text" class="form-control" placeholder="예: 가방, 신발 등">
+  <button class="close-btn" style="margin-right: 20px; margin-top: -3px;">❌</button>
+  <input type="text" class="form-control" placeholder="예: 가방, 신발 등" style="width: 95%;">
+  <div class="search-content">
+  <div><span style="font-size: 0.8em;">인기 검색어</span></div>
+  	<div class="search-content-item">
+  		<ol>
+  		<li>1</li>
+  		<li>2</li>
+  		<li>3</li>
+  		<li>4</li>
+  		<li>5</li>
+  		</ol>
+  	</div>
+  </div>
 </div>
 
-</body></html>
+</body>
+<style>
+	.search-content{
+		padding: 0 50px 0 20px;
+		border: 1px solid gray;
+		width: 100%;
+		height: 50%;
+	}
+	.search-content-item{
+		font-size: 0.5em;
+	}
+	.search-content-item >ol{
+		width: 50%;
+
+			
+	}
+	.search-content-item > ol >li{
+	display: flex;
+    align-items: left;
+    height: 2.25rem;
+    font-size: .75rem;
+    line-height: 1rem;
+    letter-spacing: -.0125rem;
+    font-weight: 350;
+    color: #000;
+	}
+</style>
+</html>

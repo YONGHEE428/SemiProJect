@@ -13,8 +13,8 @@
 		width:100%;
 		height:100%;
 		background-color: black;
-		display:flex;
-		justify-content: center;
+		/* display:flex; */
+		align-items: center; 
 	}
 	.marquee-content >a> p{
 		font-family: "Jua";

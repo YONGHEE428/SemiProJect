@@ -48,16 +48,35 @@
 		height: 50px;
 		filter: grayscale(100%);
 </style>
+<script type="text/javascript">
+
+	function openTermsWindow() {
+	    window.open(
+	        'TermsOfService.jsp',       // 새로 열릴 페이지
+	        '이용약관',               // 창 이름
+	        'width=600,height=500,top=100,left=200,resizable=yes,scrollbars=yes'
+	    );
+	}
+	function openPrivacy(){
+		window.open(
+			'Privacy.jsp',
+			'개인정보방침',
+			'width=600,height=500,top=100,left=200,resizable=yes,scrollbars=yes'
+		)
+		
+	}
+
+</script>
 </head>
 <body>
 <footer class="main-footer">
 <div class="footer-border"></div>
 <div class="footer-body">
 	<ul class="footer-menu">
-   		<li><a class="Footer-link" href="#" rel="noopener noreferrer" target="_blank"><b>이용약관</b></a></li>
-		<li><a class="Footer-link" href="#" rel="noopener noreferrer" target="_blank">회사소개</a></li>
-		<li><a class="Footer-link" href="#" rel="noopener noreferrer" target="_blank">개인정보방침</a></li>
-		<li><a class="Footer-link" href="#" rel="noopener noreferrer" target="_blank">이용안내</a></li>
+   		<li><a class="Footer-link" href="#" rel="noopener noreferrer" onclick="openTermsWindow()"><b>이용약관</b></a></li>
+		<li><a class="Footer-link" href="#" rel="noopener noreferrer" onclick="openPrivacy()">개인정보방침</a></li>
+		<li><a class="Footer-link" href="#" rel="noopener noreferrer" target="_blank">회사소개</a></li>		
+		<li><a class="Footer-link" href="index.jsp?main=Guide.jsp">이용안내</a></li>
   </ul>
 <div class="footer-content">
 	<p><b>(주)쌍용빈티지·대표이사</b> 김쌍용 / <b>소재지</b> 서울특별시 강남구 테헤란로 132 8층 / <b>사업자 등록번호</b> 000-00-0000 / <b>고객센터</b> 000-1111-1111 / <b>이메일</b> ssangyong@gmail.com</p>
