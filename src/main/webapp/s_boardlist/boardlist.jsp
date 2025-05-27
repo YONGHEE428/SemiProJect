@@ -115,8 +115,8 @@
     </div>
     <!-- 오른쪽: 상담 링크 박스 -->
     <div class="col-md-5 d-flex flex-column justify-content-start" style="margin-top: 110px;" >
-      <a href="https://pf.kakao.com/_your_kakao_link" target="_blank" class="counsel-link kakao">카카오톡 1:1 채팅상담</a>
-      <a href="https://talk.naver.com/your_naver_link" target="_blank" class="counsel-link naver">네이버 톡 채팅상담</a>
+      <a href="http://pf.kakao.com/_XsGSn" target="_blank" class="counsel-link kakao">카카오톡 1:1 채팅상담</a>
+      <a href="https://naver.me/FOZJWeYb" target="_blank" class="counsel-link naver">네이버 톡 채팅상담</a>
       <a href="tel:021231234" class="counsel-link phone">전화 상담 02-123-1234</a>
     </div>
   </div>
