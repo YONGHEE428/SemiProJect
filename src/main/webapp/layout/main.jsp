@@ -17,27 +17,73 @@
 		max-width: 100%;
 		max-height: 50%;
 	}
+	.main-item{
+		width: 100%;
+		height: 100%;
+		padding: 0 400px;
+	}
 	.main-items{
-	 	display: grid;
-  		grid-template-columns: repeat(5, 1fr); /* 한 줄에 4개씩 */
   		justify-content: center;
 	 	gap : 20px;
 		width: 100%;
 		height: 70%;
-		padding: 0 400px;
-
 	}
-	.main-items > .item{
-		width: 200px;
-		height: 300px;
+	.main-items >  ul{
+		width: 100%;
+		 display: flex;
+		 flex-wrap: wrap;           /* 줄바꿈 가능하게 */
+		 list-style: none;
+		 padding: 0;
+	
+	}
+	.main-items >  ul > li{
+		width: 20%;
+		height: 250px;
 		margin-bottom: 50px;
 		border: 2px solid black;
 		padding: 5px 5px;
-
 	}
-	.item >img{
-	width: 185px;
-	height: 200px;
+	
+	.main-items> ul > li > .item{
+		width: 100%;
+		height: 60%;
+		border: 1px solid red;
+	}
+	.main-items> ul > li > .item-coment{
+		width: 100%;
+		height: 40%;
+		border: 1px solid blue;
+	}
+	
+	.main-LikeItems {
+		display: flex;
+  		justify-content: center; 
+	}
+	.main-LikeItems >  ul{
+		 width: 100%;
+		 display: flex;
+		 flex-wrap: wrap;           /* 줄바꿈 가능하게 */      
+		 list-style: none;
+		 padding: 0;
+	
+	}
+	.main-LikeItems >  ul > li{
+		width: 16.66%;
+		height: 250px;
+		margin-bottom: 50px;
+		border: 2px solid black;
+		padding: 5px 5px;
+	}
+	
+	.main-LikeItems> ul > li > .item{
+		width: 100%;
+		height: 60%;
+		border: 1px solid red;
+	}
+	.main-LikeItems> ul > li > .item-coment{
+		width: 100%;
+		height: 40%;
+		border: 1px solid blue;
 	}
 </style>
 
@@ -62,25 +108,100 @@
     <span class="visually-hidden">Next</span>
   </button>
 </div><br>
-  
+<div class="main-item">
+  <div class="LikeItem-conttent"><span><strong style="font-size: 1.7em;">Popular Listings</strong><br><b>인기 상품</b></span><br></div>
+  <div class="main-LikeItems">
+  <ul>
+  	<li>
+	  	<div class="item"><img alt="" src="image/쇼핑몰사진/1.jpg" ></div>
+	  	<div class="item-coment"></div>
+  	</li>
+ 	<li>
+	  	<div class="item"><img alt="" src="image/쇼핑몰사진/1.jpg" ></div>
+	  	<div class="item-coment"></div>
+  	</li>
+ 	<li>
+	  	<div class="item"><img alt="" src="image/쇼핑몰사진/1.jpg" ></div>
+	  	<div class="item-coment"></div>
+  	</li>
+ 	<li>
+	  	<div class="item"><img alt="" src="image/쇼핑몰사진/1.jpg" ></div>
+	  	<div class="item-coment"></div>
+  	</li>
+ 	<li>
+	  	<div class="item"><img alt="" src="image/쇼핑몰사진/1.jpg" ></div>
+	  	<div class="item-coment"></div>
+  	</li>
+ 	<li>
+	  	<div class="item"><img alt="" src="image/쇼핑몰사진/1.jpg" ></div>
+	  	<div class="item-coment"></div>
+  	</li>
+ 	</ul>
+  </div>
  <div class="main-items">
- 	<div class="item"><img alt="" src="image/쇼핑몰사진/1.jpg" ></div>
- 	<div class="item"><img alt="" src="image/쇼핑몰사진/2.jpg" ></div>
- 	<div class="item"><img alt="" src="image/쇼핑몰사진/3.jpg" ></div>
- 	<div class="item"><img alt="" src="image/쇼핑몰사진/4.jpg" ></div>
- 	<div class="item"><img alt="" src="image/쇼핑몰사진/5.jpg" ></div>
- 	<div class="item"><img alt="" src="image/쇼핑몰사진/6.jpg" ></div>
- 	<div class="item"><img alt="" src="image/쇼핑몰사진/7.jpg" ></div>
- 	<div class="item"><img alt="" src="image/쇼핑몰사진/8.jpg" ></div>
- 	<div class="item"><img alt="" src="image/쇼핑몰사진/9.jpg" ></div>
- 	<div class="item"><img alt="" src="image/쇼핑몰사진/10.jpg" ></div>
- 	<div class="item"><img alt="" src="image/쇼핑몰사진/11.jpg" ></div>
- 	<div class="item"><img alt="" src="image/쇼핑몰사진/12.jpg" ></div>
- 	<div class="item"><img alt="" src="image/쇼핑몰사진/18.jpg" ></div>
- 	<div class="item"><img alt="" src="image/쇼핑몰사진/19.jpg" ></div>
- 	<div class="item"><img alt="" src="image/쇼핑몰사진/20.jpg" ></div>
- 	
- 	
+	 <ul>
+	 	<li>
+		  	<div class="item"><img alt="" src="image/쇼핑몰사진/1.jpg" ></div>
+		  	<div class="item-coment"></div>
+	  	</li>
+	  	<li>
+		  	<div class="item"><img alt="" src="image/쇼핑몰사진/1.jpg" ></div>
+		  	<div class="item-coment"></div>
+	  	</li>
+	  	<li>
+		  	<div class="item"><img alt="" src="image/쇼핑몰사진/1.jpg" ></div>
+		  	<div class="item-coment"></div>
+	  	</li>
+	  	<li>
+		  	<div class="item"><img alt="" src="image/쇼핑몰사진/1.jpg" ></div>
+		  	<div class="item-coment"></div>
+	  	</li>
+	  	<li>
+		  	<div class="item"><img alt="" src="image/쇼핑몰사진/1.jpg" ></div>
+		  	<div class="item-coment"></div>
+	  	</li>
+	  	<li>
+		  	<div class="item"><img alt="" src="image/쇼핑몰사진/1.jpg" ></div>
+		  	<div class="item-coment"></div>
+	  	</li>
+	  	<li>
+		  	<div class="item"><img alt="" src="image/쇼핑몰사진/1.jpg" ></div>
+		  	<div class="item-coment"></div>
+	  	</li>
+	  	<li>
+		  	<div class="item"><img alt="" src="image/쇼핑몰사진/1.jpg" ></div>
+		  	<div class="item-coment"></div>
+	  	</li>
+	  	<li>
+		  	<div class="item"><img alt="" src="image/쇼핑몰사진/1.jpg" ></div>
+		  	<div class="item-coment"></div>
+	  	</li>
+	  	<li>
+		  	<div class="item"><img alt="" src="image/쇼핑몰사진/1.jpg" ></div>
+		  	<div class="item-coment"></div>
+	  	</li>
+	  	<li>
+		  	<div class="item"><img alt="" src="image/쇼핑몰사진/1.jpg" ></div>
+		  	<div class="item-coment"></div>
+	  	</li>
+	  	<li>
+		  	<div class="item"><img alt="" src="image/쇼핑몰사진/1.jpg" ></div>
+		  	<div class="item-coment"></div>
+	  	</li>
+	  	<li>
+		  	<div class="item"><img alt="" src="image/쇼핑몰사진/1.jpg" ></div>
+		  	<div class="item-coment"></div>
+	  	</li>
+	  	<li>
+		  	<div class="item"><img alt="" src="image/쇼핑몰사진/1.jpg" ></div>
+		  	<div class="item-coment"></div>
+	  	</li>
+	  	<li>
+		  	<div class="item"><img alt="" src="image/쇼핑몰사진/1.jpg" ></div>
+		  	<div class="item-coment"></div>
+	  	</li>
+	  </ul>
+ </div> 
  </div>
 </body>
 </html>
