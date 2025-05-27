@@ -10,6 +10,11 @@
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 	<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+	<!-- 주소검색 -->
+	<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+	<!-- 아임포트(이니페이) -->
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+<script type="text/javascript" src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <title>결제하기</title>
     <link rel="stylesheet" href="payment.css">
 <style type="text/css">
@@ -236,11 +241,68 @@ header {
 		 $(".form-select").change(function(){
 	            var m = $(".form-select option:selected").text();
 	            if(m==="직접 입력"){
-	            	alert("hi");
+	            	$("#mymessage").show();
 	            }
 	        });
-    
+		//주소창
+    	$("#findaddress").click(function(){
+    		new daum.Postcode({
+		        oncomplete: function(data) {
+		            // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분입니다.
+		            // 예제를 참고하여 다양한 활용법을 확인해 보세요.
+		        	document.getElementById("userAddress").value = data.address;//주소넣기
+		        	document.getElementById("userPostCode").value = data.zonecode;//우편번호넣기
+		        	var inputDtlAddr = document.getElementById("userDtlAddress");//주소란 읽기전용 설정
+		        	inputDtlAddr.readOnly = false;
+		        }
+		    }).open();
+    	});
+		$("#canceladdress").click(function(){
+			var inputPostCode = document.getElementById("userPostCode");
+			inputPostCode.value = ""; // 우편번호 초기화
+			var inputAddr = document.getElementById("userAddress");
+			inputAddr.value = ""; // 주소란 초기화
+			var inputDtlAddr = document.getElementById("userDtlAddress");
+			inputDtlAddr.value = ""; // 상세주소란 초기화
+			inputDtlAddr.readOnly = true; // 상세주소란 읽기전용 해제
+		});
+		
 	});
+	 function KGpay(){
+		 var IMP = window.IMP;
+		    IMP.init('결제테스트'); // 가맹점 식별코드 입력
+
+		 //iamport 대신 자신의 "가맹점 식별코드"를 사용
+		  IMP.request_pay({
+		    pg: "inicis",
+		    pay_method: "card",
+		    merchant_uid : 'merchant_'+new Date().getTime(),
+		    name : '결제테스트',
+		    amount : 100,
+		    buyer_email : 'iamport@siot.do',
+		    buyer_name : '구매자',
+		    buyer_tel : '010-1234-5678',
+		    buyer_addr : '서울특별시 강남구 삼성동',
+		    buyer_postcode : '123-456'
+		  }, function (rsp) { // callback
+			  if (rsp.success) {
+		            // 결제 성공 시 로직
+		            alert('결제가 완료되었습니다.\n' + 
+		                '고유ID : ' + rsp.imp_uid + '\n' +
+		                '상점 거래ID : ' + rsp.merchant_uid + '\n' +
+		                '결제 금액 : ' + rsp.paid_amount + '\n' +
+		                '카드 승인번호 : ' + rsp.apply_num);
+		                
+		            // 여기에 결제 성공 후 이동할 페이지 지정
+		            // location.href = '결제성공페이지URL';
+		            
+		        } else {
+		            // 결제 실패 시 로직
+		            alert('결제에 실패하였습니다.\n' + 
+		                '에러내용: ' + rsp.error_msg);
+		        }
+		  });
+     }
 </script>
 <%
    //프로젝트 경로구해기
@@ -248,7 +310,6 @@ header {
 %>
 </head>
 <body>
-    <!-- 헤더 영역 -->
     <header>
         <div class="top-header">
             <div class="left-section">
@@ -289,45 +350,68 @@ header {
         <div class="info-container">
             <h2 class="orderer">주문자 정보</h2>
             <form class="customer-form">
-                <div class="form-group">
+                <div class="form-group" style="width: 100px;">
                     <input type="text" placeholder="주문자명">
                 </div>
-                <div class="form-group">
-                    <input type="tel" placeholder="번호">
+                <div class="form-group" style="width: 250px;">
+                    <input type="tel" placeholder="번호(-없이 입력)" >
                 </div>
                 <div class="form-group address-group">
-                    <input type="text" placeholder="주소" readonly>
-                    <button type="button" class="address-search-btn">주소찾기</button>
+                    <span><h3>주소</h3></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button type="button" class="btn btn-outline-secondary"
+                    id="findaddress"><fmt:message key="code_search"/>주소찾기</button>
+                    <button type="button" class="btn btn-outline-danger" 
+                   id="canceladdress"><fmt: message key="code_cancel"/>취소</button>
                 </div>
-                <div class="form-group">
-                    <input type="text" placeholder="상세주소">
+                <!-- 우편번호 -->
+     <div class="mb-2 d-flex align-items-center" style="width: 300px;">
+    <label for="userPostCode" class="form-label mb-0 me-2" 
+    style="white-space: nowrap; padding: 5px;">우편번호&nbsp;&nbsp;</label>
+    <input type="text" class="form-control form-control-sm" id="userPostCode" name="userPostCode" readonly style="width: 120px;">
+</div>
+<!-- 주소 -->
+<div class="mb-2 d-flex align-items-center" style="width: 450px; padding: 5px; gap: 10px;">
+    <label for="userAddress" class="form-label mb-0" 
+    style="width: 60px; margin-right: 22px;">주소</label>
+    <input type="text" class="form-control" id="userAddress" name="userAddress" readonly style="flex-grow: 1; min-width: 0;">
+</div>
+
+<!-- 상세주소 -->
+<div class="mb-2 d-flex align-items-center" style="width: 450px; padding: 5px; gap: 10px;">
+    <label for="userDtlAddress" class="form-label mb-0" style="width: 90px;">상세주소</label>
+    <input type="text" class="form-control" id="userDtlAddress" name="userDtlAddress" maxlength="100" readonly style="flex-grow: 1; min-width: 0;">
+</div>    
+             <section>
+             <span style="padding: 5px;">이메일</span><br><br>          
+                <div class="form-group" style="width: 450px;">
+                    <input type="email" placeholder="이메일" 
+                    required="required">
                 </div>
+                <br>
                 <div class="form-group">
-                    <input type="email" placeholder="이메일">
-                </div>
-                <div class="form-group">
-                	<span>배송 전 메세지</span>
-                </div>
-                <div class="form-group">
+                	<span style="padding: 5px;">배송 전 메세지</span>
+                </div><br>
+                <div class="form-group" style="margin-bottom: 10px; width: 450px;">
                     <select class="form-select">
                     	<option class="msg" id="message1">부재 시 경비실에 맡겨주세요.</option>
                     	<option class="msg" id="message2">문 앞에 놔두고 가세요.</option>
                     	<option class="msg" id="message3">배송 전 연락주세요.</option>
                     	<option class="msg" id="message4">직접 입력</option>
                     </select>
-                    
-                    <input type="text">
                 </div>
                 
                 		
-                <div class="form-group message-box" id="custom-message" style="display: none;"
-                	>
+                <div class="form-group message-box" id="mymessage" 
+                style="display: none;">
+                
                     <textarea rows="3" placeholder="메세지 입력"></textarea>
                 </div>
+             </section>
+              
             </form>
         </div>
         <div class="ad-container">
-            <div class="ad-space">광고</div>
+            <div class="ad-space" style="height: 500px;">광고</div>
         </div>
     </section>
 
@@ -338,15 +422,12 @@ header {
             <div class="payment-methods">
                 <button class="payment-method-btn">카드결제</button>
                 <button class="payment-method-btn">네이버페이</button>
-                <button class="payment-method-btn">카카오페이</button>
-                <button class="payment-method-btn">카카오페이</button>
-                <button class="payment-method-btn">카카오페이</button>
-                <button class="payment-method-btn">카카오페이</button>
+              	<button class="payment-method-btn">카카오페이</button>
             </div>
             <div class="payment-details">
                 <!-- 결제 상세 정보가 여기에 들어갑니다 -->
             </div>
-            <button class="payment-submit-btn">결제요청</button>
+            <button type="button" class="payment-submit-btn" onclick="KGpay()">결제요청</button>
         </div>
     </section>
 </body>
