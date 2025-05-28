@@ -85,7 +85,7 @@ public class MemberDao {
 		Connection conn=db.getConnection();
 		PreparedStatement pstmt=null;
 		
-		String sql="INSERT INTO member (name, id, pass, email, gaipday)VALUES (?, ?, ?, ?, NOW())";
+		String sql="INSERT INTO member (name, id, pass, email,hp, birth)VALUES (?, ?, ?, ?, ?,?)";
 		
 		try {
 			pstmt=conn.prepareStatement(sql);
@@ -94,6 +94,8 @@ public class MemberDao {
 			pstmt.setString(2, dto.getId());
 			pstmt.setString(3, dto.getPass());
 			pstmt.setString(4, dto.getEmail());
+			pstmt.setString(5, dto.getHp());
+			pstmt.setTimestamp(6, dto.getBirth());
 			pstmt.execute();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -127,7 +129,7 @@ public class MemberDao {
 				dto.setName(rs.getString("name"));
 				dto.setId(rs.getString("id"));
 				dto.setEmail(rs.getString("email"));
-				dto.setGaipday(rs.getTimestamp("gaipday"));
+				dto.setBirth(rs.getTimestamp("birth"));
 				
 				list.add(dto);
 			}
@@ -164,7 +166,7 @@ public class MemberDao {
 				dto.setName(rs.getString("name"));
 				dto.setId(rs.getString("id"));
 				dto.setEmail(rs.getString("email"));
-				dto.setGaipday(rs.getTimestamp("gaipday"));
+				dto.setBirth(rs.getTimestamp("birth"));
 				
 			}
 		} catch (SQLException e) {
