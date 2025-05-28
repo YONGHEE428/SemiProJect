@@ -12,7 +12,7 @@
    String root=request.getContextPath();
 %>
 	<link rel="stylesheet" type="text/css" href="<%=root%>/menu/css/font-awesome.css">
-	<link rel="stylesheet" type="text/css" href="<%=root%>/menu/css/menu.css?v=20240522">
+	<link rel="stylesheet" type="text/css" href="<%=root%>/menu/css/menu.css?v=20240527">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 	<script type="text/javascript" src="<%=root %>/menu/js/jquery.js"></script>
 	<script type="text/javascript" src="<%=root %>/menu/js/function.js"></script>
@@ -127,19 +127,31 @@
 
 <!-- 검색창 팝업 -->
 <div class="searchpage">
-  <button class="close-btn" style="margin-right: 20px; margin-top: -3px;">❌</button>
+  <button class="close-btn" style="margin-top: -3px; margin-right: 3px;"><i class="bi bi-x-lg" style="font-size: 25px;"></i></button>
   <input type="text" class="form-control" placeholder="예: 가방, 신발 등" style="width: 95%;">
+  <div class="search-title">
+  <label style="font-size: 0.8em;"><strong>인기 검색어</strong></label>
+  </div>
   <div class="search-content">
-  <div><span style="font-size: 0.8em;">인기 검색어</span></div>
   	<div class="search-content-item">
   		<ol>
-  		<li>1</li>
-  		<li>2</li>
-  		<li>3</li>
-  		<li>4</li>
-  		<li>5</li>
+  		<li><a href="#"><strong>1 &nbsp;&nbsp;반바지</strong></a></li>
+  		<li><a href="#"><strong>2 &nbsp;&nbsp;반팔</strong></a></li>
+  		<li><a href="#"><strong>3 &nbsp;&nbsp;셔츠</strong></a></li>
+  		<li><a href="#"><strong>4 &nbsp;&nbsp;트레이닝바지</strong></a></li>
+  		<li><a href="#"><strong>5 &nbsp;&nbsp;모자</strong></a></li>
+  		</ol>
+  		<ol>
+  		<li><a href="#"><strong>1 &nbsp;&nbsp;반바지</strong></a></li>
+  		<li><a href="#"><strong>2 &nbsp;&nbsp;반팔</strong></a></li>
+  		<li><a href="#"><strong>3 &nbsp;&nbsp;셔츠</strong></a></li>
+  		<li><a href="#"><strong>4 &nbsp;&nbsp;트레이닝바지</strong></a></li>
+  		<li><a href="#"><strong>5 &nbsp;&nbsp;모자</strong></a></li>
   		</ol>
   	</div>
+  </div>
+  <div class="search-Ad">
+  	<img src="<%=root%>/SemiImg/coupon_b.png">
   </div>
 </div>
 
@@ -147,15 +159,17 @@
 <style>
 	.search-content{
 		padding: 0 50px 0 20px;
-		border: 1px solid gray;
 		width: 100%;
-		height: 50%;
+		height: 40%;
+		
 	}
 	.search-content-item{
 		font-size: 0.5em;
+		 display: flex;
+ 		 gap: 100px; 
 	}
 	.search-content-item >ol{
-		width: 50%;
+		width: 30%;
 
 			
 	}
@@ -168,6 +182,23 @@
     letter-spacing: -.0125rem;
     font-weight: 350;
     color: #000;
+	}
+	li > a:hover{
+	text-decoration: none;
+	}
+	.search-title{
+	width: 100%;
+	height: 100px;
+	line-height: 100px;}
+	.search-Ad{
+		padding:20px 50px 20px 50px;
+		width: 100%;
+		height: 150px;
+	}
+	.search-Ad >img{
+	border: 0.5px solid #f2f2f2;
+	width: 100%;
+	height: 100px;
 	}
 </style>
 </html>
