@@ -116,7 +116,84 @@ body {
 .counsel-link.phone:hover {
 	box-shadow: 0 2px 8px #9ec5fe55;
 }
+
+.btn btn-outline-primary {
+	float: right;
+}
 </style>
+<script type="text/javascript">
+	$(function() {
+
+		//탭 클릭 이벤트
+		$('#boardTab button[data-bs-toggle="tab"] ').on(
+				'shown.bs.tab',
+				function(e) {
+
+					var type = $(e.target).attr('data-bs-target').replace('#',
+							''); //faq,qna,notice
+					loadboardlist(type);
+				});
+
+		//페이지 로딩시 FAQ부터 불러오기
+		loadboardlist('faq');
+
+	})
+	//게시글 목록 보기
+	function loadboardlist(type) {
+		$
+				.ajax({
+
+					url : "boardlistajax.jsp",
+					type : "get",
+					data : {
+						type : type
+					},
+					dataType : "json",
+					success : function(res) {
+						var s = '';
+						if (res.length === 0) {
+							s = '<div class="text-center text-secondary">등록된 글이 없습니다.</div>';
+						} else {
+							s += '<div class="accordion" id="'+type+'Accordion">';
+							$
+									.each(
+											res,
+											function(i, item) {
+												s += '<div class="accordion-item">';
+												s += '<h2 class="accordion-header" id="'+type+'Heading'+i+'">';
+												s += '<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#'+type+'Collapse'+i+'">';
+												s += '[' + type.toUpperCase()
+														+ '] ' + item.title
+														+ '</button></h2>';
+												s += '<div id="'+type+'Collapse'+i+'" class="accordion-collapse collapse" data-bs-parent="#'+type+'Accordion">';
+												s += '<div class="accordion-body">'
+														+ item.text
+												s += '<div class="mt-3 text-end">';
+												s += '<button class="btn btn-primary btn-sm me-2 edit-btn" value="'+item.idx+'">수정</button>';
+												s += '<button class="btn btn-warning btn-sm text-white delete-btn" value="'+item.idx+'">삭제</button>';
+												s += '</div>';
+												s += '</div>';
+												s += '</div></div>';
+											});
+							s += '</div>';
+						}
+						// 탭별 컨텐츠 영역에 출력
+						$('#' + type).html(s);
+					},
+					error : function() {
+						$('#' + type)
+								.html(
+										'<div class="text-danger">데이터를 불러오지 못했습니다.</div>');
+					}
+
+				})
+	}
+	//팝업 오픈
+	function openPopup() {
+		window.open("addboardlist.jsp", // 등록 폼 파일명
+		"boardAddPopup", "width=500,height=600,scrollbars=yes,resizable=yes");
+	}
+</script>
 </head>
 <body>
 	<div class="container mt-4">
@@ -144,17 +221,14 @@ body {
 						<div>
 							<a>월~금 : 09:00 ~ 18:00 | 점심시간 12:00 ~ 13:00</a>
 						</div>
-						<br>
-						<br>
+						<br> <br>
 						<div>
 							<b>[토,일,공휴일 휴무]</b>
 						</div>
 					</div>
 					<div class="tab-pane fade" id="tab2" role="tabpanel">
-						<b>쌍용은행: 123-1591-3573-11</b> <br>
-						<br> <b>SY BANK: 159753-08-148820</b> <br>
-						<br>
-						<br>
+						<b>쌍용은행: 123-1591-3573-11</b> <br> <br> <b>SY BANK:
+							159753-08-148820</b> <br> <br> <br>
 						<h5>예금주:(주)SSY.COM</h5>
 					</div>
 					<div class="tab-pane fade" id="tab3" role="tabpanel">
@@ -176,9 +250,9 @@ body {
 		</div>
 
 		<!-- FAQ/QnA/공지사항 탭 -->
-		<div class="card p-3 mb-4 mt-4">
-			<ul class="nav nav-tabs justify-content-center" id="boardTab"
-				role="tablist">
+		<div class="d-flex align-items-center mb-2">
+			<ul class="nav nav-tabs flex-grow-1 justify-content-center"
+				id="boardTab" role="tablist" style="margin-bottom: 0;">
 				<li class="nav-item" role="presentation">
 					<button class="nav-link active" id="faq-tab" data-bs-toggle="tab"
 						data-bs-target="#faq" type="button" role="tab">FaQ</button>
@@ -192,95 +266,58 @@ body {
 						data-bs-target="#notice" type="button" role="tab">공지사항</button>
 				</li>
 			</ul>
-			<div
-				class="tab-content p-4 border-bottom border-start border-end rounded-bottom-4"
-				id="boardTabContent" style="min-height: 300px;">
-				<div class="tab-pane fade show active" id="faq" role="tabpanel">
-					<div class="accordion" id="faqAccordion">
-						<div class="accordion-item">
-							<h2 class="accordion-header" id="faqHeadingOne">
-								<button class="accordion-button collapsed" type="button"
-									data-bs-toggle="collapse" data-bs-target="#faqCollapseOne">
-									[FAQ] 회원가입은 어떻게 하나요?</button>
-							</h2>
-							<div id="faqCollapseOne" class="accordion-collapse collapse"
-								data-bs-parent="#faqAccordion">
-								<div class="accordion-body">홈페이지 우측 상단의 회원가입 버튼을 클릭 후, 정보를
-									입력하시면 됩니다.</div>
-							</div>
-						</div>
-						<div class="accordion-item">
-							<h2 class="accordion-header" id="faqHeadingTwo">
-								<button class="accordion-button collapsed" type="button"
-									data-bs-toggle="collapse" data-bs-target="#faqCollapseTwo">
-									[FAQ] 비밀번호를 잊어버렸어요.</button>
-							</h2>
-							<div id="faqCollapseTwo" class="accordion-collapse collapse"
-								data-bs-parent="#faqAccordion">
-								<div class="accordion-body">로그인 화면에서 '비밀번호 찾기'를 클릭하시면 이메일로
-									임시 비밀번호가 발송됩니다.</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="tab-pane fade" id="qna" role="tabpanel">
-					<div class="accordion" id="qnaAccordion">
-						<div class="accordion-item">
-							<h2 class="accordion-header" id="qnaHeadingOne">
-								<button class="accordion-button collapsed" type="button"
-									data-bs-toggle="collapse" data-bs-target="#qnaCollapseOne">
-									[QnA] 배송은 얼마나 걸리나요?</button>
-							</h2>
-							<div id="qnaCollapseOne" class="accordion-collapse collapse"
-								data-bs-parent="#qnaAccordion">
-								<div class="accordion-body">보통 2~3일 이내에 배송됩니다. 지역에 따라 다를 수
-									있습니다.</div>
-							</div>
-						</div>
-						<div class="accordion-item">
-							<h2 class="accordion-header" id="qnaHeadingTwo">
-								<button class="accordion-button collapsed" type="button"
-									data-bs-toggle="collapse" data-bs-target="#qnaCollapseTwo">
-									[QnA] 교환/반품은 어떻게 하나요?</button>
-							</h2>
-							<div id="qnaCollapseTwo" class="accordion-collapse collapse"
-								data-bs-parent="#qnaAccordion">
-								<div class="accordion-body">마이페이지에서 교환/반품 신청이 가능합니다. 자세한
-									절차는 고객센터를 참고하세요.</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="tab-pane fade" id="notice" role="tabpanel">
-					<div class="accordion" id="noticeAccordion">
-						<div class="accordion-item">
-							<h2 class="accordion-header" id="noticeHeadingOne">
-								<button class="accordion-button collapsed" type="button"
-									data-bs-toggle="collapse" data-bs-target="#noticeCollapseOne">
-									[공지] 2024년 6월 배송 휴무 안내</button>
-							</h2>
-							<div id="noticeCollapseOne" class="accordion-collapse collapse"
-								data-bs-parent="#noticeAccordion">
-								<div class="accordion-body">6월 6일(현충일)과 6월 15일(토요일)은 배송이
-									진행되지 않습니다. 이용에 참고 부탁드립니다.</div>
-							</div>
-						</div>
-						<div class="accordion-item">
-							<h2 class="accordion-header" id="noticeHeadingTwo">
-								<button class="accordion-button collapsed" type="button"
-									data-bs-toggle="collapse" data-bs-target="#noticeCollapseTwo">
-									[공지] 시스템 점검 안내</button>
-							</h2>
-							<div id="noticeCollapseTwo" class="accordion-collapse collapse"
-								data-bs-parent="#noticeAccordion">
-								<div class="accordion-body">6월 10일(월) 00:00~04:00까지 시스템
-									점검으로 서비스 이용이 일시 중단됩니다.</div>
-							</div>
+			<button type="button" class="btn btn-outline-primary  ms-3"
+				onclick="openPopup()">글쓰기</button>
+		</div>
+		<div
+			class="tab-content p-4 border-bottom border-start border-end rounded-bottom-4"
+			id="boardTabContent" style="min-height: 300px;">
+			<div class="tab-pane fade show active" id="faq" role="tabpanel">
+				<div class="accordion" id="faqAccordion">
+					<div class="accordion-item">
+						<h2 class="accordion-header" id="faqtitle">
+							<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse" data-bs-target="#faqtext"></button>
+						</h2>
+						<div id="faqtext" class="accordion-collapse collapse"
+							data-bs-parent="#faqAccordion">
+							<div class="accordion-body"></div>
 						</div>
 					</div>
 				</div>
 			</div>
+			<div class="tab-pane fade" id="qna" role="tabpanel">
+				<div class="accordion" id="qnahead">
+					<div class="accordion-item">
+						<h2 class="accordion-header" id="qnaHeadingOne">
+							<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse" data-bs-target="#qnatext"></button>
+						</h2>
+						<div id="qnatext" class="accordion-collapse collapse"
+							data-bs-parent="#qnaAccordion">
+							<div class="accordion-body"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane fade" id="notice" role="tabpanel">
+				<div class="accordion" id="noticetitle">
+					<div class="accordion-item">
+						<h2 class="accordion-header" id="noticeHeadingOne">
+							<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse" data-bs-target="#noticetext">
+							</button>
+						</h2>
+						<div id="noticetext" class="accordion-collapse collapse"
+							data-bs-parent="#noticeAccordion">
+							<div class="accordion-body"></div>
+						</div>
+					</div>
+
+				</div>
+			</div>
 		</div>
+	</div>
 	</div>
 </body>
 </html>

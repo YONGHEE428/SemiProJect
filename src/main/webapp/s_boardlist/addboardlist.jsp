@@ -16,81 +16,76 @@
 <!-- Bootstrap JS (Popper 포함) CDN 추가 -->
 <script
 	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<title>고객센터/SSY쇼핑몰</title>
-
+<title>고객센터/SSY쇼핑몰 add폼</title>
+<script>
+	$(function(){
+		$("#addform").on("submit",function (e){
+			e.preventDefault(); //폼의 기본제출 (새로고침)을 막는 메서드
+			console.log(type);
+			const data={
+				type:$("#type").val(),
+				title:$("#title").val(),
+				text:$("#text").val()		
+			};
+			$.ajax({
+				url:"addaction.jsp",
+				type:"post",
+				data:data,
+				dataType:"html",
+				success:function(res){
+					
+					alert("등록완료!");
+				if(window.opener){
+					
+					 window.opener.location.reload();
+				}
+					window.close();
+					//opner.location.reload();
+				},
+				error:function(){
+					
+					alert("등록실패!");
+				}
+				
+			})
+		});
+	})
+	
+}
+</script>
 
 </head>
 <body>
-	
-	<!-- 등록 모달창 -->
-	<div class="modal fade" id="boardModal" tabindex="-1"
-		aria-labelledby="boardModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-lg modal-dialog-centered">
-			<div class="modal-content">
-				<form id="boardForm">
-					<div class="modal-header" style="background: #e3f2fd;">
-						<h5 class="modal-title" id="boardModalLabel">게시글 등록</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal"
-							aria-label="닫기"></button>
-					</div>
-					<div class="modal-body">
-						<div class="mb-3">
-							<label for="type" class="form-label fw-bold">게시판 종류</label> <select
-								class="form-select" id="type" name="type" required>
-								<option value="">선택하세요</option>
-								<option value="faq">FAQ</option>
-								<option value="qna">QnA</option>
-								<option value="notice">공지사항</option>
-							</select>
-						</div>
-						<div class="mb-3">
-							<label for="title" class="form-label fw-bold">제목</label> <input
-								type="text" class="form-control" id="title" name="title"
-								maxlength="200" required placeholder="제목을 입력하세요">
-						</div>
-						<div class="mb-3">
-							<label for="text" class="form-label fw-bold">내용</label>
-							<textarea class="form-control" id="text" name="text" rows="7"
-								required placeholder="내용을 입력하세요"></textarea>
-						</div>
-					</div>
-					<div class="modal-footer" style="background: #e3f2fd;">
-						<button type="button" class="btn btn-secondary"
-							data-bs-dismiss="modal">취소</button>
-						<button type="submit" class="btn btn-primary">등록</button>
-					</div>
-				</form>
+	<div class="container mt-4">
+		<h4 class="mb-4">게시글 등록</h4>
+		<form id="addform" action="./addaction.jsp" method="post">
+			<div class="mb-3">
+				<label for="type" class="form-label fw-bold">게시판 종류</label>
+				<select
+					class="form-select" id="type" name="type" required>
+					<option value="">선택하세요</option>
+					<option value="faq">FAQ</option>
+					<option value="qna">QnA</option>
+					<option value="notice">공지사항</option>
+				</select>
 			</div>
-		</div>
+			<div class="mb-3">
+				<label for="title" class="form-label fw-bold">제목</label> <input
+					type="text" class="form-control" id="title" name="title"
+					maxlength="200" required placeholder="제목을 입력하세요">
+			</div>
+			<div class="mb-3">
+				<label for="text" class="form-label fw-bold">내용</label>
+				<textarea class="form-control" id="text" name="text" rows="7"
+					required placeholder="내용을 입력하세요"></textarea>
+			</div>
+			<div class="text-end">
+				<button type="button" class="btn btn-secondary"
+					onclick="window.close();">취소</button>
+				<button type="submit" class="btn btn-primary">등록</button>
+			</div>
+		</form>
 	</div>
-	<!-- Bootstrap JS (이미 포함되어 있다면 중복 추가 X) -->
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-	<!-- 예시: 폼 제출 시 ajax로 데이터 전송 (실제 구현에 맞게 수정) -->
-	<script>
-		$("#boardForm").on("submit", function(e) {
-			e.preventDefault();
-			// 데이터 수집
-			const data = {
-				type : $("#type").val(),
-				title : $("#title").val(),
-				text : $("#text").val()
-			};
-			// ajax로 서버에 전송 (예시)
-			$.ajax({
-				url : "insertBoardList.do",
-				type : "POST",
-				contentType : "application/json",
-				data : JSON.stringify(data),
-				success : function(res) {
-					alert("등록 완료!");
-					location.reload();
-				},
-				error : function() {
-					alert("등록 실패!");
-				}
-			});
-		});
-	</script>
+
 </body>
 </html>
