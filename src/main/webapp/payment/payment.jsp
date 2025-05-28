@@ -270,13 +270,15 @@ header {
 	});
 	 function KGpay(){
 		 var IMP = window.IMP;
-		    IMP.init('결제테스트'); // 가맹점 식별코드 입력
+		 IMP.init('imp23623506');
+
+		    // 가맹점 식별코드 입력
 
 		 //iamport 대신 자신의 "가맹점 식별코드"를 사용
 		  IMP.request_pay({
-		    pg: "inicis",
+		    pg: "kicc",
 		    pay_method: "card",
-		    merchant_uid : 'merchant_'+new Date().getTime(),
+		    merchant_uid : "abc-2",
 		    name : '결제테스트',
 		    amount : 100,
 		    buyer_email : 'iamport@siot.do',
@@ -411,24 +413,49 @@ header {
             </form>
         </div>
         <div class="ad-container">
-            <div class="ad-space" style="height: 500px;">광고</div>
+            <div class="ad-space" style="height: 700px;">광고</div>
         </div>
     </section>
 
     <!-- 결제 섹션 -->
-    <section class="payment-section">
-        <h2>결제</h2>
-        <div class="payment-container">
-            <div class="payment-methods">
-                <button class="payment-method-btn">카드결제</button>
-                <button class="payment-method-btn">네이버페이</button>
-              	<button class="payment-method-btn">카카오페이</button>
+   <!-- 결제 섹션 -->
+<section class="payment-section" style="max-width: 1200px; margin: 0 auto;">
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; align-items: flex-start;">
+    
+        <!-- 왼쪽 박스 -->
+        <div class="payment-box" style="flex: 1 1 550px; height: 300px; display: flex; flex-direction: column;">
+            <h2>결제 수단</h2>
+            <div class="payment-container" style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
+                <div class="payment-methods">
+                    <button class="payment-method-btn">카드결제</button>
+                    <button class="payment-method-btn">네이버페이</button>
+                    <button class="payment-method-btn">카카오페이</button>
+                    <button class="payment-method-btn">무통장입금</button>
+                    <button class="payment-method-btn">toss</button>
+                </div>
+                <div class="payment-details">
+                    <!-- 결제 상세 정보가 여기에 들어갑니다 -->
+                </div>
             </div>
-            <div class="payment-details">
-                <!-- 결제 상세 정보가 여기에 들어갑니다 -->
-            </div>
-            <button type="button" class="payment-submit-btn" onclick="KGpay()">결제요청</button>
         </div>
-    </section>
+
+        <!-- 오른쪽 박스 -->
+        <div class="payment-box" style="flex: 1 1 550px; height: 300px; display: flex; flex-direction: column;">
+            <h2>결제 상세</h2>
+            <div class="payment-container" style=" height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <div class="payment-details">
+                        <!-- 결제 상세 정보가 여기에 들어갑니다 -->
+                    </div>
+                </div>
+                <span style="text-align: right;"><b>총 결제금액 </b></span>
+                <button type="button" class="payment-submit-btn" onclick="KGpay()">결제요청</button>
+            </div>
+        </div>
+        
+    </div>
+</section>
+
+    
 </body>
 </html> 
