@@ -14,15 +14,11 @@
 
 
 # 2. 팀소개
-팀장  박용희 @dydwns4280
-
-팀원  손현정 @yjyj0233
-
-팀원  현승윤 @hyeonsy99
-
-팀원  이창연 @changyeonyes
-
-팀원  원주희 @juxxi054
++ **팀장**  박용희 @dydwns4280
++ **팀원**  손현정 @yjyj0233
++ **팀원**  현승윤 @hyeonsy99
++ **팀원**  이창연 @changyeonyes
++ **팀원**  원주희 @juxxi054
 
 
 # 3. 기술 스택
