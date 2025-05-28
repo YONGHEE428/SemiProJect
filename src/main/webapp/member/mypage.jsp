@@ -36,50 +36,41 @@
 <%
   MemberDao dao=new MemberDao();
   List<MemberDto> list=dao.getAllMembers();
-  SimpleDateFormat sdf=new SimpleDateFormat("yyyy년 MM월 dd일 HH시");
+  SimpleDateFormat sdf=new SimpleDateFormat("yyyy년 MM월 dd일");
   
   String loginok=(String)session.getAttribute("loginok");
   String myid=(String)session.getAttribute("myid");
 %>
+<style>
+	.mypage-main{
+		padding: 0 400px;
+		width: 100%;
+	}
+	.mypage-logo{
+		width: 130px;
+		height:130px;
+		border: 1px solid gray;
+		border-radius: 100px;
+		background-color: gray;
+		font-size:4em;
+		color: white;
+		line-height: 130px;
+		text-align: center;
+		
+	}
+</style>
 <body>
-  <div style="margin: 200px 100px;  width: 700px;">
-    <table class="table table-bordered">
+  <div class="mypage-main">
         <%
           for(MemberDto dto:list)
           {
           
         	  if(loginok!=null && myid.equals(dto.getId())){%>
-
-        	  <tr>
-        	    <td rowspan="4">
-        	      <img alt="" src="image2/title.png" 
-        	      style="width: 100px; height: 100px; border-radius: 100px;">
-        	    </td>
-        	    <td>회원명: <%=dto.getName() %></td>
-        	    <td rowspan="4" style="text-align: center">
-        	      <button type="button" class="btn btn-outline-warning btn-sm">수정</button><br><br>
-        	      <button type="button" class="btn btn-outline-danger btn-sm" onclick="delfunc('<%=dto.getNum()%>')">탈퇴</button>
-        	    </td>
-        	  </tr>
-        	  <tr>
-        	    <td>
-        	      아이디: <%=dto.getId() %>
-        	    </td>
-        	  </tr>
-        	  <tr>
-        	    <td>
-        	       이메일: <%=dto.getEmail() %>
-        	    </td>
-        	  </tr>
-        	  <tr>
-        	    <td>
-        	       가입일: <%=sdf.format(dto.getGaipday()) %>
-        	    </td>
-        	  </tr>
+				<div class="mypage-logo">SSY</div>
+        	  
          <% }
           }
         %>
-    </table>
   </div>
   
   

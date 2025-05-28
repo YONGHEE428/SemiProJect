@@ -95,8 +95,8 @@ function loadMoreItems() {
 	
 	}
 	.main-items >  ul > li{
-		width: 20%;
-		height: 300px;
+		width: 25%;
+		height: 400px;
 		margin-bottom: 50px;
 		padding: 5px 5px;
 	}
@@ -201,7 +201,7 @@ function loadMoreItems() {
 	  		<div class="item-category">TOP</div>
 		  	<div class="item-name">스트릿 긴팔크롭티</div>
 		  	<div class="item-price">111,000원</div>
-		  	<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 135</div>
+		  	<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 135 &nbsp;<i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; 72</div>
 		</div>
   	</li>
  	<li>
@@ -210,7 +210,7 @@ function loadMoreItems() {
 	  		<div class="item-category">BOTTOM</div>
 		  	<div class="item-name">스트링 지퍼 조거팬츠</div>
 		  	<div class="item-price">127,000원</div>
-		  	<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 105</div>
+		  	<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 105 &nbsp;<i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; 72</div>
 		</div>
   	</li>
  	<li>
@@ -219,7 +219,7 @@ function loadMoreItems() {
 	  		<div class="item-category">HAT</div>
 		  	<div class="item-name">KOUNTRY 볼캡</div>
 		  	<div class="item-price">72,000원</div>
-		  	<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 98</div>
+		  	<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 98 &nbsp;<i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; 72</div>
 		</div>
   	</li>
  	<li>
@@ -228,7 +228,7 @@ function loadMoreItems() {
 	  		<div class="item-category">OUTER</div>
 		  	<div class="item-name">STARGIRL 클래식 자켓</div>
 		  	<div class="item-price">232,500원</div>
-		  	<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 91</div>
+		  	<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 91 &nbsp;<i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; 72</div>
 		</div>
   	</li>
  	<li>
@@ -237,7 +237,7 @@ function loadMoreItems() {
 	  		<div class="item-category">TOP</div>
 		  	<div class="item-name">KAPITAL cat 티셔츠</div>
 		  	<div class="item-price">147,000원</div>
-		  	<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 74</div>
+		  	<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 74 &nbsp;<i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; 72</div>
 		</div>
   	</li>
  	<li>
@@ -246,7 +246,7 @@ function loadMoreItems() {
 	  		<div class="item-category">SHOES</div>
 		  	<div class="item-name">TOGA x VANS 콜라보 슈즈</div>
 		  	<div class="item-price">211,000원</div>
-		  	<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 64</div>
+		  	<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 64 &nbsp;<i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; 72</div>
 		</div>
   	</li>
  	</ul>
@@ -259,7 +259,7 @@ function loadMoreItems() {
 		  		<div class="item-category">ACCESSORY</div>
 		  		<div class="item-name">KEPANI 스웨터장갑</div>
 		  		<div class="item-price">31,000원</div>
-		  		<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 25</div>
+		  		<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 25 &nbsp;<i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; 72</div>
 		  	</div>
 	  	</li>
 	  	<li>
@@ -268,7 +268,7 @@ function loadMoreItems() {
 		  		<div class="item-category">BAG</div>
 		  		<div class="item-name">로쿠욘 크로스 소형 배낭</div>
 		  		<div class="item-price">121,000원</div>
-		  		<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 74</div>
+		  		<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 74 &nbsp;<i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; 72</div>
 		  	</div>
 	  	</li>
 	  	<li>
@@ -277,7 +277,7 @@ function loadMoreItems() {
 		  		<div class="item-category">BOTTOM</div>
 		  		<div class="item-name">KAPITAL 데님팬츠</div>
 		  		<div class="item-price">440,000원</div>
-		  		<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 31</div>
+		  		<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 31 &nbsp;<i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; 72</div>
 		  	</div>
 	  	</li>
 	  	<li>
@@ -286,7 +286,7 @@ function loadMoreItems() {
 		  		<div class="item-category">ACCESSORY</div>
 		  		<div class="item-name">TOGA 팔찌</div>
 		  		<div class="item-price">262,000원</div>
-		  		<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 44</div>
+		  		<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 44 &nbsp;<i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; 72</div>
 		  	</div>
 	  	</li>
 	  	<li>
@@ -295,7 +295,7 @@ function loadMoreItems() {
 		  		<div class="item-category">TOP</div>
 		  		<div class="item-name">GU X UNDERCOVER 콜라보레이션 반팔티</div>
 		  		<div class="item-price">352,500원</div>
-		  		<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 98</div>
+		  		<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 98 &nbsp;<i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; 72</div>
 		  	</div>
 	  	</li>
 	  	<li>
@@ -336,6 +336,10 @@ function loadMoreItems() {
 	  	</li>
 	  	<li>
 		  	<div class="item"><img alt="" src="<%=root%>/SemiImg/category/shoes/c71.jpg" ></div>
+		  	<div class="item-coment"></div>
+	  	</li>
+	  	<li>
+		  	<div class="item"><img alt="" src="<%=root%>/SemiImg/category/outer/a61.jpg" ></div>
 		  	<div class="item-coment"></div>
 	  	</li>
 	  </ul>
