@@ -82,7 +82,7 @@
 				<ul id="main-menu">
 					<li class="current-menu-item"><a href="<%=root%>/">Home</a></li>
 					<li><a href="index.jsp?main=s_boardlist/boardlist.jsp">고객센터</a></li>
-					<li><a href="#">Shop</a></li>
+					<li><a href="index.jsp?main=category.jsp">Shop</a></li>
 					<%
 					String loginok = (String)session.getAttribute("loginok");
 					String name = (String)session.getAttribute("name");
@@ -92,7 +92,7 @@
 					<%}else{ %>
 						<%if(role !=null && role.equals("user")){%>
 							<li><a href="index.jsp?main=member/mypage.jsp">마이페이지</a></li>
-							<li><a href="#">장바구니</a></li>
+							<li><a href="index.jsp?main=hyeon_cart/cartform.jsp">장바구니</a></li>
 							
 					<%}if(role !=null && role.equals("admin")){%>
 							<li><a href="#">매장관리</a>

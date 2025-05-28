@@ -106,6 +106,6 @@
     <div class="info">
       <jsp:include page="layout/bottominfo.jsp"/>
     </div>
-
+</div>
 </body>
 </html>
