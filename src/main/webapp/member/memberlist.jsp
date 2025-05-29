@@ -48,7 +48,7 @@
         	  <td><%=dto.getName() %></td>
         	  <td><%=dto.getId() %></td>
         	  <td><%=dto.getEmail() %></td>
-        	  <td><%=sdf.format(dto.getGaipday()) %></td>
+        	  <td><%=sdf.format(dto.getBirth()) %></td>
         	  <td><button type="button" class="btn btn-danger btn-sm"
         	  onclick="delfunc('<%=dto.getNum()%>')">강퇴</button></td>
         	</tr>

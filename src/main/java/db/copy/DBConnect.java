@@ -9,7 +9,7 @@ import java.sql.Statement;
 
 public class DBConnect {
 
-	static final String URL = "jdbc:mysql://localhost:3306/coffee";
+	static final String URL = "jdbc:mysql://shop.c9a8cage4o0m.ap-northeast-2.rds.amazonaws.com:3306/shop?serverTimezone=Asia/Seoul";
 	static final String MySqlDriver = "com.mysql.cj.jdbc.Driver";
 	
 	//오라클 계정 연결 메서드
@@ -19,7 +19,7 @@ public class DBConnect {
 		
 		try {
 			Class.forName(MySqlDriver);
-			cn = DriverManager.getConnection(URL, "root", "a1234");
+			cn = DriverManager.getConnection(URL, "admindyd", "dydgml428!");
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -68,5 +68,5 @@ public class DBConnect {
 			e.printStackTrace();
 		}
 	}
-	
+
 }

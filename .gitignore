@@ -1,9 +1,31 @@
-/build/
-
-/Servers/
-
-.project
-
+# Eclipse specific
 .classpath
 
+.settings/
 .metadata/
+.project
+Servers/
+bin/
+dev/
+
+# Build outputs
+build/
+target/
+
+# Deployment files
+*.war
+*.ear
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+*.swp
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# IntelliJ IDEA (optional)
+.idea/
+*.iml
