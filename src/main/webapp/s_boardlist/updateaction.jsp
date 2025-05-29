@@ -14,4 +14,4 @@
 
     boardlistDao dao = new boardlistDao();
     dao.updateBoardList(dto);
-%>s
+%>
