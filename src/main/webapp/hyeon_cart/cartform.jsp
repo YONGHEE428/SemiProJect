@@ -47,32 +47,9 @@
             </div>
         </div>
         <div class="d-flex align-items-center ms-4">
-            <button class="btn btn-outline-secondary btn-sm">-</button>
+            <button class="btn btn-outline-secondary btn-sm" id="">-</button>
             <span class="mx-2">1</span>
-            <button class="btn btn-outline-secondary btn-sm">+</button>
-        </div>
-        <div class="ms-4 text-end">
-            <div style="text-decoration:line-through; color:#aaa;">15,000원</div>
-            <div class="fw-bold" style="font-size:18px;">8,000원</div>
-        </div>
-        <button class="btn btn-link text-danger ms-3">×</button>
-    </div>
-    <div class="cart-item">
-        <input type="checkbox" class="form-check-input me-3">
-        <img src="https://via.placeholder.com/100x120.png?text=상품이미지" class="cart-img me-4">
-        <div class="flex-grow-1">
-            <div class="fw-bold">[오늘출발] 맨투맨 무지/기본</div>
-            <div class="text-secondary" style="font-size:14px;">블랙 / L</div>
-            <div class="text-danger" style="font-size:13px;">특가! 12시간 00분 남음</div>
-            <div class="mt-2">
-                <span class="badge bg-light text-dark">옵션: 블랙 / L</span>
-                <button class="btn btn-outline-secondary btn-sm ms-2">옵션변경</button>
-            </div>
-        </div>
-        <div class="d-flex align-items-center ms-4">
-            <button class="btn btn-outline-secondary btn-sm">-</button>
-            <span class="mx-2">1</span>
-            <button class="btn btn-outline-secondary btn-sm">+</button>
+            <button class="btn btn-outline-secondary btn-sm" id="">+</button>
         </div>
         <div class="ms-4 text-end">
             <div style="text-decoration:line-through; color:#aaa;">15,000원</div>
