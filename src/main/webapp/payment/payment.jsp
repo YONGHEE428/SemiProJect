@@ -329,10 +329,9 @@ header {
                 <nav class="user-menu">
                     <a href="#">매장찾기</a>
                     <a href="#">고객센터</a>
-                    <span class="user-info">이름(아이디)님</span>
                     <a href="#">장바구니</a>
                     <a href="#">마이페이지</a>
-                    <a href="#">로그아웃</a>
+                    <a href="#">로그인</a>
                 </nav>
             </div>
         </div>

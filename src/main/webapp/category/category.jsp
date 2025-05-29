@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -55,10 +56,11 @@
         /* Recently viewed */
         .recently-viewed {
             position: fixed;
-            right: 20px;
+            right: 5px;
             top: 50%;
             transform: translateY(-50%);
             z-index: 1000;
+            
         }
         
         .main-category ul {
@@ -121,7 +123,7 @@
 		}
 		.dropdown-menu li {
     		list-style: none;
-    text-align: center;
+    		text-align: center;
 		}
 /* 호버 시 드롭다운 메뉴 보이기 */
 		.dropdown:hover > .dropdown-menu {
@@ -142,31 +144,90 @@
 			background-color: lightgray;
 		}
     </style>
-    <script type="text/javascript">
-    	$(function(){
-    		/* 하트 클릭시 빨갛게 바뀜 */
-    		$(".heart").click(function(){
-    	        let isFilled = $(this).hasClass("bi-suit-heart-fill");
-    	        let count = parseInt($(this).text());
+  <script type="text/javascript">
+  $(function () {
+	    // 하트 클릭 (동적 요소 대응)
+	    $(document).on("click", ".heart", function () {
+	        let isFilled = $(this).hasClass("bi-suit-heart-fill");
+	        let count = parseInt($(this).text());
 
-    	        if (isFilled) {
-    	            // 찜 해제
-    	            $(this)
-    	                .removeClass("bi-suit-heart-fill")
-    	                .addClass("bi-suit-heart")
-    	                .css("color", "black")
-    	                .text(count - 1);
-    	        } else {
-    	            // 찜 추가
-    	            $(this).removeClass("bi-suit-heart")
-    	                .addClass("bi-suit-heart-fill")
-    	                .css("color", "red")
-    	                .text(count + 1);
-    	        }
-    	    });
-    		
-    	});
-    </script>
+	        if (isFilled) {
+	            $(this)
+	                .removeClass("bi-suit-heart-fill")
+	                .addClass("bi-suit-heart")
+	                .css("color", "black")
+	                .text(count - 1);
+	        } else {
+	            $(this)
+	                .removeClass("bi-suit-heart")
+	                .addClass("bi-suit-heart-fill")
+	                .css("color", "red")
+	                .text(count + 1);
+	        }
+	    });
+
+	    // 무한스크롤
+	    let page = 1;
+	    let isLoading = false;
+	    const target = document.getElementById("observerTarget");
+	    const observer = new IntersectionObserver(entries => {
+	        entries.forEach(entry => {
+	            if (entry.isIntersecting && !isLoading) {
+	                isLoading = true;
+	                loadMoreItems();
+	            }
+	        });
+	    });
+	    observer.observe(target);
+
+	    function loadMoreItems() {
+	        // 로딩 메시지 보이기
+	        document.getElementById("loadingMessage").style.display = "block";
+
+	        $.ajax({
+	            type: "GET",
+	            dataType: "json",
+	            url: "/SemiProject/data/items-page" + page + ".json",
+	            success: function(data) {
+	                setTimeout(() => {
+	                	//새 상품 추가
+	                	  const container = document.getElementById("product-list");
+	                	  if (!container) {
+	                	    console.warn("#product-list 요소가 없습니다.");
+	                	    return;
+	                	  }
+	                    data.forEach(item => {
+	                        const el = document.createElement("div");
+	                        el.classList.add("col-3");
+	                        el.innerHTML =
+	                        	 "<div class=\"product-card\" data-product-id=\"" + item.name + "\">" +
+	                             "<div class=\"item\">" +
+	                               "<img alt=\"\" src=\"/SemiProject" + item.img + "\" class=\"product-image\" style=\"width: 100%; height: 100%;\">" +
+	                             "</div>" +
+	                             "<div class=\"item-coment\">" +
+	                               "<div class=\"item-category\"><b>" + item.category + "</b></div>" +
+	                               "<div class=\"item-name\">" + item.name + "</div>" +
+	                               "<div class=\"item-price\"><b>" + item.price + "</b></div>" +
+	                               "<div class=\"item-heart\"><i class=\"bi bi-suit-heart heart\" style=\"cursor: pointer; color: black;\">" + item.heart + "</i></div>" +
+	                             "</div>" +
+	                           "</div>";
+	                        container.appendChild(el);
+	                    });
+	                    page++;
+	                    isLoading = false;
+	                    document.getElementById("loadingMessage").style.display = "none";
+	                }, 500);
+	            },
+	            error: function(xhr, status, error) {
+	                console.error("불러오기 실패", error);
+	                isLoading = false;
+	                document.getElementById("loadingMessage").style.display = "none";
+	            }
+	        });
+	    }
+	});
+  
+</script>
     
 </head>
 <body>
@@ -177,7 +238,7 @@
 <div class="main-category" style="width: 100%; background-color: white; left: 0;">
     <ul>
   <li class="nav-item dropdown">
-  <a class="category-link" href="#" role="button" >TOP</a>
+  <a class="category-link" href="index.jsp?main=category/top.jsp" role="button" >TOP</a>
   <!-- TOP에서 드랍다운 -->
   		<ul class="dropdown-menu">
     		<li><a class="dropdown-item" href="#">티셔츠</a></li>
@@ -188,32 +249,32 @@
 
         <li class="divider"></li>
         <li class="dropdown">
-            <a href="#" class="category-link">BOTTOM</a>
+            <a href="index.jsp?main=category/bottom.jsp" class="category-link">BOTTOM</a>
             <ul class="dropdown-menu">
                 <li><a href="#">팬츠</a></li>
                 <li><a href="#">치마</a></li>
+                
             </ul>
         </li>
         <li class="divider"></li>
         <li class="dropdown">
-            <a href="#" class="category-link">ACCESORIES</a>
+            <a href="index.jsp?main=category/accesories.jsp" class="category-link">ACCESORIES</a>
            
         </li>
        
-        
         <li class="divider"></li>
         <li class="dropdown">
-            <a href="#" class="category-link">SHOES</a>
+            <a href="index.jsp?main=category/shoes.jsp" class="category-link">SHOES</a>
         </li>
     </ul>
 </div>
     <!-- Product Grid -->
     <div class="container my-5">
-        <div class="row">
+        <div id="product-list" class="row">
             <!-- Product Card Template - Repeated 16 times (4x4 grid) -->
             <% for(int i = 0; i < 16; i++) { %>
             <div class="col-3">
-                <div class="product-card" >
+                <div class="product-card"  data-product-id="<%=i%>">
                     <img src="SemiImg/footerLogo.png" alt="Product Image" class="product-image"
                     style="width: 100%; height: 100%;">
                     <div class="product-info">
@@ -232,9 +293,13 @@
 	
     <!-- Recently Viewed Button -->
     <div class="recently-viewed">
-        <button class="btn btn-outline-dark">최근 본 상품</button>
+        <button class="btn btn-outline-dark btn-sm" style="width: 100px;">최근 본 상품</button><br><br>
+        <button class="btn btn-outline-danger btn-sm">위시리스트</button>
     </div>
-
+	
+    <!-- 무한스크롤 -->
+    <div id="loadingMessage" style="display:none; text-align:center; padding:10px; font-weight:bold;">로딩중...</div>
+ 	<div id="observerTarget"></div>
     
 </body>
 </html>
