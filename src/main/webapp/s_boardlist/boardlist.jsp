@@ -191,6 +191,7 @@ body {
 						} else {
 							s += '<div class="accordion" id="'+type+'Accordion">';
 							$.each(res,function(i, item) {
+								var texts = item.text.replace(/\r?\n/g, "<br>");
 												s += '<div class="accordion-item">';
 												s += '<h2 class="accordion-header" id="'+type+'Heading'+i+'">';
 												s += '<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#'+type+'Collapse'+i+'">';
@@ -198,8 +199,7 @@ body {
 														+ '] ' + item.title
 														+ '</button></h2>';
 												s += '<div id="'+type+'Collapse'+i+'" class="accordion-collapse collapse" data-bs-parent="#'+type+'Accordion">';
-												s += '<div class="accordion-body">'
-														+ item.text
+												s += '<div class="accordion-body">' + texts;
 												s += '<div class="mt-3 text-end">';
 												if(role === 'admin') {
 												    s += '<button class="btn btn-primary btn-sm me-2 edit-btn" value="'+item.idx+'" id="btnupdate">수정</button>';
@@ -295,7 +295,7 @@ body {
 				</li>
 				<li class="nav-item" role="presentation">
 					<button class="nav-link" id="qna-tab" data-bs-toggle="tab"
-						data-bs-target="#qna" type="button" role="tab">QnA</button>
+						data-bs-target="#qna" type="button" role="tab">자주묻는 QnA</button>
 				</li>
 				<li class="nav-item" role="presentation">
 					<button class="nav-link" id="notice-tab" data-bs-toggle="tab"
