@@ -1,10 +1,10 @@
 # Eclipse specific
 .classpath
-.project
 .settings/
 .metadata/
 Servers/
-
+/bin/
+/dev/
 # Build outputs
 build/
 target/
