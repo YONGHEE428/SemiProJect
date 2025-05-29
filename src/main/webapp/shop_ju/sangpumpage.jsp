@@ -7,8 +7,9 @@
 <title>Insert title here</title>
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
-  <style>
+ <style>
   body {
     font-family: Arial, sans-serif;
     margin: 20px;
@@ -20,18 +21,11 @@
     align-items: flex-start;
   }
 
-  .left-panel {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-  }
-
-  .right-panel {
+  .left-panel, .right-panel {
     flex: 1;
   }
 
   .img-container {
-    width: 100%;
     max-width: 600px;
     border: 1px solid #ddd;
     overflow: hidden;
@@ -40,7 +34,6 @@
 
   .zoom-img {
     width: 100%;
-    object-fit: cover;
     transition: transform 0.3s ease;
   }
 
@@ -53,17 +46,13 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background-color: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.7);
     border: none;
     font-size: 30px;
     width: 40px;
     height: 60px;
     cursor: pointer;
     z-index: 10;
-  }
-
-  .slide-btn:hover {
-    background-color: rgba(255, 255, 255, 0.9);
   }
 
   #prevBtn { left: 0; border-radius: 0 5px 5px 0; }
@@ -81,7 +70,7 @@
   .product-title {
     font-weight: bold;
     font-size: 22px;
-    margin-top: 10px;
+    margin: 10px 0;
   }
 
   .quantity-selector {
@@ -99,13 +88,6 @@
     margin-top: 15px;
   }
 
-  .info-button {
-    margin-top: 20px;
-    cursor: pointer;
-    font-weight: bold;
-    color: blue;
-  }
-
   .price-info {
     margin-top: 10px;
     border: 1px solid #ddd;
@@ -113,102 +95,86 @@
     background: #f9f9f9;
   }
 
-  .refund-info {
+  .slide-panel {
     position: fixed;
     top: 0;
-    right: -400px;
-    width: 320px;
+    right: -100%;
+    width: 100%;
+    max-width: 400px;
     height: 100%;
     background: white;
-    border-left: 1px solid #ccc;
-    box-shadow: -2px 0 5px rgba(0,0,0,0.2);
-    padding: 20px;
-    transition: right 0.3s ease;
-    z-index: 1001;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
+    transition: right 0.3s ease-in-out;
+    z-index: 1000;
     overflow-y: auto;
   }
 
-  .refund-info.open {
+  .slide-panel.open {
     right: 0;
   }
 
-  .close-btn {
-    position: absolute;
-    top: 10px;
-    right: 16px;
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .panel-header button {
+    background: none;
+    border: none;
     font-size: 20px;
     cursor: pointer;
   }
 
- 
-    
-  /* 메뉴 리스트 */
-    .menu-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      border-top: 1px solid #e0e0e0;
-    }
+  .panel-content {
+    padding: 16px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
 
-    .menu-list li {
-      padding: 16px;
-      border-bottom: 1px solid #e0e0e0;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+  .panel-content strong {
+    display: block;
+    margin: 20px 0 8px;
+  }
 
-    .menu-list li:hover {
-      background-color: #f9f9f9;
-    }
+  .menu-list {
+    list-style: none;
+    padding: 0;
+    border-top: 1px solid #e0e0e0;
+  }
 
-    /* 슬라이드 패널 공통 스타일 */
-    .slide-panel {
-      position: fixed;
-      top: 0;
-      right: -100%;
-      width: 100%;
-      max-width: 400px;
-      height: 100%;
-      background-color: white;
-      box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
-      transition: right 0.3s ease-in-out;
-      z-index: 1000;
-      overflow-y: auto;
-    }
+  .menu-list li {
+    padding: 16px;
+    border-bottom: 1px solid #e0e0e0;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+  }
 
-    .slide-panel.open {
-      right: 0;
-    }
+  .menu-list li:hover {
+    background-color: #f9f9f9;
+  }
 
-    .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px;
-      font-weight: bold;
-      border-bottom: 1px solid #ddd;
-    }
+  .tab_btn {
+    padding: 10px 20px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #000;
+  }
 
-    .panel-header button {
-      background: none;
-      border: none;
-      font-size: 20px;
-      cursor: pointer;
-    }
+  .tab_btn.is_active {
+    border-bottom: 2px solid black;
+  }
 
-    .panel-content {
-      padding: 16px;
-      font-size: 14px;
-      line-height: 1.6;
-    }
+  .tab-content {
+    padding: 20px;
+    border-top: 1px solid #ccc;
+    display: none;
+  }
 
-    .panel-content strong {
-      display: block;
-      margin-top: 20px;
-      margin-bottom: 8px;
-    }  
+  #tab-desc { display: block; }
 </style>
 </head>
 
@@ -226,19 +192,23 @@
 
   <!-- 오른쪽: 상품 정보 -->
   <div class="right-panel">
-    <div class="tags">무료배송</div>
-    <div class="tags">무료포장</div>
+    <div class="tags">무료배송</div> <div class="tags">무료포장</div>
 
-    <div class="product-title">Eoa ribbon blouse</div>
-    <button class="btn btn-info mt-2">↓ 쿠폰받기</button>
-
+<div style="display: flex; justify-content: flex-start; align-items: center; gap: 30px;">
+  <div class="product-title" style=font-weight: bold;">Eoa ribbon blouse</div>
+  <div class="item-icons"  >
+    <i class="bi bi-heart"></i>&nbsp;98&nbsp;&nbsp;
+    <i class="bi bi-eye"></i>&nbsp;72
+  </div>
+</div>
+ 
     <div class="mt-3">
       <span class="stars">⭐</span>
-      <span class="review-link" onclick="goToReviews()">리뷰 3건</span>
+      <span class="review-link" onclick="goToReviews()">3개의 리뷰</span>
     </div>
 
     <div class="price">89,000원</div>
-
+   <button class="btn btn-info mt-2" onclick="location.href='../login/loginform.jsp'">↓ 쿠폰받기</button>
     <div class="price-info">
       <div><strong>첫 구매가:</strong> 20% <span>71,200원</span></div>
       <div>나의 구매 가능 가격 ▼</div>
@@ -278,7 +248,7 @@
     </div>
 
     <div class="action-buttons">
-      <button class="btn btn-outline-primary" onclick="submitOptions('cart')">장바구니</button>
+      <button class="btn btn-outline-primary" onclick="location.href='../hyeon_cart/cartform.jsp'">장바구니</button>
       <button class="btn btn-primary" onclick="submitOptions('buy')">바로구매</button>
     </div>
 
@@ -329,7 +299,37 @@
      - SSY 자체발송은 오후 2시까지 결제확인된 주문은 당일 출고되고  10만원 이상 주문은 무료배송, 10만원 미만은 3,000원의 배송비가 추가됩니다. <br>
     </div>
   </div>
+  
+<div class="sticky" style="top: 99px;">
+  <div class="tab_style3 scroll_to">
+    <a href="javascript:void(0);" class="tab_btn is_active" onclick="showTab('desc')">상품 설명</a>
+    <a href="javascript:void(0);" class="tab_btn" onclick="showTab('review')">리뷰 [<span>59</span>]</a>
+    <a href="javascript:void(0);" class="tab_btn" onclick="showTab('qna')">문의 [6]</a>
+  </div>
+</div>
 
+<!-- 콘텐츠 영역 -->
+<div id="tabContents" style="margin-top: 30px;">
+  <!-- 상품 설명 -->
+  <div id="tab-desc" class="tab-content">
+    <h2>상품 설명</h2>
+    <p>여기에 상품 설명 내용이 들어갑니다.</p>
+  </div>
+
+  <!-- 리뷰 -->
+  <div id="tab-review" class="tab-content" style="display: none;">
+    <h2>리뷰 (59)</h2>
+    <strong style="font-size: 40px;">★ 4.9</strong>
+    <p><strong>98%</strong>의 구매자가 이 상품을 좋아합니다.</p>
+    <!-- 리뷰 막대 그래프 등 추가 가능 -->
+  </div>
+
+  <!-- 문의 -->
+  <div id="tab-qna" class="tab-content" style="display: none;">
+    <h2>문의 (6)</h2>
+    <p>문의 목록이 여기에 표시됩니다.</p>
+  </div>
+</div>
   <script>
     function openPanel(id) {
       document.getElementById(id).classList.add('open');
@@ -347,44 +347,43 @@
     "<%= request.getContextPath() %>/image/top/f83.jpg",
     "<%= request.getContextPath() %>/image/top/f84.jpg"
   ];
+  let currentImageIndex = 0, quantity = 1, maxQty = 5, unitPrice = 89000;
 
-  let currentImageIndex = 0;
-  let quantity = 1;
-  const unitPrice = 89000;
-
-  function changeImage(direction) {
-    currentImageIndex = (currentImageIndex + direction + images.length) % images.length;
+  function changeImage(dir) {
+    currentImageIndex = (currentImageIndex + dir + images.length) % images.length;
     document.getElementById("productImage").src = images[currentImageIndex];
   }
 
   function changeQty(amount) {
-    quantity = Math.max(1, quantity + amount);
+    quantity = Math.min(maxQty, Math.max(1, quantity + amount));
     document.getElementById("qty").textContent = quantity;
     document.getElementById("minus").disabled = (quantity === 1);
     document.getElementById("Price").textContent = (unitPrice * quantity).toLocaleString() + "원";
   }
 
-  function submitOptions(action) {
+  function submitOptions() {
     const size = document.getElementById('size').value;
     const color = document.getElementById('color').value;
     if (!size || !color) {
-      document.getElementById("optionModal").style.display = "block";
+      alert("옵션을 모두 선택해주세요.");
       return;
     }
     alert(`선택한 옵션:\n사이즈: ${size}\n색상: ${color}\n수량: ${quantity}`);
   }
 
-  function closeModal() {
-    document.getElementById("optionModal").style.display = "none";
+  function openPanel(id) {
+    document.getElementById(id).classList.add('open');
   }
 
-  function goToReviews() {
-    window.location.href = "/reviews.html";
+  function closePanel(id) {
+    document.getElementById(id).classList.remove('open');
   }
 
-  function toggleInfoPanel() {
-    const panel = document.getElementById("refundPanel");
-    panel.classList.toggle("open");
+  function showTab(tab) {
+    document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+    document.getElementById('tab-' + tab).style.display = 'block';
+    document.querySelectorAll('.tab_btn').forEach(btn => btn.classList.remove('is_active'));
+    event.target.classList.add('is_active');
   }
 </script>
 </body>
