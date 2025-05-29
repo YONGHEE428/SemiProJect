@@ -10,6 +10,28 @@
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
   <script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
     <style>
+        /* Header styles */
+        .header {
+            padding: 20px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .search-bar {
+            width: 440px;
+            border-radius: 20px;
+        }
+        
+        /* Category navigation */
+        .category-nav {
+            padding: 20px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .category-nav .btn {
+            width: 120px;
+            margin: 0 10px;
+        }
+        
         /* Product grid */
         .product-card {
             border: 1px solid #ddd;
@@ -37,6 +59,11 @@
         .product-title {
             font-size: 0.9rem;
             margin-bottom: 5px;
+        }
+        
+        .product-price {
+            font-weight: bold;
+            color: #333;
         }
         
         /* User menu */
@@ -89,7 +116,6 @@
         .category-link {   			 
     			color: white;
     			text-shadow: 1px 1px 1px gray;
-    			
 		}
 		.dropdown-menu {
   			display: none;
@@ -97,7 +123,6 @@
   			opacity: 0;
   			visibility: hidden;
   			margin-top: 0;
-  			padding: 0;
 		}
 
 /* 호버 시 드롭다운 메뉴 보이기 */
@@ -107,57 +132,19 @@
   			visibility: visible;
   			
 		}
-		.dropdown-item {
-  			display: block;
-  			width: 100%;
-  			padding: 12px 20px;
-  			background-color: white;
-  			color: black;
-  			border: none;
+
+/* 오른쪽 토글 화살표 없앰  */
+		.category-link.dropdown-toggle::after {
+ 	 		display: none !important;
 		}
 		.dropdown-item:hover {
-  			background-color: #333 !important;
-  			color: #fff !important;
+ 			color: #fff !important;
+ 			background-color: darkgray !important;
 		}
 		
     </style>
     
 </head>
-<script>
-$(function() {
-    let page = 1;
-    let isLoading = false;
-
-    $(window).on('scroll', function() {
-        const scrollPosition = $(window).scrollTop() + $(window).height();
-        const documentHeight = $(document).height();
-
-        if (scrollPosition >= documentHeight - 200 && !isLoading) {
-            isLoading = true;
-            loadMoreProducts();
-        }
-    });
-
-    function loadMoreProducts() {
-        page++;
-
-        $.ajax({
-            url: "category/loadsangpum.jsp",  // 데이터를 불러올 서버 측 JSP
-            type: "GET",
-            data: { page: page }, // 현재 페이지 번호 전달
-            dataType:"html",
-            success: function(data) {
-                $(".row").append(data); // 상품 카드 추가
-                isLoading = false;
-            },
-            error: function() {
-                console.error("상품 로딩 실패");
-                isLoading = false;
-            }
-        });
-    }
-});
-</script>
 <body>
    
 
@@ -166,7 +153,7 @@ $(function() {
 <div class="main-category" style="width: 100%; background-color: white; left: 0;">
     <ul>
   <li class="nav-item dropdown">
-	<a class="category-link" href="index.jsp?main=category/top.jsp">
+  <a class="dropdown-toggle category-link" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     TOP
   </a>
   <!-- TOP에서 드랍다운 -->
@@ -217,7 +204,6 @@ $(function() {
                     <div class="product-info">
                         <div class="product-company"><b>SSY</b></div>
                         <div class="product-name">상품명</div>
-                        <div class="badge bg-danger">새상품</div>
                         <div class="product-price"><b>99,000원</b></div>
                         <i class="bi bi-suit-heart">0</i>
                         
