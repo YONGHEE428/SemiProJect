@@ -17,6 +17,14 @@
 <script
 	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <title>고객센터/SSY쇼핑몰</title>
+<%
+    String loginId = (String)session.getAttribute("myid");
+    String role = (String)session.getAttribute("role");
+%>
+<script type="text/javascript">
+    var loginId = '<%=loginId%>';
+    var role = '<%=role%>';
+</script>
 <style type="text/css">
 body {
 	font-family: 'Jua', 'Nanum Myeongjo', 'Gamja Flower', sans-serif;
@@ -136,18 +144,45 @@ body {
 
 		//페이지 로딩시 FAQ부터 불러오기
 		loadboardlist('faq');
+		
+		
+		
+		// 삭제 버튼 클릭 이벤트 (이벤트 위임)
+		$(document).on('click', '#btndel', function() {
+		    if(!confirm("정말 삭제하시겠습니까?")) return;
+		    var idx = $(this).val();
+		   
+		    $.ajax({
+		        url: "s_boardlist/deleteaction.jsp",
+		        type: "post",
+		        data: { idx: idx},
+		        success: function(res) {
+		            alert("삭제가 완료되었습니다.");
+		            // 현재 활성화된 탭의 type을 구해서 다시 불러오기
+		            var activeType = $('#boardTab .nav-link.active').data('bs-target').replace('#', '');
+		            loadboardlist(activeType);
+		        },
+		        error: function() {
+		            alert("삭제에 실패했습니다.");
+		        }
+		    });
+		});
+		
+		$(document).on('click', '#btnupdate', function() {
+		    var idx = $(this).val();
+		    window.open("s_boardlist/updateboardlist.jsp?idx=" + idx, "updatePopup", "width=500,height=600,scrollbars=yes,resizable=yes");
+		});
 
 	})
+	
 	//게시글 목록 보기
 	function loadboardlist(type) {
-		$
-				.ajax({
+		
+				$.ajax({
 
-					url : "boardlistajax.jsp",
+					url : "s_boardlist/boardlistajax.jsp",
 					type : "get",
-					data : {
-						type : type
-					},
+					data : {type : type},
 					dataType : "json",
 					success : function(res) {
 						var s = '';
@@ -155,10 +190,7 @@ body {
 							s = '<div class="text-center text-secondary">등록된 글이 없습니다.</div>';
 						} else {
 							s += '<div class="accordion" id="'+type+'Accordion">';
-							$
-									.each(
-											res,
-											function(i, item) {
+							$.each(res,function(i, item) {
 												s += '<div class="accordion-item">';
 												s += '<h2 class="accordion-header" id="'+type+'Heading'+i+'">';
 												s += '<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#'+type+'Collapse'+i+'">';
@@ -169,8 +201,10 @@ body {
 												s += '<div class="accordion-body">'
 														+ item.text
 												s += '<div class="mt-3 text-end">';
-												s += '<button class="btn btn-primary btn-sm me-2 edit-btn" value="'+item.idx+'">수정</button>';
-												s += '<button class="btn btn-warning btn-sm text-white delete-btn" value="'+item.idx+'">삭제</button>';
+												if(role === 'admin') {
+												    s += '<button class="btn btn-primary btn-sm me-2 edit-btn" value="'+item.idx+'" id="btnupdate">수정</button>';
+												    s += '<button class="btn btn-warning btn-sm text-white delete-btn" value="'+item.idx+'" id="btndel">삭제</button>';
+												}
 												s += '</div>';
 												s += '</div>';
 												s += '</div></div>';
@@ -190,9 +224,11 @@ body {
 	}
 	//팝업 오픈
 	function openPopup() {
-		window.open("addboardlist.jsp", // 등록 폼 파일명
+		window.open("s_boardlist/addboardlist.jsp", // 등록 폼 파일명
 		"boardAddPopup", "width=500,height=600,scrollbars=yes,resizable=yes");
 	}
+	
+	
 </script>
 </head>
 <body>
@@ -266,8 +302,9 @@ body {
 						data-bs-target="#notice" type="button" role="tab">공지사항</button>
 				</li>
 			</ul>
-			<button type="button" class="btn btn-outline-primary  ms-3"
-				onclick="openPopup()">글쓰기</button>
+			<button type="button" class="btn btn-outline-primary ms-3" onclick="openPopup()" 
+      		<% if(role == null || !role.equals("admin")) { %> style="display:none;" <% } %>>							
+      		글쓰기</button>
 		</div>
 		<div
 			class="tab-content p-4 border-bottom border-start border-end rounded-bottom-4"

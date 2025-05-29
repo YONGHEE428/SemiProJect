@@ -20,7 +20,7 @@ public class boardlistDao {
 	{
 	    Connection conn = db.getConnection();
 	    PreparedStatement pstmt = null;
-	    String sql = "insert into coffee.semi_boardlist (idx, type, title, text, regdate) values (null, ?, ?, ?, now())";
+	    String sql = "insert into shop.boardlist (idx, type, title, text, regdate) values (null, ?, ?, ?, now())";
 	    try {
 	        pstmt = conn.prepareStatement(sql);
 	        pstmt.setString(1, dto.getType());
@@ -42,7 +42,7 @@ public class boardlistDao {
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
 		
-		String sql="select * from semi_boardlist where type=? order by idx desc";
+		String sql="select * from shop.boardlist where type=? order by idx desc";
 		
 		try {
 			pstmt=conn.prepareStatement(sql);
@@ -54,6 +54,7 @@ public class boardlistDao {
 				boardlistDto dto=new boardlistDto();
 				dto.setTitle(rs.getString("title"));
 				dto.setText(rs.getString("text"));
+				dto.setIdx(rs.getString("idx"));
 				list.add(dto);
 			}
 		} catch (SQLException e) {
@@ -66,7 +67,51 @@ public class boardlistDao {
 		
 		return list;
 	}
+	
+	public boardlistDto getBoardByIdx(String idx) {
+	    boardlistDto dto = null;
+	    Connection conn = db.getConnection();
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    String sql = "select * from shop.boardlist where idx=?";
+	    try {
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, idx);
+	        rs = pstmt.executeQuery();
+	        if(rs.next()) {
+	            dto = new boardlistDto();
+	            dto.setIdx(rs.getString("idx"));
+	            dto.setTitle(rs.getString("title"));
+	            dto.setText(rs.getString("text"));
+	            dto.setType(rs.getString("type"));
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        db.dbClose(rs, pstmt, conn);
+	    }
+	    return dto;
+	}
 	//update
+	public void updateBoardList(boardlistDto dto)
+	{
+		Connection conn=db.getConnection();
+		PreparedStatement pstmt=null;
+		
+		String sql="update shop.boardlist set title=? , text=? where idx=?";
+	
+		try {
+			pstmt=conn.prepareStatement(sql);
+			pstmt.setString(1, dto.getTitle());
+			pstmt.setString(2, dto.getText());
+			pstmt.setString(3, dto.getIdx());
+			pstmt.execute();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}db.dbClose(pstmt, conn);
+		
+	}
 	
 	//delete
 	public void deleteBoardList(String idx)
@@ -74,7 +119,7 @@ public class boardlistDao {
 		Connection conn=db.getConnection();
 		PreparedStatement pstmt=null;
 		
-		String sql="delete from semi_boardlist where idx=?";
+		String sql="delete from shop.boardlist where idx=?";
 		try {
 			pstmt=conn.prepareStatement(sql);
 			pstmt.setString(1, idx);

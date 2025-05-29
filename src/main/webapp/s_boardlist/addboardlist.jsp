@@ -33,15 +33,13 @@
 				data:data,
 				dataType:"html",
 				success:function(res){
-					
-					alert("등록완료!");
-				if(window.opener){
-					
-					 window.opener.location.reload();
-				}
-					window.close();
-					//opner.location.reload();
-				},
+				    alert("등록완료!");
+				    if(window.opener){
+				        window.opener.location.reload();
+				    }
+				    setTimeout(function(){
+				        window.close();
+				    }, 200); // 0.2초 후 닫기
 				error:function(){
 					
 					alert("등록실패!");
@@ -58,10 +56,9 @@
 <body>
 	<div class="container mt-4">
 		<h4 class="mb-4">게시글 등록</h4>
-		<form id="addform" action="./addaction.jsp" method="post">
+		<form id="addform" action="addaction.jsp" method="post">
 			<div class="mb-3">
-				<label for="type" class="form-label fw-bold">게시판 종류</label>
-				<select
+				<label for="type" class="form-label fw-bold">게시판 종류</label> <select
 					class="form-select" id="type" name="type" required>
 					<option value="">선택하세요</option>
 					<option value="faq">FAQ</option>

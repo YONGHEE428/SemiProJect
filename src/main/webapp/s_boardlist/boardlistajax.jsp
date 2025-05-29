@@ -17,6 +17,7 @@
 		JSONObject ob=new JSONObject();
 		ob.put("title",dto.getTitle());
 		ob.put("text",dto.getText());
+		ob.put("idx", dto.getIdx());
 		arr.add(ob);
 	}
 	
