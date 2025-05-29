@@ -9,7 +9,8 @@ public class MemberDto {
 	private String id;
 	private String pass;
 	private String email;
-	private Timestamp gaipday;
+	private String hp;
+	private Timestamp birth;
 	private String role;
 	
 	public String getNum() {
@@ -42,11 +43,17 @@ public class MemberDto {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public Timestamp getGaipday() {
-		return gaipday;
+	public String getHp() {
+		return hp;
 	}
-	public void setGaipday(Timestamp gaipday) {
-		this.gaipday = gaipday;
+	public void setHp(String hp) {
+		this.hp = hp;
+	}
+	public Timestamp getBirth() {
+		return birth;
+	}
+	public void setBirth(Timestamp birth) {
+		this.birth = birth;
 	}
 	public String getRole() {
 		return role;

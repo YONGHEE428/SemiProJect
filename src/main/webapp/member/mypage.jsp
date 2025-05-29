@@ -36,19 +36,37 @@
 <%
   MemberDao dao=new MemberDao();
   List<MemberDto> list=dao.getAllMembers();
-  SimpleDateFormat sdf=new SimpleDateFormat("yyyy년 MM월 dd일 HH시");
+  SimpleDateFormat sdf=new SimpleDateFormat("yyyy년 MM월 dd일");
   
   String loginok=(String)session.getAttribute("loginok");
   String myid=(String)session.getAttribute("myid");
 %>
+<style>
+	.mypage-main{
+		padding: 0 400px;
+		width: 100%;
+	}
+	.mypage-logo{
+		width: 130px;
+		height:130px;
+		border: 1px solid gray;
+		border-radius: 100px;
+		background-color: gray;
+		font-size:4em;
+		color: white;
+		line-height: 130px;
+		text-align: center;
+		
+	}
+</style>
 <body>
-  <div style="margin: 200px 100px;  width: 700px;">
-    <table class="table table-bordered">
+  <div class="mypage-main">
         <%
           for(MemberDto dto:list)
           {
           
         	  if(loginok!=null && myid.equals(dto.getId())){%>
+<<<<<<< HEAD
 
         	  <tr>
         	    <td rowspan="4">
@@ -80,6 +98,13 @@
           }
         %>
     </table>
+=======
+				<div class="mypage-logo">SSY</div>
+        	  
+         <% }
+          }
+        %>
+>>>>>>> fa1d4d9a2c38e2f63c97813093cd36a03150e0b1
   </div>
   
   

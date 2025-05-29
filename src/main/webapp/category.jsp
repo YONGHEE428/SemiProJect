@@ -10,6 +10,28 @@
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
   <script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
     <style>
+        /* Header styles */
+        .header {
+            padding: 20px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .search-bar {
+            width: 440px;
+            border-radius: 20px;
+        }
+        
+        /* Category navigation */
+        .category-nav {
+            padding: 20px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .category-nav .btn {
+            width: 120px;
+            margin: 0 10px;
+        }
+        
         /* Product grid */
         .product-card {
             border: 1px solid #ddd;
@@ -39,6 +61,14 @@
             margin-bottom: 5px;
         }
         
+<<<<<<< HEAD
+=======
+        .product-price {
+            font-weight: bold;
+            color: #333;
+        }
+        
+>>>>>>> fa1d4d9a2c38e2f63c97813093cd36a03150e0b1
         /* User menu */
         .user-menu .btn {
             margin: 0 5px;
@@ -89,7 +119,10 @@
         .category-link {   			 
     			color: white;
     			text-shadow: 1px 1px 1px gray;
+<<<<<<< HEAD
     			
+=======
+>>>>>>> fa1d4d9a2c38e2f63c97813093cd36a03150e0b1
 		}
 		.dropdown-menu {
   			display: none;
@@ -97,7 +130,10 @@
   			opacity: 0;
   			visibility: hidden;
   			margin-top: 0;
+<<<<<<< HEAD
   			padding: 0;
+=======
+>>>>>>> fa1d4d9a2c38e2f63c97813093cd36a03150e0b1
 		}
 
 /* 호버 시 드롭다운 메뉴 보이기 */
@@ -107,6 +143,7 @@
   			visibility: visible;
   			
 		}
+<<<<<<< HEAD
 		.dropdown-item {
   			display: block;
   			width: 100%;
@@ -118,11 +155,18 @@
 		.dropdown-item:hover {
   			background-color: #333 !important;
   			color: #fff !important;
+=======
+
+/* 오른쪽 토글 화살표 없앰  */
+		.category-link.dropdown-toggle::after {
+ 	 		display: none !important;
+>>>>>>> fa1d4d9a2c38e2f63c97813093cd36a03150e0b1
 		}
 		
     </style>
     
 </head>
+<<<<<<< HEAD
 <script>
 $(function() {
     let page = 1;
@@ -158,6 +202,8 @@ $(function() {
     }
 });
 </script>
+=======
+>>>>>>> fa1d4d9a2c38e2f63c97813093cd36a03150e0b1
 <body>
    
 
@@ -166,15 +212,25 @@ $(function() {
 <div class="main-category" style="width: 100%; background-color: white; left: 0;">
     <ul>
   <li class="nav-item dropdown">
+<<<<<<< HEAD
 	<a class="category-link" href="index.jsp?main=category/top.jsp">
+=======
+  <a class="dropdown-toggle category-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+>>>>>>> fa1d4d9a2c38e2f63c97813093cd36a03150e0b1
     TOP
   </a>
   <!-- TOP에서 드랍다운 -->
   		<ul class="dropdown-menu">
+<<<<<<< HEAD
     		<li><a class="dropdown-item" href="index.jsp?main=category/top.jsp">T-shirts</a></li>
     		<li><a class="dropdown-item" href="#">Shirts</a></li>
     		<li><a class="dropdown-item" href="#">Jackets</a></li>
     		<li><a class="dropdown-item" href="#">Outer</a></li>
+=======
+    		<li><a class="dropdown-item" href="#">T-shirts</a></li>
+    		<li><a class="dropdown-item" href="#">Shirts</a></li>
+    		<li><a class="dropdown-item" href="#">Jackets</a></li>
+>>>>>>> fa1d4d9a2c38e2f63c97813093cd36a03150e0b1
   		</ul>
  </li>
 
@@ -182,26 +238,50 @@ $(function() {
         <li class="dropdown">
             <a href="#" class="category-link">BOTTOM</a>
             <ul class="dropdown-menu">
+<<<<<<< HEAD
                 <li><a class="dropdown-item" href="#">Pants</a></li>
                 <li><a class="dropdown-item" href="#">Skirts</a></li>
+=======
+                <li><a href="#">Pants</a></li>
+                <li><a href="#">Skirts</a></li>
+>>>>>>> fa1d4d9a2c38e2f63c97813093cd36a03150e0b1
             </ul>
         </li>
         <li class="divider"></li>
         <li class="dropdown">
             <a href="#" class="category-link">ACCESORIES</a>
             <ul class="dropdown-menu">
+<<<<<<< HEAD
                 <li><a class="dropdown-item" href="#">Bags</a></li>
                 <li><a class="dropdown-item" href="#">Hats</a></li>
+=======
+                <li><a href="#">Bags</a></li>
+                <li><a href="#">Hats</a></li>
+>>>>>>> fa1d4d9a2c38e2f63c97813093cd36a03150e0b1
             </ul>
         </li>
         <li class="divider"></li>
         <li class="dropdown">
             <a href="#" class="category-link">JEWELrY</a>
+<<<<<<< HEAD
+=======
+            <ul class="dropdown-menu">
+                <li><a href="#">Necklaces</a></li>
+                <li><a href="#">Rings</a></li>
+            </ul>
+>>>>>>> fa1d4d9a2c38e2f63c97813093cd36a03150e0b1
         </li>
         <li class="divider"></li>
         <li class="dropdown">
             <a href="#" class="category-link">SHOES</a>
+<<<<<<< HEAD
           
+=======
+            <ul class="dropdown-menu">
+                <li><a href="#">Sneakers</a></li>
+                <li><a href="#">Boots</a></li>
+            </ul>
+>>>>>>> fa1d4d9a2c38e2f63c97813093cd36a03150e0b1
         </li>
     </ul>
 </div>
@@ -217,7 +297,10 @@ $(function() {
                     <div class="product-info">
                         <div class="product-company"><b>SSY</b></div>
                         <div class="product-name">상품명</div>
+<<<<<<< HEAD
                         <div class="badge bg-danger">새상품</div>
+=======
+>>>>>>> fa1d4d9a2c38e2f63c97813093cd36a03150e0b1
                         <div class="product-price"><b>99,000원</b></div>
                         <i class="bi bi-suit-heart">0</i>
                         

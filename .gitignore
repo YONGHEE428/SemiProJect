@@ -1,9 +1,13 @@
 # Eclipse specific
 .classpath
-.project
+
 .settings/
 .metadata/
+.project
 Servers/
+bin/
+dev/
+>>>>>>> fa1d4d9a2c38e2f63c97813093cd36a03150e0b1
 
 # Build outputs
 build/
@@ -23,6 +27,6 @@ target/
 .DS_Store
 Thumbs.db
 
-# IntelliJ IDEA (optional, if some 팀원이 IDEA를 쓴다면)
+# IntelliJ IDEA (optional)
 .idea/
 *.iml
