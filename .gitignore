@@ -26,3 +26,4 @@ Thumbs.db
 # IntelliJ IDEA (optional, if some 팀원이 IDEA를 쓴다면)
 .idea/
 *.iml
+/bin/
