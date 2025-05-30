@@ -18,6 +18,12 @@
 	String pass = request.getParameter("pass");
 	String cbsave=request.getParameter("savechk");
 	
+	/* 리다이렉트 */
+	String redirectPage = request.getParameter("redirect");
+	if (redirectPage == null || redirectPage.trim().equals("")) {
+	    redirectPage = "../index.jsp"; // 기본값
+	}
+	
 	MemberDao dao = new MemberDao();
 	MemberDto dto = dao.loginmember(id, pass);
 	String name = dao.getName(id);
@@ -38,8 +44,9 @@
 		}else{
 			session.setAttribute("role", "user");
 		}
-		System.out.print(dto.getEmail() + name + dto.getHp() + dto.getBirth());
-		response.sendRedirect("../index.jsp");
+
+		response.sendRedirect(redirectPage);
+
 	} else {
 	    // 로그인 실패 시 메시지와 함께 로그인폼으로 이동
 	    out.println("<script>");
@@ -47,6 +54,7 @@
 	    out.println("history.back();");  // 이전 페이지로 돌아가기
 	    out.println("</script>");
 	}
+	
 	%>
 </body>
 </html>
