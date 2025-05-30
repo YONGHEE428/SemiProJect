@@ -1,0 +1,64 @@
+# Compiled class files
+*.class
+
+# Package Files
+*.jar
+*.war
+*.ear
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/wrapper/maven-wrapper.jar
+.apt_generated/
+
+# Gradle (if you use Gradle)
+.gradle/
+build/
+
+# Eclipse
+# .project, .classpath, .settings/ are intentionally NOT ignored for team consistency
+.apt_generated
+.apt_src
+.factorypath
+.wtpgen
+.recommenders/
+
+# IntelliJ IDEA (if any team member uses IntelliJ)
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# NetBeans (if any team member uses NetBeans)
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle-properties
+
+# Visual Studio Code (if any team member uses VS Code)
+.vscode/
+
+# OS generated files
+.DS_Store       # macOS
+Thumbs.db       # Windows
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+
+# Sensitive information (add specific files as needed)
+# For example, if you have a properties file with database credentials:
+# src/main/resources/database.properties

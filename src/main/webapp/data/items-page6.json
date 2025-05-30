@@ -1,0 +1,58 @@
+[
+  {
+    "img": "/SemiImg/category/hat/a31.jpg",
+    "category": "HAT",
+    "name": "KOUNTRY 볼캡",
+    "price": "72,000원",
+    "heart": 98
+  },
+  {
+    "img": "/SemiImg/category/top/d81.jpg",
+    "category": "TOP",
+    "name": "KAPITAL cat 티셔츠",
+    "price": "147,000원",
+    "heart": 74
+  },
+  {
+    "img": "/SemiImg/category/bottom/c11.jpg",
+    "category": "BOTTOM",
+    "name": "스트링 지퍼 조거팬츠",
+    "price": "127,000원",
+    "heart": 105
+  },
+  {
+    "img": "/SemiImg/category/shoes/a71.jpg",
+    "category": "SHOES",
+    "name": "TOGA x VANS 콜라보 슈즈",
+    "price": "211,000원",
+    "heart": 64
+  },
+  {
+    "img": "/SemiImg/category/top/e81.jpg",
+    "category": "TOP",
+    "name": "GU X UNDERCOVER 콜라보레이션 반팔티",
+    "price": "352,500원",
+    "heart": 98
+  },
+  {
+    "img": "/SemiImg/category/outer/e61.jpg",
+    "category": "OUTER",
+    "name": "STARGIRL 클래식 자켓",
+    "price": "232,500원",
+    "heart": 91
+  },
+  {
+    "img": "/SemiImg/category/jewelley/b41.jpg",
+    "category": "ACCESSORY",
+    "name": "TOGA 팔찌",
+    "price": "262,000원",
+    "heart": 44
+  },
+  {
+    "img": "/SemiImg/category/bag/a21.jpg",
+    "category": "BAG",
+    "name": "로쿠욘 크로스 소형 배낭",
+    "price": "121,000원",
+    "heart": 74
+  }
+]
