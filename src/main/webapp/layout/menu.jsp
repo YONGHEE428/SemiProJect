@@ -12,7 +12,7 @@
    String root=request.getContextPath();
 %>
 	<link rel="stylesheet" type="text/css" href="<%=root%>/menu/css/font-awesome.css">
-	<link rel="stylesheet" type="text/css" href="<%=root%>/menu/css/menu.css?v=20240527">
+	<link rel="stylesheet" type="text/css" href="<%=root%>/menu/css/menu.css?v=20240530">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 	<script type="text/javascript" src="<%=root %>/menu/js/jquery.js"></script>
 	<script type="text/javascript" src="<%=root %>/menu/js/function.js"></script>
@@ -34,7 +34,7 @@
 		    $(this).find("span").text(originalText);
 		  });
 		
-		  $("#search").click(function() {
+		  $("#searchbar").click(function() {
 			  $(".overlay").fadeIn();
 			  $(".searchpage").fadeIn();
 			  $("body").css("overflow", "hidden");
@@ -73,7 +73,7 @@
 			<div class="logoimg">
 			<a href="<%=root%>/"><img src="<%=root%>/SemiImg/mainLogo.png" class="logo"></a>
 			<div class="search">
-			<input type="text" id="search" class="form-control textbox" name="" value="" placeholder="상품 검색" readonly style="cursor: pointer;">
+			<input type="text" id="searchbar" class="form-control textbox" name="" value="" placeholder="상품 검색" readonly style="cursor: pointer;">
 			<i class="bi bi-search" onclick="submit"></i>
 			
 			</div>
@@ -92,7 +92,6 @@
 					<%}else{ %>
 						<%if(role !=null && role.equals("user")){%>
 							<li><a href="index.jsp?main=member/mypage.jsp">마이페이지</a></li>
-							<li><a href="index.jsp?main=hyeon_cart/cartform.jsp">장바구니</a></li>
 							
 					<%}if(role !=null && role.equals("admin")){%>
 							<li><a href="#">매장관리</a>

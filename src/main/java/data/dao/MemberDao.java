@@ -95,7 +95,7 @@ public class MemberDao {
 			pstmt.setString(3, dto.getPass());
 			pstmt.setString(4, dto.getEmail());
 			pstmt.setString(5, dto.getHp());
-			pstmt.setTimestamp(6, dto.getBirth());
+			pstmt.setString(6, dto.getBirth());
 			pstmt.execute();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -129,7 +129,7 @@ public class MemberDao {
 				dto.setName(rs.getString("name"));
 				dto.setId(rs.getString("id"));
 				dto.setEmail(rs.getString("email"));
-				dto.setBirth(rs.getTimestamp("birth"));
+				dto.setBirth(rs.getString("birth"));
 				
 				list.add(dto);
 			}
@@ -153,10 +153,11 @@ public class MemberDao {
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
 		
-		String sql="select * from member where num="+num;
+		String sql="select * from member where num =" + num;
 		
 		try {
 			pstmt=conn.prepareStatement(sql);
+			
 			rs=pstmt.executeQuery();
 			
 			if(rs.next())
@@ -165,8 +166,10 @@ public class MemberDao {
 				dto.setNum(rs.getString("num"));
 				dto.setName(rs.getString("name"));
 				dto.setId(rs.getString("id"));
+				dto.setPass(rs.getString("pass"));
 				dto.setEmail(rs.getString("email"));
-				dto.setBirth(rs.getTimestamp("birth"));
+				dto.setHp(rs.getString("hp"));
+				dto.setBirth(rs.getString("birth"));
 				
 			}
 		} catch (SQLException e) {
@@ -175,7 +178,6 @@ public class MemberDao {
 		}finally {
 			db.dbClose(rs, pstmt, conn);
 		}
-		
 		
 		return dto;
 	}
@@ -271,8 +273,12 @@ public class MemberDao {
 	        rs = pst.executeQuery();
 	        if (rs.next()) {
 	            dto = new MemberDto();
+	            dto.setNum(rs.getString("num"));
 	            dto.setId(rs.getString("id"));
 	            dto.setName(rs.getString("name"));
+	            dto.setHp(rs.getString("hp"));
+	            dto.setEmail(rs.getString("email"));
+	            dto.setBirth(rs.getString("birth"));
 	            dto.setRole(rs.getString("role"));
 	            // 필요한 다른 값들도 추가
 	        }
@@ -284,4 +290,26 @@ public class MemberDao {
 	    return dto;
 	}
 
+	public void updatemember(String num,  MemberDto dto) {
+		
+		Connection cn = db.getConnection();
+		PreparedStatement pst = null;
+		
+		String sql = "update member set email = ?, birth = ?, pass = ? where num = " +num;
+		
+		try {
+			pst=cn.prepareStatement(sql);
+			
+			pst.setString(1, dto.getEmail());
+			pst.setString(2, dto.getBirth());
+			pst.setString(3, dto.getPass());
+			
+			pst.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			db.dbClose(pst, cn);
+		}
+
+	}
 }

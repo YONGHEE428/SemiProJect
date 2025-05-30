@@ -1,7 +1,5 @@
 package data.dto;
 
-import java.sql.Timestamp;
-
 public class MemberDto {
 
 	private String num;
@@ -10,7 +8,7 @@ public class MemberDto {
 	private String pass;
 	private String email;
 	private String hp;
-	private Timestamp birth;
+	private String birth;
 	private String role;
 	
 	public String getNum() {
@@ -49,10 +47,10 @@ public class MemberDto {
 	public void setHp(String hp) {
 		this.hp = hp;
 	}
-	public Timestamp getBirth() {
+	public String getBirth() {
 		return birth;
 	}
-	public void setBirth(Timestamp birth) {
+	public void setBirth(String birth) {
 		this.birth = birth;
 	}
 	public String getRole() {
