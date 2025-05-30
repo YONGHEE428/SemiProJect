@@ -176,7 +176,7 @@
       <!-- 탭 버튼 -->
       <div class="tab_style3">
         <a href="javascript:void(0);" class="tab_btn is_active" onclick="showTab('desc', event)">상품 설명</a>
-        <a href="javascript:void(0);" class="tab_btn" onclick="showTab('review', event)">리뷰 [<span>59</span>]</a>
+        <a href="javascript:void(0);" class="tab_btn" onclick="location.href='../shop/reviews.jsp'">리뷰</a>
         <a href="javascript:void(0);" class="tab_btn" onclick="showTab('qna', event)">문의 [6]</a>
       </div>
 
@@ -207,6 +207,7 @@
         <div class="product-title">Eoa ribbon blouse</div>
         <div class="item-icons">
           <i class="bi bi-heart"></i>&nbsp;98&nbsp;&nbsp;
+          
           <i class="bi bi-eye"></i>&nbsp;72
         </div>
       </div>
@@ -224,7 +225,7 @@
         <div>나의 구매 가능 가격 ▼</div>
       </div>
 
-      <div style="margin-top: 10px;">구매 적립금: 최대 443 마일리지 적립 예정</div>
+     
       <div class="mt-2" style="margin-top: 10px;">배송정보: <span class="highlight">3일 이내 출고</span></div>
       <div>
         배송비: <span class="highlight">3,000원</span> (100,000원 이상 구매 시 무료배송)<br />
@@ -261,8 +262,8 @@
       </div>
 
       <div class="action-buttons">
-        <button class="btn btn-outline-primary" onclick="location.href='../hyeon_cart/cartform.jsp'">장바구니</button>
-        <button class="btn btn-primary" onclick="submitOptions('buy')">바로구매</button>
+        <button class="btn btn-outline-primary" onclick="location.href='../cart/cartform.jsp'">장바구니</button>
+        <button class="btn btn-primary" onclick="location.href='../payment/payment.jsp'">바로구매</button>
       </div>
 
       <!-- 메뉴 -->
@@ -335,7 +336,7 @@
       event.target.classList.add('is_active');
     }
 
-    // 아래는 예시 함수들 (필요에 따라 구현하세요)
+    
     function goToReviews() {
       showTab('review', { target: document.querySelector('.tab_btn:nth-child(2)') });
       window.scrollTo({ top: 0, behavior: 'smooth' });
