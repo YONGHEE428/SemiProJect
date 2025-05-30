@@ -32,16 +32,21 @@
 		session.setMaxInactiveInterval(60*60*8); //8시간,생략시 30분
 		
 		session.setAttribute("loginok", "yes");
+		session.setAttribute("num", dto.getNum());
 		session.setAttribute("myid", id);
 		session.setAttribute("name", name);
+		session.setAttribute("email", dto.getEmail());
+		session.setAttribute("hp", dto.getHp());
+		session.setAttribute("birth", dto.getBirth());
 		session.setAttribute("saveok", cbsave==null?null:"yes");
 		if(dto.getRole().equals("admin")){
 			session.setAttribute("role", "admin");
 		}else{
 			session.setAttribute("role", "user");
 		}
-		
+
 		response.sendRedirect(redirectPage);
+
 	} else {
 	    // 로그인 실패 시 메시지와 함께 로그인폼으로 이동
 	    out.println("<script>");
