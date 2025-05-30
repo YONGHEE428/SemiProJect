@@ -92,7 +92,7 @@
 					<%}else{ %>
 						<%if(role !=null && role.equals("user")){%>
 							<li><a href="index.jsp?main=member/mypage.jsp">마이페이지</a></li>
-							<li><a href="index.jsp?main=hyeon_cart/cartform.jsp">장바구니</a></li>
+							<li><a href="index.jsp?main=hyeon_cart/	cartform.jsp">장바구니</a></li>
 							
 					<%}if(role !=null && role.equals("admin")){%>
 							<li><a href="#">매장관리</a>
