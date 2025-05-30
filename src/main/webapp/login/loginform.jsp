@@ -73,6 +73,9 @@
   if(saveok!=null){
 	  myid=(String)session.getAttribute("myid");
   }
+  
+  String redirect = request.getParameter("redirect");
+  if (redirect == null) redirect = "../index.jsp";  // 기본값
 %>
 <body>
 <div class="login-main">
@@ -85,6 +88,7 @@
      <input type="text" name="id" class="form-control field" placeholder="" required="required" value="<%=myid%>" >
     <span class="login-span"><p>비밀번호</p></span>
      <input type="password" name="pass" class="form-control field" placeholder="" required="required">
+         <input type="hidden" name="redirect" value="<%= redirect %>"><!-- 현재페이지주소 전달 -->
      
 	
      <button type="submit" class="login-btn" disabled>로그인</button><br>
