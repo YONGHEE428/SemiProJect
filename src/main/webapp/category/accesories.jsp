@@ -56,15 +56,39 @@
             font-size: 0.9rem;
         }
         
-        /* Recently viewed */
-        .recently-viewed {
-            position: fixed;
-            right: 5px;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 1000;
-            
-        }
+        /* 리모컨 */
+        .recently-viewed-remote {
+		   	position: fixed;
+		    right: 10px;
+		    top: 50%;
+		    transform: translateY(-50%);
+		    display: flex;
+		    flex-direction: column;
+		    gap: 15px;
+		    z-index: 1100;
+		}
+		
+		.remote-btn {
+		    background-color: #fff;
+		    border: 1px solid #ccc;
+		    border-radius: 50%;
+		    width: 50px;
+		    height: 50px;
+		    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+		    cursor: pointer;
+		    display: flex;
+		    align-items: center;
+		    justify-content: center;
+		    color: #333;
+		    font-size: 24px;
+		    transition: background-color 0.3s, color 0.3s;
+		}
+		
+		.remote-btn:hover {
+		    background-color: #c9a797;  /* 카테고리 bg 색 참고 */
+		    color: white;
+		    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+		}
         
         .main-category ul {
             display: flex;
@@ -114,14 +138,14 @@
     		 transition: opacity 0.3s ease;
     		 position: absolute;
     		 top: 100%;
-    		 left: 0;
-		 	 width:700px;
-    		 max-width: 1000px; /* 전체 화면 너비 */
+    		 left: 50%; 
+		 	 transform: translateX(-50%);  /* 레이어 가운데 수평 정렬 */
+		 	
     		 background-color: white;
-    		 padding: 30px 60px;
+    		 padding: 10px 20px;
     		 display: flex;
-    	  	 justify-content: center;
-    		 gap: 50px;
+    	  	 flex-direction:column; /* 세로정렬 */
+    		 gap: 10px;		/* 아이템간 간격 */
     		 z-index: 999;
     		 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 		}
@@ -145,38 +169,48 @@
     		 transition: background-color 0.2s, color 0.2s;
 		}
 		.dropdown-menu a:hover{
-			background-color: lightgray;
+			background-color: #c9a797;
+			border-radius: 20px;
 		}
 			
     </style>
+     <%
+	    	String id=(String)session.getAttribute("myid");
+	  %>
   <script type="text/javascript">
   $(function () {
 	    // 하트 클릭 (동적 요소 대응)
 	    $(document).on("click", ".heart", function () {
 	        let isFilled = $(this).hasClass("bi-suit-heart-fill");
 	        let count = parseInt($(this).text());
+		
+	        if(id===""){
+    			alert("로그인 후 이용해주세요.");
+			    location.href="index.jsp?main=login/loginform.jsp";
+    		}else{
+    			 if (isFilled) {
+    		            $(this)
+    		                .removeClass("bi-suit-heart-fill")
+    		                .addClass("bi-suit-heart")
+    		                .css("color", "black")
+    		                .text(count - 1);
+    		            	
+    		        } else {
+    		            $(this)
+    		                .removeClass("bi-suit-heart")
+    		                .addClass("bi-suit-heart-fill")
+    		                .css("color", "red")
+    		                .text(count + 1);
+    		            document.querySelector("#liveToast .toast-body").innerText = "위시리스트에 추가되었습니다!";
 
-	        if (isFilled) {
-	            $(this)
-	                .removeClass("bi-suit-heart-fill")
-	                .addClass("bi-suit-heart")
-	                .css("color", "black")
-	                .text(count - 1);
-	            	
-	        } else {
-	            $(this)
-	                .removeClass("bi-suit-heart")
-	                .addClass("bi-suit-heart-fill")
-	                .css("color", "red")
-	                .text(count + 1);
-	            document.querySelector("#liveToast .toast-body").innerText = "위시리스트에 추가되었습니다!";
+    		            const toastLiveExample = document.getElementById('liveToast');
+    		            const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
 
-	            const toastLiveExample = document.getElementById('liveToast');
-	            const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
-
-	            toastBootstrap.show();
-	            
-	        }
+    		            toastBootstrap.show();
+    		            
+    		        }
+    		}
+	       
 	    });
 
 	    // 무한스크롤
@@ -238,8 +272,18 @@
 	            }
 	        });
 	    }
-	    
-	  
+	   
+    	const id="<%=id!=null?id:""%>"
+
+	    $("#wishchk").click(function(){
+	    		if(id===""){
+	    			alert("로그인 후 이용해주세요.");
+				    location.href="index.jsp?main=login/loginform.jsp";
+	    		}else{
+				    location.href="index.jsp?main=category/catewish.jsp";
+	    		}
+	    });
+	    <!-- location.href='index.jsp?main=category/catewish.jsp' -->
 	});
  
 
@@ -291,7 +335,7 @@
  </li>
 
         <li class="divider"></li>
-        <li class="dropdown" >
+        <li class="dropdown">
             <a href="index.jsp?main=category/bottom.jsp" class="category-link">BOTTOM</a>
             <ul class="dropdown-menu">
                 <li><a href="#">팬츠</a></li>
@@ -300,7 +344,7 @@
             </ul>
         </li>
         <li class="divider"></li>
-        <li class="dropdown" style="background-color: #a47864; border-radius: 100px;">
+        <li class="dropdown" style="background-color: #c9a797; border-radius: 20px;">
             <a href="index.jsp?main=category/accesories.jsp" class="category-link">ACCESORIES</a>
            
         </li>
@@ -335,9 +379,26 @@
     </div>
 	
     <!-- Recently Viewed Button -->
-    <div class="recently-viewed">
-        <button class="btn btn-outline-dark btn-sm" style="width: 100px;">최근 본 상품</button><br><br>
-        <button class="btn btn-outline-danger btn-sm">위시리스트</button>
+ 	  <div class="recently-viewed-remote">
+    	<button class="remote-btn" title="위로" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });">
+    	<i class="bi bi-caret-up"></i>
+    	</button>
+        <button class="remote-btn" title="최근 본 상품">
+        <i class="bi bi-eye"></i>
+        </button>
+        <button class="remote-btn" title="위시리스트" id="wishchk">
+        <!-- location.href='index.jsp?main=category/catewish.jsp' -->
+        <i class="bi bi-heart"></i>
+        </button>
+        <button	onclick="location.href='http://pf.kakao.com/_XsGSn'" 
+					class="counsel-link kakao remote-btn" >
+					<img alt="" src="SemiImg/kakao.png" style="width: 135%; height:110%; border-radius: 100%;">
+	    </button>
+	    <!--window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+	      document.body.scrollHeight 는 문서 전체 높이(스크롤 가능한 최대 높이) 페이지 맨 아래로 부드럽게 이동-->
+	    <button class="remote-btn" title="아래로" onclick="window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });">
+    	<i class="bi bi-caret-down"></i>
+    	</button>
     </div>
 	
     <div id="loadingMessage" style="display:none; text-align:center; padding:10px; font-weight:bold;">로딩중...</div>
@@ -351,10 +412,16 @@ const toastLiveExample = document.getElementById('liveToast')
 
 if (toastTrigger) {
   const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
-  toastTrigger.addEventListener('click', () => {
-    toastBootstrap.show()
-  })
+  if(id===""){
+	toastBootstrap.hide()	
+  }else{
+	  toastTrigger.addEventListener('click', () => {
+		    toastBootstrap.show()
+		  })  
+  }
+  
 }
+
 </script>
 </body>
 </html>

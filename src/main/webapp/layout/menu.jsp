@@ -6,9 +6,8 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-	<%
-	
-   //프로젝트 경로구해기
+<%//프로젝트 경로구하기 
+ 
    String root=request.getContextPath();
 %>
 	<link rel="stylesheet" type="text/css" href="<%=root%>/menu/css/font-awesome.css">
@@ -109,7 +108,16 @@
 					  <%
 					    } else {
 					  %>
-					    <a href="index.jsp?main=login/loginform.jsp">로그인</a>
+					  <%
+					  	
+						    String currentURL = request.getRequestURI(); //현재 위치
+						    String query = request.getQueryString(); // ? 뒤에 붙는 파라미터 문자열 전체
+						    if (query != null) {
+						        currentURL += "?" + query;
+						    }
+					  %>  
+					    <a href="<%=root%>/index.jsp?main=login/loginform.jsp&redirect=<%=currentURL %>">로그인</a>
+																			<!-- redirect 파라미터값 전달 -->
 					  <%
 					    }
 					  
