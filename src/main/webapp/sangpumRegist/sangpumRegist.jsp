@@ -320,10 +320,36 @@ pageEncoding="UTF-8"%>
         display: block; /* 버튼을 블록 요소로 만들어 중앙 정렬 또는 너비 100% 용이 */
         margin: 10px auto 0; /* 위쪽 여백 및 자동 좌우 마진으로 중앙 정렬 */
       }
+
+      /* 카테고리 선택 스타일 */
+      .category-option {
+        display: inline-block;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-right: 5px;
+        margin-bottom: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        background-color: #f8f9fa;
+        color: #333;
+      }
+
+      .category-option.selected {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+      }
     </style>
   </head>
   <body>
-    <div class="upload-container">
+    <form
+      id="productRegistrationForm"
+      class="upload-container"
+      method="POST"
+      action="./productRegisterAction.jsp"
+      enctype="multipart/form-data"
+    >
       <h1>1. 상품 메인 이미지 등록</h1>
 
       <div class="image-preview-container" id="imagePreviewContainer">
@@ -336,7 +362,12 @@ pageEncoding="UTF-8"%>
         <span class="image-placeholder">이미지가 여기에 표시됩니다.</span>
       </div>
 
-      <input type="file" id="imageUpload" accept="image/*" />
+      <input
+        type="file"
+        id="imageUpload"
+        name="productImage"
+        accept="image/*"
+      />
       <button type="button" class="btn btn-upload" id="triggerUpload">
         이미지 불러오기
       </button>
@@ -352,16 +383,51 @@ pageEncoding="UTF-8"%>
           <label for="productPrice">상품 가격:</label>
           <input type="number" id="productPrice" name="productPrice" />
         </div>
-
-        <!-- 새로운 상품 옵션 입력 섹션 (색상, 사이즈, 수량 세트) -->
-        <div class="product-options-section">
-          <h2>2. 상품 정보 입력(2)</h2>
-          <div id="productOptionsContainer">
-            <!-- 동적으로 상품 옵션 항목이 추가될 영역 -->
+        <div class="form-group">
+          <label>상품 카테고리:</label>
+          <div id="categoryContainer">
+            <div class="category-option" data-value="티셔츠">티셔츠</div>
+            <div class="category-option" data-value="아우터">아우터</div>
+            <div class="category-option" data-value="팬츠">팬츠</div>
+            <div class="category-option" data-value="치마">치마</div>
+            <div class="category-option" data-value="악세서리">악세서리</div>
+            <div class="category-option" data-value="신발">신발</div>
           </div>
-          <button type="button" id="addOptionBtn">항목 추가하기</button>
+          <input
+            type="hidden"
+            id="selectedCategory"
+            name="selectedCategory"
+            value=""
+          />
         </div>
-      </div>
+
+       <!-- 새로운 상품 옵션 입력 섹션 (색상, 사이즈, 수량 세트) -->
+            <div class="product-options-section">
+                <h2>2. 상품 정보 입력(2)</h2>
+                <div id="productOptionsContainer">
+                    <!-- 기본 옵션 항목 추가 -->
+                    <div class="product-option-item" data-item-index="0">
+                        <div class="option-item-header">
+                            <h3>옵션 #1</h3>
+                            <button type="button" class="btn-remove-option-item">항목 삭제</button>
+                        </div>
+                        <div class="form-group">
+                            <label for="option_color_0">색상 정보:</label>
+                            <input type="text" name="options[0][color]" id="option_color_0" placeholder="예: 빨강">
+                        </div>
+                        <div class="form-group">
+                            <label for="option_size_0">사이즈 정보:</label>
+                            <input type="text" name="options[0][size]" id="option_size_0" placeholder="예: M">
+                        </div>
+                        <div class="form-group">
+                            <label for="option_quantity_0">상품 수량:</label>
+                            <input type="number" name="options[0][quantity]" id="option_quantity_0" placeholder="예: 10" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+                <button type="button" id="addOptionBtn">항목 추가하기</button>
+            </div>
+        </div>
 
       <!-- 3. 상품 상세 정보 섹션 -->
       <div class="editor-section">
@@ -396,7 +462,7 @@ pageEncoding="UTF-8"%>
           상품 등록하기
         </button>
       </div>
-    </div>
+    </form>
 
     <script>
       $(document).ready(function () {
@@ -435,11 +501,10 @@ pageEncoding="UTF-8"%>
         }
 
         $("#addOptionBtn").on("click", function () {
-          optionItemIndex++; // 폼 요소들의 고유 name/id를 위한 인덱스
-          const optionItemHtml = `
+            const optionItemHtml = `
                 <div class="product-option-item" data-item-index="${optionItemIndex}">
                     <div class="option-item-header">
-                        <h3>옵션</h3> <!-- 이 부분은 renumberOptionItemHeadings 함수가 업데이트합니다 -->
+                        <h3>옵션 #${optionItemIndex + 1}</h3>
                         <button type="button" class="btn-remove-option-item">항목 삭제</button>
                     </div>
                     <div class="form-group">
@@ -452,34 +517,37 @@ pageEncoding="UTF-8"%>
                     </div>
                     <div class="form-group">
                         <label for="option_quantity_${optionItemIndex}">상품 수량:</label>
-                        <input type="number" name="options[${optionItemIndex}][quantity]" id="option_quantity_${optionItemIndex}" placeholder="예: 10" min="0">
+                        <input type="number" name="options[${optionItemIndex}][quantity]" id="option_quantity_${optionItemIndex}" placeholder="예: 10" value="0" min="0">
                     </div>
                 </div>
             `;
-          $("#productOptionsContainer").append(optionItemHtml);
-          renumberOptionItemHeadings(); // 새 항목 추가 후 즉시 번호 재정렬
+            $("#productOptionsContainer").append(optionItemHtml);
+            optionItemIndex++; // 인덱스 증가
+            renumberOptionItemHeadings(); // 새 항목 추가 후 즉시 번호 재정렬
         });
 
-        // 페이지 로드 시, 기존에 표시된 옵션 항목이 없다면 첫 번째 옵션 항목을 기본으로 추가합니다.
-        // 이 trigger 호출로 인해 #addOptionBtn의 클릭 핸들러가 실행되고, 그 안에서 renumberOptionItemHeadings가 호출됩니다.
-        if ($("#productOptionsContainer .product-option-item").length === 0) {
-          $("#addOptionBtn").trigger("click");
-        }
-
         // "항목 삭제" 버튼 클릭 이벤트 (이벤트 위임 방식 사용)
-        $("#productOptionsContainer").on(
-          "click",
-          ".btn-remove-option-item",
-          function () {
+        $("#productOptionsContainer").on("click", ".btn-remove-option-item", function () {
             $(this).closest(".product-option-item").remove();
             renumberOptionItemHeadings(); // 항목 삭제 후 즉시 번호 재정렬
-          }
-        );
+        });
+
+        // 카테고리 선택 로직
+        $("#categoryContainer .category-option").on("click", function () {
+          // 모든 카테고리에서 'selected' 클래스 제거
+          $("#categoryContainer .category-option").removeClass("selected");
+          // 클릭된 카테고리에 'selected' 클래스 추가
+          $(this).addClass("selected");
+          // 숨겨진 입력 필드에 선택된 카테고리 값 설정
+          $("#selectedCategory").val($(this).data("value"));
+        });
       }); // $(document).ready 끝
 
       // 상품 정보 폼 제출 함수 (별도 분리)
       function submitContents(elClickedObj) {
-        // 에디터의 내용에 대한 값 검증은 이곳에서
+        const actionButtonText = elClickedObj.textContent.trim();
+
+        // 3. 상품 상세 내용 유효성 검사 (공통)
         if (
           document.getElementById("productDetailTextarea").value === "" ||
           document.getElementById("productDetailTextarea").value === null ||
@@ -490,19 +558,107 @@ pageEncoding="UTF-8"%>
             .replace(/<p><\/p>/gi, "")
             .trim() === ""
         ) {
-          alert("상세 내용을 입력해 주세요.");
-          return; // 폼 제출 중단
+          alert("3. 상품 상세 내용을 입력해 주세요.");
+          document.getElementById("productDetailTextarea").focus();
+          return;
         }
 
+        if (actionButtonText === "상품 등록하기") {
+          // "상품 등록하기" 버튼 클릭 시 추가 유효성 검사
+
+          // 1. 상품 메인 이미지 등록 확인
+          if ($("#imageUpload").get(0).files.length === 0) {
+            alert("1. 상품 메인 이미지를 등록해 주세요.");
+            return;
+          }
+
+          // 2. 상품 정보 입력(1) 유효성 검사
+          if ($("#productName").val().trim() === "") {
+            alert("2. 상품 정보 입력(1) - 상품 이름을 입력해 주세요.");
+            $("#productName").focus();
+            return;
+          }
+          const productPrice = parseFloat($("#productPrice").val());
+          if (isNaN(productPrice) || productPrice <= 0) {
+            alert("2. 상품 정보 입력(1) - 상품 가격을 올바르게 입력해 주세요.");
+            $("#productPrice").focus();
+            return;
+          }
+          if ($("#selectedCategory").val().trim() === "") {
+            alert("2. 상품 정보 입력(1) - 상품 카테고리를 선택해 주세요.");
+            return;
+          }
+
+          // 2. 상품 정보 입력(2) - 상품 옵션 유효성 검사
+          if ($("#productOptionsContainer .product-option-item").length === 0) {
+            alert(
+              "2. 상품 정보 입력(2) - 적어도 하나 이상의 상품 옵션(색상, 사이즈, 수량)을 추가해 주세요."
+            );
+            return;
+          }
+
+          let optionsValid = true;
+          $("#productOptionsContainer .product-option-item").each(function (idx) {
+              const itemIndex = $(this).data("item-index"); // data-item-index 값 사용
+              const colorInput = $(this).find("input[name='options[" + itemIndex + "][color]']");
+              const sizeInput = $(this).find("input[name='options[" + itemIndex + "][size]']");
+              const quantityInput = $(this).find("input[name='options[" + itemIndex + "][quantity]']");
+
+              const color = colorInput.val().trim();
+              const size = sizeInput.val().trim();
+              const quantity = quantityInput.val().trim();
+              const quantityVal = parseInt(quantity);
+
+              if (color === "") {
+                  alert(`옵션 #${idx + 1}: 색상 정보를 입력해 주세요.`);
+                  optionsValid = false;
+                  colorInput.focus();
+                  return false; // .each 루프 중단
+              }
+              if (size === "") {
+                  alert(`옵션 #${idx + 1}: 사이즈 정보를 입력해 주세요.`);
+                  optionsValid = false;
+                  sizeInput.focus();
+                  return false;
+              }
+              if (quantity === "" || isNaN(quantityVal) || quantityVal < 0) {
+                  alert(`옵션 #${idx + 1}: 상품 수량을 0 이상으로 정확히 입력해 주세요.`);
+                  optionsValid = false;
+                  quantityInput.focus();
+                  return false;
+              }
+          });
+
+          if (!optionsValid) {
+              return; // 유효성 검사 실패 시 제출 중단
+          }
+      } else if (actionButtonText === "임시저장") {
+          // 임시저장 시 특정 로직이 필요하다면 여기에 추가
+          // 예: 몇몇 필수 필드만 검사하거나, 다른 action URL로 제출
+      }
+
+
+        // 폼 제출
         try {
-          // 폼을 찾아서 submit 합니다.
-          // 실제 폼의 ID나 name으로 더 명확하게 지정하는 것이 좋습니다.
-          // 예: $('#productForm').submit(); 또는 document.forms['productFormName'].submit();
-          // elClickedObj.form은 버튼이 form 태그 내부에 있을 때 유효합니다.
-          if (elClickedObj.form) {
-            elClickedObj.form.submit();
+          const form = document.getElementById("productRegistrationForm");
+          if (form) {
+            // 서버에서 액션을 구분하기 위한 숨겨진 필드 추가
+            let actionTypeInput = form.querySelector(
+              'input[name="form_action_type"]'
+            );
+            if (!actionTypeInput) {
+              actionTypeInput = document.createElement("input");
+              actionTypeInput.type = "hidden";
+              actionTypeInput.name = "form_action_type";
+              form.appendChild(actionTypeInput);
+            }
+            actionTypeInput.value =
+              actionButtonText === "상품 등록하기"
+                ? "register"
+                : "temporary_save";
+
+            form.submit();
           } else {
-            // 버튼이 폼 외부에 있거나 폼이 없는 경우를 대비한 대체 로직 (예: AJAX 전송)
             console.error(
               "Form not found for the clicked button. Cannot submit."
             );

@@ -1,6 +1,7 @@
 package data.dto;
 
 import java.sql.Timestamp;
+import java.util.jar.Attributes.Name;
 
 public class CartListDto {
 	
@@ -24,6 +25,32 @@ public class CartListDto {
     private String option_id; // 옵션 PK
     private String color; // 옵션 색상
     private String size;  // 옵션 사이즈
+    
+    //memebr 테이블 조인
+    private String name;
+    private String id;
+    private String num;
+    
+    
+    
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getNum() {
+		return num;
+	}
+	public void setNum(String num) {
+		this.num = num;
+	}
 	public String getIdx() {
 		return idx;
 	}
