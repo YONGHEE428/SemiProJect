@@ -53,6 +53,20 @@
 <div class="title-main">
 	<div class="marquee">
 	  <div class="marquee-content">
+	  <% String loginok = (String)session.getAttribute("loginok");
+	  if(loginok!=null && loginok.equals("yes")) {%>
+	   <a href="index.jsp?main=category/category.jsp"><p>Summer 시즌 특별 할인!! 인기 상품 최대 50% OFF!! &nbsp;&nbsp;&nbsp;
+	   	Summer 시즌 특별 할인!! 인기 상품 최대 50% OFF!! &nbsp;&nbsp;&nbsp;
+	   	Summer 시즌 특별 할인!! 인기 상품 최대 50% OFF!! &nbsp;&nbsp;&nbsp;
+	   	Summer 시즌 특별 할인!! 인기 상품 최대 50% OFF!! &nbsp;&nbsp;&nbsp;
+	   	Summer 시즌 특별 할인!! 인기 상품 최대 50% OFF!! &nbsp;&nbsp;&nbsp;
+	   	Summer 시즌 특별 할인!! 인기 상품 최대 50% OFF!! &nbsp;&nbsp;&nbsp;
+	   	Summer 시즌 특별 할인!! 인기 상품 최대 50% OFF!! &nbsp;&nbsp;&nbsp;
+	   	Summer 시즌 특별 할인!! 인기 상품 최대 50% OFF!! &nbsp;&nbsp;&nbsp;
+	   	Summer 시즌 특별 할인!! 인기 상품 최대 50% OFF!! &nbsp;&nbsp;&nbsp;
+	   	Summer 시즌 특별 할인!! 인기 상품 최대 50% OFF!! &nbsp;&nbsp;&nbsp;;</p></a>
+	   	
+	   <%}else{ %>
 	   <a href="index.jsp?main=member/memberform.jsp"><p>회원가입시 첫 구매 20%할인 쿠폰 증정 #즉시사용 가능 #중복할인 불가 &nbsp;&nbsp;&nbsp;
 	   회원가입시 첫 구매 20%할인 쿠폰 증정 #즉시사용 가능 #중복할인 불가 &nbsp;&nbsp;&nbsp;
 	   회원가입시 첫 구매 20%할인 쿠폰 증정 #즉시사용 가능 #중복할인 불가 &nbsp;&nbsp;&nbsp;
@@ -63,6 +77,7 @@
 	   회원가입시 첫 구매 20%할인 쿠폰 증정 #즉시사용 가능 #중복할인 불가 &nbsp;&nbsp;&nbsp;
 	   회원가입시 첫 구매 20%할인 쿠폰 증정 #즉시사용 가능 #중복할인 불가 &nbsp;&nbsp;&nbsp;
 	   회원가입시 첫 구매 20%할인 쿠폰 증정 #즉시사용 가능 #중복할인 불가 &nbsp;&nbsp;&nbsp;;</p></a>
+	   <%} %>
 	  </div>
 	</div>
 </div>
