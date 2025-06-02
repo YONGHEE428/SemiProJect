@@ -50,10 +50,10 @@ public class ProductDto {
 		this.viewCount = viewCount;
 	}
 	public String getLikeCout() {
-		return likeCout;
+		return likeCount;
 	}
 	public void setLikeCout(String likeCout) {
-		this.likeCout = likeCout;
+		this.likeCount = likeCout;
 	}
 	public Timestamp getRegisteredAt() {
 		return registeredAt;
@@ -73,7 +73,7 @@ public class ProductDto {
 	private String description;
 	private String category;
 	private String viewCount;
-	private String likeCout;
+	private String likeCount;
 	private Timestamp registeredAt;
 	private Timestamp updatedAt;
 	private List<ProductOptionDto> options;
