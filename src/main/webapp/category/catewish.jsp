@@ -56,15 +56,39 @@
             font-size: 0.9rem;
         }
         
-        /* Recently viewed */
-        .recently-viewed {
-            position: fixed;
-            right: 5px;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 1000;
-            
-        }
+        /* 리모컨 */
+        .recently-viewed-remote {
+		   	position: fixed;
+		    right: 10px;
+		    top: 50%;
+		    transform: translateY(-50%);
+		    display: flex;
+		    flex-direction: column;
+		    gap: 15px;
+		    z-index: 1100;
+		}
+		
+		.remote-btn {
+		    background-color: #fff;
+		    border: 1px solid #ccc;
+		    border-radius: 50%;
+		    width: 50px;
+		    height: 50px;
+		    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+		    cursor: pointer;
+		    display: flex;
+		    align-items: center;
+		    justify-content: center;
+		    color: #333;
+		    font-size: 24px;
+		    transition: background-color 0.3s, color 0.3s;
+		}
+		
+		.remote-btn:hover {
+		    background-color: #c9a797;  /* 카테고리 bg 색 참고 */
+		    color: white;
+		    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+		}
         
         .main-category ul {
             display: flex;
@@ -79,20 +103,6 @@
             padding: 15px 30px;
         }
         
-        .main-category a {
-            text-decoration: none;
-            color: black;
-            font-size: 20px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .main-category a:hover
-         {
-            color: #fff;
-        }
-
         .main-category .divider {
             width: 1px;
             margin: 15px 0;
@@ -104,49 +114,8 @@
     			text-decoration: none;
 		}
 		
-		.dropdown {
- 		   position: relative;
-		}
-		.dropdown-menu {
-  			 display: none;
-    		 opacity: 0;
-    		 visibility: hidden;
-    		 transition: opacity 0.3s ease;
-    		 position: absolute;
-    		 top: 100%;
-    		 left: 0;
-		 	 width:700px;
-    		 max-width: 1000px; /* 전체 화면 너비 */
-    		 background-color: white;
-    		 padding: 30px 60px;
-    		 display: flex;
-    	  	 justify-content: center;
-    		 gap: 50px;
-    		 z-index: 999;
-    		 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-		}
-		.dropdown-menu li {
-    		list-style: none;
-    		text-align: center;
-		}
-/* 호버 시 드롭다운 메뉴 보이기 */
-		.dropdown:hover > .dropdown-menu {
-  			  display: flex;
-   			  opacity: 1;
-    		  visibility: visible;
-		}
-		.dropdown-menu a {
-   			 text-decoration: none;
-    		 font-size: 20px;
-    		 font-weight: bold;
-    		 color: black;
-    		 padding: 10px 20px;
-    		 display: block;
-    		 transition: background-color 0.2s, color 0.2s;
-		}
-		.dropdown-menu a:hover{
-			background-color: lightgray;
-		}
+		
+
 			
     </style>
   <script type="text/javascript">
@@ -179,66 +148,7 @@
 	        }
 	    });
 
-	    // 무한스크롤
-	    let page = 1;
-	    let isLoading = false;
-	    const target = document.getElementById("observerTarget");
-	    const observer = new IntersectionObserver(entries => {
-	        entries.forEach(entry => {
-	            if (entry.isIntersecting && !isLoading) {
-	                isLoading = true;
-	                loadMoreItems();
-	            }
-	        });
-	    });
-	    observer.observe(target);
-
-	    function loadMoreItems() {
-	        // 로딩 메시지 보이기
-	        document.getElementById("loadingMessage").style.display = "block";
-
-	        $.ajax({
-	            type: "GET",
-	            dataType: "json",
-	            url: "/SemiProject/data/items-page" + page + ".json",
-	            success: function(data) {
-	                setTimeout(() => {
-	                	//새 상품 추가
-	                	  const container = document.getElementById("product-list");
-	                	  if (!container) {
-	                	    console.warn("#product-list 요소가 없습니다.");
-	                	    return;
-	                	  }
-	                    data.forEach(item => {
-	                        const el = document.createElement("div");
-	                        el.classList.add("col-3");
-	                        el.innerHTML =
-	                        	 "<div class=\"product-card\" data-product-id=\"" + item.name + "\">" +
-	                             "<div class=\"item\">" +
-	                               "<img alt=\"\" src=\"/SemiProject" + item.img + "\" class=\"product-image\" style=\"width: 100%; height: 100%;\">" +
-	                             "</div>" +
-	                             "<div class=\"item-coment\">" +
-	                               "<div class=\"item-category\"><b>" + item.category + "</b></div>" +
-	                               "<div class=\"item-name\">" + item.name + "</div>" +
-	                               "<div class=\"item-price\"><b>" + item.price + "</b></div>" +
-	                               "<div class=\"item-heart\"><i class=\"bi bi-suit-heart heart\" style=\"cursor: pointer; color: black;\">" + item.heart + "</i></div>" +
-	                             "</div>" +
-	                           "</div>";
-	                        container.appendChild(el);
-	                    });
-	                    page++;
-	                    isLoading = false;
-	                    document.getElementById("loadingMessage").style.display = "none";
-	                }, 500);
-	            },
-	            error: function(xhr, status, error) {
-	                console.error("불러오기 실패", error);
-	                isLoading = false;
-	                document.getElementById("loadingMessage").style.display = "none";
-	            }
-	        });
-	    }
-	    
+	   
 	  
 	});
  
@@ -276,40 +186,14 @@
 <div id="selectedCategory" style="text-align:center; font-size: 24px; font-weight: bold; margin-top: 20px;"></div>
 
    		 <ul>
-   		  <li class="dropdown">
-            <a href="index.jsp?main=category/category.jsp" class="category-link">ALL</a>
+   		  <li class="dropdown" style="background-color: ; border-radius: 20px;">
+            <span class="category-link" style="font-size: 30px; color: black;">
+            위시리스트</span>
+            <hr>
         </li>
-    <li class="divider"></li>  
-  <li class="nav-item dropdown" style="background-color: #a47864; border-radius: 100px;">
-  <a class="category-link" href="index.jsp?main=category/top.jsp" role="button" >TOP</a>
-  <!-- TOP에서 드랍다운 -->
-  		<ul class="dropdown-menu">
-    		<li><a class="dropdown-item" href="#">티셔츠</a></li>
-    		<li><a class="dropdown-item" href="#">아우터</a></li>
-    		
-  		</ul>
- </li>
+ 		</ul>
 
-        <li class="divider"></li>
-        <li class="dropdown">
-            <a href="index.jsp?main=category/bottom.jsp" class="category-link">BOTTOM</a>
-            <ul class="dropdown-menu">
-                <li><a href="#">팬츠</a></li>
-                <li><a href="#">치마</a></li>
-                
-            </ul>
-        </li>
-        <li class="divider"></li>
-        <li class="dropdown">
-            <a href="index.jsp?main=category/accesories.jsp" class="category-link">ACCESORIES</a>
-           
-        </li>
        
-        <li class="divider"></li>
-        <li class="dropdown">
-            <a href="index.jsp?main=category/shoes.jsp" class="category-link">SHOES</a>
-        </li>
-    </ul>
 </div>
     <!-- Product Grid -->
     <div class="container my-5">
@@ -335,9 +219,25 @@
     </div>
 	
     <!-- Recently Viewed Button -->
-    <div class="recently-viewed">
-        <button class="btn btn-outline-dark btn-sm" style="width: 100px;">최근 본 상품</button><br><br>
-        <button class="btn btn-outline-danger btn-sm">위시리스트</button>
+ 	  <div class="recently-viewed-remote">
+    	<button class="remote-btn" title="위로" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });">
+    	<i class="bi bi-caret-up"></i>
+    	</button>
+        <button class="remote-btn" title="최근 본 상품">
+        <i class="bi bi-eye"></i>
+        </button>
+        <button class="remote-btn" title="위시리스트" onclick="location.href='index.jsp?main=category/catewish.jsp'">
+        <i class="bi bi-heart"></i>
+        </button>
+        <button	onclick="location.href='http://pf.kakao.com/_XsGSn'" 
+					class="counsel-link kakao remote-btn" >
+					<img alt="" src="SemiImg/kakao.png" style="width: 135%; height:110%; border-radius: 100%;">
+	    </button>
+	    <!--window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+	      document.body.scrollHeight 는 문서 전체 높이(스크롤 가능한 최대 높이) 페이지 맨 아래로 부드럽게 이동-->
+	    <button class="remote-btn" title="아래로" onclick="window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });">
+    	<i class="bi bi-caret-down"></i>
+    	</button>
     </div>
 	
     <div id="loadingMessage" style="display:none; text-align:center; padding:10px; font-weight:bold;">로딩중...</div>

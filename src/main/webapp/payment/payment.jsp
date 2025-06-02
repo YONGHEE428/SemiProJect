@@ -242,9 +242,11 @@ header {
 	            var m = $(".form-select option:selected").text();
 	            if(m==="직접 입력"){
 	            	$("#mymessage").show();
+	            }else{
+	            	$("#mymessage").hide();
 	            }
 	        });
-		//주소창
+		//주소창 (다음 주소창 api)
     	$("#findaddress").click(function(){
     		new daum.Postcode({
 		        oncomplete: function(data) {
@@ -305,6 +307,10 @@ header {
 		        }
 		  });
      }
+	 function logout(){
+			alert("로그아웃 하셨습니다.");
+			location.href = "../login/logoutform.jsp";
+			}
 </script>
 <%
    //프로젝트 경로구해기
@@ -320,10 +326,10 @@ header {
                     <span></span>
                     <span></span>
                 </button>
-                <h1 class="shop-name">
+                <h1 class="shop-name"><a href="<%=root%>/index.jsp">
                 <img src="<%=root%>/SemiImg/mainLogo.png" class="y_mainlogo" 
                 	style="width: 150px;">
-				</h1>
+				</a></h1>
             </div>
             <div class="right-section">
                 <nav class="user-menu">
@@ -331,7 +337,23 @@ header {
                     <a href="#">고객센터</a>
                     <a href="#">장바구니</a>
                     <a href="#">마이페이지</a>
-                    <a href="#">로그인</a>
+                    <%
+                    String loginok = (String)session.getAttribute("loginok");
+					String name = (String)session.getAttribute("name");
+					String role = (String)session.getAttribute("role");
+					    if(loginok != null && loginok.equals("yes")) {
+					  %>
+					  <a href="#" id="logouting"><span><%=name%>님</span></a>
+						<a href="#" onclick="logout()">로그아웃</a>
+					  <%
+					    } else {
+					  %>
+					  <!-- 로그인버튼 클릭 시 현재 사용자가 보고있는 페이지 URl를 반환 -->
+					    <a href="../index.jsp?main=login/loginform.jsp&redirect=<%=request.getRequestURI()%>">로그인</a>
+					  <%
+					    }
+					  %>
+                    
                 </nav>
             </div>
         </div>
@@ -383,10 +405,15 @@ header {
     <input type="text" class="form-control" id="userDtlAddress" name="userDtlAddress" maxlength="100" readonly style="flex-grow: 1; min-width: 0;">
 </div>    
              <section>
-             <span style="padding: 5px;">이메일</span><br><br>          
+                     
                 <div class="form-group" style="width: 450px;">
+                <span style="padding: 5px;">이메일</span>&nbsp;&nbsp;&nbsp;
                     <input type="email" placeholder="이메일" 
                     required="required">
+                </div><br>
+                <div><span style="padding: 5px;">쿠폰 적용</span>
+					  &nbsp;&nbsp;&nbsp;<span id="usecoupon">선택안함</span>&nbsp;&nbsp;&nbsp;
+					  <button type="button" class="btn btn-outline-success btn-sm">찾아보기</button>
                 </div>
                 <br>
                 <div class="form-group">

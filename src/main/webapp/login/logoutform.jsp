@@ -13,9 +13,7 @@
 <body>
 <%
 	// 로그인 정보 세션 삭제
-	session.removeAttribute("loginok");
-	session.removeAttribute("name");
-	session.removeAttribute("role");
+	 session.invalidate();
 
     response.sendRedirect("../index.jsp"); // 홈 또는 로그인 페이지로 이동
 %>
