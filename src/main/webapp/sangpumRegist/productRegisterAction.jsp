@@ -92,51 +92,39 @@
         }
 
         // 5. ProductOptionDto 리스트 생성 및 값 설정
-        Map<String, ProductOptionDto> optionsMap = new HashMap<>();
-        Enumeration<String> paramNames = mrequest.getParameterNames();
-        Pattern optionPattern = Pattern.compile("options\\[(\\d+)\\]\\[(color|size|quantity)\\]");
+        List<ProductOptionDto> optionsList = new ArrayList<>();
+        int optionIndex = 0; // 옵션 인덱스 초기화
 
-        while (paramNames.hasMoreElements()) {
-            String paramName = paramNames.nextElement();
-            Matcher matcher = optionPattern.matcher(paramName);
-            if (matcher.matches()) {
-                String optionIndex = matcher.group(1);
-                String fieldType = matcher.group(2);
-                String value = mrequest.getParameter(paramName);
+        while (true) {
+            String color = mrequest.getParameter("options[" + optionIndex + "][color]");
+            String size = mrequest.getParameter("options[" + optionIndex + "][size]");
+            String quantityStr = mrequest.getParameter("options[" + optionIndex + "][quantity]");
 
-                // "상품 등록하기" 시 옵션 필드 값 필수 검사 (수량 0은 허용)
-                if ("register".equals(formActionType) && (value == null || value.trim().isEmpty())) {
-                    if (!("quantity".equals(fieldType) && "0".equals(value.trim()))) {
-                        throw new IllegalArgumentException("옵션 #" + (Integer.parseInt(optionIndex) + 1) + "의 " + fieldType + " 값을 입력해주세요.");
-                    }
-                } else if (value == null || value.trim().isEmpty()) {
-                    // 임시저장 시 값 없으면 건너뜀
-                    continue;
-                }
-
-                ProductOptionDto currentOption = optionsMap.computeIfAbsent(optionIndex, k -> new ProductOptionDto());
-                if ("color".equals(fieldType)) {
-                    currentOption.setColor(value);
-                } else if ("size".equals(fieldType)) {
-                    currentOption.setSize(value);
-                } else if ("quantity".equals(fieldType)) {
-                    try {
-                        int quantity = Integer.parseInt(value);
-                        if ("register".equals(formActionType) && quantity < 0) {
-                            throw new IllegalArgumentException("옵션 #" + (Integer.parseInt(optionIndex) + 1) + "의 수량은 0 이상이어야 합니다.");
-                        }
-                        currentOption.setStockQuantity(quantity);
-                    } catch (NumberFormatException e) {
-                        if ("register".equals(formActionType)) {
-                            throw new IllegalArgumentException("옵션 #" + (Integer.parseInt(optionIndex) + 1) + "의 수량은 숫자로 입력해주세요.");
-                        }
-                        currentOption.setStockQuantity(0); // 임시저장 시 숫자 변환 실패면 0으로
-                    }
-                }
+            // 옵션이 없으면 루프 종료
+            if (color == null && size == null && quantityStr == null) {
+                break;
             }
+
+            ProductOptionDto optionDto = new ProductOptionDto();
+            optionDto.setColor(color);
+            optionDto.setSize(size);
+            if (quantityStr != null) {
+                try {
+                    int quantity = Integer.parseInt(quantityStr);
+                    optionDto.setStockQuantity(quantity);
+                } catch (NumberFormatException e) {
+                    optionDto.setStockQuantity(0); // 유효하지 않은 경우 기본값 0
+                }
+            } else {
+                optionDto.setStockQuantity(0); // 수량이 없는 경우 기본값 0
+            }
+
+            optionsList.add(optionDto); // 옵션 리스트에 추가
+            optionIndex++; // 인덱스 증가
         }
 
-        optionList.addAll(optionsMap.values()); // 옵션 리스트에 추가
+        // 옵션 리스트에 추가
+        optionList.addAll(optionsList);
 
         // "상품 등록하기" 시 옵션 항목 자체 및 각 옵션 내부 필드 검사
         if ("register".equals(formActionType)) {
