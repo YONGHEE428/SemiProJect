@@ -75,8 +75,10 @@
   }
   
   String redirect = request.getParameter("redirect");
-  if (redirect == null) redirect = "../index.jsp";  // 기본값
-%>
+  if (redirect == null || redirect.trim().equals("")) {
+      redirect = "../index.jsp";  //아무것도 안적혀있으면 기본페이지
+  }
+ %>
 <body>
 <div class="login-main">
 	<div class="login-title">
@@ -88,7 +90,8 @@
      <input type="text" name="id" class="form-control field" placeholder="" required="required" value="<%=myid%>" >
     <span class="login-span"><p>비밀번호</p></span>
      <input type="password" name="pass" class="form-control field" placeholder="" required="required">
-         <input type="hidden" name="redirect" value="<%= redirect %>"><!-- 현재페이지주소 전달 -->
+         <input type="hidden" name="redirect" value="<%= redirect %>">
+         								<!-- 히든으로 loginaction.jsp에 redirect 값에 전달 -->
      
 	
      <button type="submit" class="login-btn" disabled>로그인</button><br>

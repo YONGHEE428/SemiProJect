@@ -18,7 +18,6 @@
 	String pass = request.getParameter("pass");
 	String cbsave=request.getParameter("savechk");
 	
-
 	/* 리다이렉트 */
 	String redirectPage = request.getParameter("redirect");
 	if (redirectPage == null || redirectPage.trim().equals("")) {
@@ -46,10 +45,6 @@
 			session.setAttribute("role", "user");
 		}
 
-		/* System.out.print(dto.getEmail() + name + dto.getHp() + dto.getBirth());
-		response.sendRedirect("../index.jsp");
- */
-		
 		response.sendRedirect(redirectPage);
 
 	} else {

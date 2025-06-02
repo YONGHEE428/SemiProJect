@@ -160,6 +160,8 @@
 <body>
 <%
 	SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	String referer = request.getHeader("referer");
+	boolean fromMypage = (referer != null && referer.contains("mypage.jsp")); // 또는 마이페이지의 실제 URL 경로
 %>
 <div class="alldiv">
   <!-- 알림창 -->
@@ -183,18 +185,23 @@
     <!-- Category Navigation -->
    <!-- 카테고리 -->
 <div class="main-category" style="width: 100%; background-color: white; left: 0;">
-<div id="selectedCategory" style="text-align:center; font-size: 24px; font-weight: bold; margin-top: 20px;"></div>
-
-   		 <ul>
+<div id="selectedCategory" style="text-align:left; font-size: 24px; font-weight: bold; margin-top: 20px;">
+   		  <ul style="<%= fromMypage ? "gap:250px; margin-left:-510px;" : "" %>">
+   		 <% if(fromMypage) { %>
+		    <li style="font-weight: normal; font-size: 15px; color: gray;">
+		        <span>홈 > 마이페이지 > <strong>위시리스트</strong></span>
+		    </li>
+		<% }%>
    		  <li class="dropdown" style="background-color: ; border-radius: 20px;">
             <span class="category-link" style="font-size: 30px; color: black;">
             위시리스트</span>
             <hr>
         </li>
  		</ul>
-
-       
+   </div>
 </div>
+
+
     <!-- Product Grid -->
     <div class="container my-5">
         <div id="product-list" class="row">
