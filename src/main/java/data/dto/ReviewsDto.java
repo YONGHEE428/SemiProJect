@@ -76,6 +76,14 @@ public class ReviewsDto {
 		this.created_at = created_at;
 	}
 	
-	
+	private String size_fit;
+	private String size_comment;
+
+	public String getSize_fit() { return size_fit; }
+	public void setSize_fit(String size_fit) { this.size_fit = size_fit; }
+
+	public String getSize_comment() { return size_comment; }
+	public void setSize_comment(String size_comment) { this.size_comment = size_comment; }
+
 	
 }

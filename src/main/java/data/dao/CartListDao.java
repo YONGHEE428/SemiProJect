@@ -13,6 +13,30 @@ import db.copy.DBConnect;
 public class CartListDao {
 	DBConnect db = new DBConnect();
 
+	
+
+	public void addCart(CartListDto dto) {
+	    String sql = "INSERT INTO cart (product_id, member_id, option_id, size, color, cnt, writeday, buyok) " +
+	                 "VALUES (?, ?, ?, ?, ?, ?, now(), 0)";
+	    
+	    try (Connection conn = db.getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        
+	        pstmt.setString(1, dto.getProduct_id());
+	        pstmt.setString(2, dto.getMember_id());
+	        pstmt.setString(3, dto.getOption_id());
+	        pstmt.setString(4, dto.getSize());
+	        pstmt.setString(5, dto.getColor());
+	        pstmt.setString(6, dto.getCnt());
+
+	        pstmt.executeUpdate();
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+
+	
     // 장바구니에 상품 추가 (option_id 포함)
     public void insertCart(CartListDto dto) {
         String sql = "INSERT INTO cartlist (product_id, option_id, member_id, cnt, writeday, BUYOK) VALUES (?, ?, ?, ?, now(), 0)";
@@ -92,6 +116,8 @@ public class CartListDao {
     	
     	return dto;
     }
+    
+    
 } 
 
 
