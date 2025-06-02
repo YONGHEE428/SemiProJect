@@ -1,3 +1,4 @@
+<%@page import="java.util.StringTokenizer"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
@@ -232,9 +233,32 @@ header {
 .payment-submit-btn:hover {
     background-color: #444;
 }
+.method-btn{
+	background-color:#c9a797;  /* 카테고리 bg 색 참고 */
+		    color: white;
+}
+.method-btn:hover{
+	background-color: #a47864;
+}
 </style>
+<%
+	String name=(String)session.getAttribute("name");
+	String hp=(String)session.getAttribute("hp");
+	
+	StringTokenizer stk= new StringTokenizer(hp,"-");
+%>
 <script type="text/javascript">
 	$(function(){
+		$(".payment-method-btn").click(function() {
+			  $(".payment-method-btn").removeClass("method-btn"); // 기존 선택 해제
+			  $(this).addClass("method-btn"); // 현재 선택한 버튼에 스타일 적용
+			  var selectedPay = $(this).text();
+			    $("#selectedPay").val(selectedPay);
+			    
+			   
+			});
+		
+		
 		/* 주문자정보 감추기 */
 		/* $(".customer-form").hide(); */
 		/* 결제정보 감추기 */
@@ -269,8 +293,42 @@ header {
 			inputDtlAddr.readOnly = true; // 상세주소란 읽기전용 해제
 		});
 		
+		$("#sameinfo").click(function(){
+			if($(this).is(":checked")){
+				$("#name").val("<%=name %>");
+				$("#hp").val("<%=stk.nextToken()%>"+"<%=stk.nextToken()%>"+"<%=stk.nextToken()%>");	
+				
+			}else{
+				$("#name").val("");
+				$("#hp").val("");	
+			}
+		});
+		
 	});
-	 function KGpay(){
+	
+	function payrequest(){
+		const selectedPay=$("#selectedPay").val();
+		  if (!selectedPay) {
+		        alert("결제 수단을 선택해주세요.");
+		        return;
+		    }
+
+		    if (selectedPay === "카드결제") {
+		        cardPay();
+		    } else if (selectedPay === "네이버페이") {
+		        naverPay();
+		    } else if (selectedPay === "카카오페이") {
+		        kakaoPay();
+		    } else if (selectedPay === "무통장입금") {
+		        bankTransfer();
+		    } else if (selectedPay === "TOSS") {
+		        tossPay();
+		    } else {
+		        alert("지원하지 않는 결제 수단입니다.");
+		    }
+		}
+	
+	 function cardPay(){
 		 var IMP = window.IMP;
 		 IMP.init('imp23623506');
 
@@ -278,35 +336,50 @@ header {
 
 		 //iamport 대신 자신의 "가맹점 식별코드"를 사용
 		  IMP.request_pay({
-		    pg: "kicc",
-		    pay_method: "card",
-		    merchant_uid : "abc-2",
-		    name : '결제테스트',
-		    amount : 100,
-		    buyer_email : 'iamport@siot.do',
-		    buyer_name : '구매자',
-		    buyer_tel : '010-1234-5678',
-		    buyer_addr : '서울특별시 강남구 삼성동',
-		    buyer_postcode : '123-456'
-		  }, function (rsp) { // callback
-			  if (rsp.success) {
-		            // 결제 성공 시 로직
-		            alert('결제가 완료되었습니다.\n' + 
-		                '고유ID : ' + rsp.imp_uid + '\n' +
-		                '상점 거래ID : ' + rsp.merchant_uid + '\n' +
-		                '결제 금액 : ' + rsp.paid_amount + '\n' +
-		                '카드 승인번호 : ' + rsp.apply_num);
-		                
-		            // 여기에 결제 성공 후 이동할 페이지 지정
-		            // location.href = '결제성공페이지URL';
-		            
+			  pg: "kicc",
+		        pay_method: "card",
+		        merchant_uid: generateOrderNumber(),
+		        name: '결제테스트',
+		        amount: 100,
+		        buyer_email: 'iamport@siot.do',
+		        buyer_name: '구매자',
+		        buyer_tel: '010-1234-5678',
+		        buyer_addr: '서울특별시 강남구 삼성동',
+		        buyer_postcode: '123-456'
+		  },function(rsp) {
+		        if (rsp.success) {
+		        	 // 결제 성공 시 서버 검증 요청
+		            $.ajax({
+		                url: "payment/verify",
+		                method: "POST",
+		                data: {
+		                    imp_uid: rsp.imp_uid,
+		                    merchant_uid: rsp.merchant_uid,
+		                    amount: rsp.paid_amount
+		                }
+		            }).done(function(data) {
+		                if (data.status === "success") {
+		                    alert('결제가 완료되었습니다.\n' + 
+		                        '고유ID : ' + rsp.imp_uid + '\n' +
+		                        '주문번호 : ' + rsp.merchant_uid + '\n' +
+		                        '결제 금액 : ' + rsp.paid_amount + '\n' +
+		                        '카드 승인번호 : ' + rsp.apply_num);
+		                    
+		                    location.href = 'index.jsp?main=payment_success.jsp';
+		                } else {
+		                    alert('결제 검증에 실패하였습니다.\n' + data.message);
+		                    location.href = 'payment_fail.jsp';
+		                }
+		            });
 		        } else {
-		            // 결제 실패 시 로직
-		            alert('결제에 실패하였습니다.\n' + 
-		                '에러내용: ' + rsp.error_msg);
+		        	alert('결제에 실패하였습니다.\n' + 
+		                    '에러내용: ' + rsp.error_msg);
 		        }
-		  });
-     }
+		        });
+	 }
+	 function naverPay(){
+		 alert("공사 중입니다.");
+	 }
 	 function logout(){
 			alert("로그아웃 하셨습니다.");
 			location.href = "../login/logoutform.jsp";
@@ -339,7 +412,7 @@ header {
                     <a href="#">마이페이지</a>
                     <%
                     String loginok = (String)session.getAttribute("loginok");
-					String name = (String)session.getAttribute("name");
+					
 					String role = (String)session.getAttribute("role");
 					    if(loginok != null && loginok.equals("yes")) {
 					  %>
@@ -372,12 +445,19 @@ header {
     <section class="customer-info-section">
         <div class="info-container">
             <h2 class="orderer">주문자 정보</h2>
-            <form class="customer-form">
-                <div class="form-group" style="width: 100px;">
-                    <input type="text" placeholder="주문자명">
+            <form class="customer-form" >
+                <div class="form-group" style="width: 260px;">
+                    <input type="text" placeholder="주문자명" id="name" style="width: 100%; margin-bottom: 10px;">
+                 
+               <label style="width: 150px; display: inline-block; padding: 2px 5px; cursor: pointer;">
+			    	<input type="checkbox" id="sameinfo" name="sameinfo" style="vertical-align: middle; margin-right: 5px;">
+    				회원정보와 동일
+  				</label>
                 </div>
+               
+                
                 <div class="form-group" style="width: 250px;">
-                    <input type="tel" placeholder="번호(-없이 입력)" >
+                    <input type="tel" name="hp" id="hp" placeholder="번호(-없이 입력)" >
                 </div>
                 <div class="form-group address-group">
                     <span><h3>주소</h3></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -443,7 +523,6 @@ header {
         </div>
     </section>
 
-    <!-- 결제 섹션 -->
    <!-- 결제 섹션 -->
 <section class="payment-section" style="max-width: 1200px; margin: 0 auto;">
     <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; align-items: flex-start;">
@@ -453,11 +532,11 @@ header {
             <h2>결제 수단</h2>
             <div class="payment-container" style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
                 <div class="payment-methods">
-                    <button class="payment-method-btn">카드결제</button>
-                    <button class="payment-method-btn">네이버페이</button>
-                    <button class="payment-method-btn">카카오페이</button>
-                    <button class="payment-method-btn">무통장입금</button>
-                    <button class="payment-method-btn">toss</button>
+                    <button class="payment-method-btn" name="pay">카드결제</button>
+                    <button class="payment-method-btn" name="pay">네이버페이</button>
+                    <button class="payment-method-btn" name="pay">카카오페이</button>
+                    <button class="payment-method-btn" name="pay">무통장입금</button>
+                    <button class="payment-method-btn" name="pay">TOSS</button>
                 </div>
                 <div class="payment-details">
                     <!-- 결제 상세 정보가 여기에 들어갑니다 -->
@@ -475,7 +554,11 @@ header {
                     </div>
                 </div>
                 <span style="text-align: right;"><b>총 결제금액 </b></span>
-                <button type="button" class="payment-submit-btn" onclick="KGpay()">결제요청</button>
+                <%
+                	String method_btn=request.getParameter("pay");
+                %>
+                <input type="hidden" id="selectedPay" name="selectedPay" readonly="readonly">
+                <button type="button" class="payment-submit-btn" onclick="payrequest()">결제요청</button>
             </div>
         </div>
         
