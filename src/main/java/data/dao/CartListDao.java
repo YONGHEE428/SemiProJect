@@ -7,7 +7,10 @@ import data.dto.CartListDto;
 import db.copy.DBConnect;
 
 public class CartListDao {
-    DBConnect db = new DBConnect();
+
+
+	DBConnect db = new DBConnect();
+
 
 
 	public void addCart(CartListDto dto) {
@@ -46,9 +49,12 @@ public class CartListDao {
         }
     }
 
+
     // 회원별 장바구니 목록 (product, product_option 조인)
 
     // 1. 장바구니 목록 조회 (회원 이름 포함)
+
+
 
     public List<CartListDto> getCartListByMember(String member_id) {
         List<CartListDto> list = new ArrayList<>();
@@ -136,7 +142,6 @@ public class CartListDao {
             e.printStackTrace();
         }
     }
-
     //구매하기 버튼 누르면 buyok=1로 바뀜.
     public CartListDto getAllDatas(int buyok)
     {
@@ -147,8 +152,5 @@ public class CartListDao {
     }
     
     
-} 
 
-
-
-
+}
