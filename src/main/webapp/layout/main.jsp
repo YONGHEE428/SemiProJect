@@ -1,3 +1,7 @@
+<%@page import="java.util.Base64"%>
+<%@page import="data.dto.ProductDto"%>
+<%@page import="java.util.List"%>
+<%@page import="data.dao.ProductDao"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -214,24 +218,29 @@ function loadMoreItems() {
 		filter: brightness(70%);
 		transition: 0.3s ease;
 	}
+	img.no-hover:hover {
+	  filter: none;
+	  cursor: pointer;
+	  transition: none;
+}
 </style>
 <body>
 <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel"data-bs-interval="5000">
   <div class="carousel-inner" style="height: 550px;">
     <div class="carousel-item active">
-      <img src="SemiImg/test.png" class="d-block w-100" alt="...">
+      <a href="index.jsp?main=category/accesories.jsp"><img src="SemiImg/test.png" class="no-hover d-block w-100" alt="..."></a>
     </div>
     <div class="carousel-item">
-      <img src="SemiImg/test2.png" class="d-block w-100" alt="...">
+      <a href="index.jsp?main=category/accesories.jsp"><img src="SemiImg/test2.png" class="no-hover d-block w-100" alt="..."></a>
     </div>
     <div class="carousel-item">
-      <img src="SemiImg/test3.jpg" class="d-block w-100" alt="...">
+      <a href="index.jsp?main=category/top.jsp"><img src="SemiImg/test3-1.jpg" class="no-hover d-block w-100" alt="..."></a>
     </div>
     <div class="carousel-item">
-      <img src="SemiImg/main.png" class="d-block w-100" alt="...">
+      <a href="index.jsp?main=category/category.jsp"><img src="SemiImg/main.png" class="no-hover d-block w-100" alt="..."></a>
     </div>
      <div class="carousel-item">
-      <img src="SemiImg/main2.png" class="d-block w-100" alt="...">
+      <a href="index.jsp?main=category/shoes.jsp"><img src="SemiImg/main2.png" class="no-hover d-block w-100" alt="..."></a>
     </div>		
   </div>
   <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
@@ -244,16 +253,19 @@ function loadMoreItems() {
   </button>
 </div><br>
 
-<%String root = request.getContextPath(); %>
+<%	String root = request.getContextPath(); 
+	
+	ProductDao dao = new ProductDao();
+	List<ProductDto> list = dao.getTopLikedProducts();
 
-
-
+%>
 <div class="main-item">
+
   <div class="LikeItem-conttent"><span><strong style="font-size: 1.7em;">Popular Listings</strong><br><b>인기 상품</b></span><br></div>
   <div class="main-LikeItems">
   <ul>
   	<li>
-	  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/top/a81.jpg" ></a></div>
+	  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="https://ssy-img-files.s3.ap-northeast-2.amazonaws.com/product_images/568f738a-36dc-4428-9741-c6c16335c956_바닷가이미지.avif" ></a></div>
 	  	<div class="item-coment">
 	  		<div class="item-category">TOP</div>
 		  	<div class="item-name">스트릿 긴팔크롭티</div>
