@@ -93,7 +93,7 @@
 							<li><a href="index.jsp?main=member/mypage.jsp">마이페이지</a></li>
 							
 					<%}if(role !=null && role.equals("admin")){%>
-							<li><a href="#">매장관리</a>
+							<li><a href="index.jsp?main=sangpumRegist/productListAdmin.jsp">매장관리</a>
 					<%} 
 					}%>
 					<li>
