@@ -54,12 +54,14 @@
         String productPriceStr = mrequest.getParameter("productPrice");
         String selectedCategory = mrequest.getParameter("selectedCategory");
         String productDetailContent = mrequest.getParameter("product_detail");
+
         // String formActionType = mrequest.getParameter("form_action_type"); // 더 이상 사용 안 함
         String originalImageFileName = mrequest.getOriginalFileName("productImage"); // 원본 파일명
         String filesystemImageFileName = mrequest.getFilesystemName("productImage"); // 서버에 저장된 임시 파일명
 
         // 3. ProductDto 기본 정보 채우기
         productDto.setProductId(productId); // 상품 ID 설정 (신규 등록이면 0, 수정이면 기존 ID)
+
         productDto.setProductName(productName);
         productDto.setCategory(selectedCategory);
         productDto.setDescription(productDetailContent);

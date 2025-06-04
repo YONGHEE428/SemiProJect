@@ -5,183 +5,162 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Category Main</title>
+<title>위시리스트</title>
 <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&family=Nanum+Brush+Script&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-  <script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
-    <style>
-		.alldiv {
-			background-color: #f4f4f4;
-		}
-        /* Product grid */
-        .product-card {
-            border: 0px solid #ddd;
-            margin-bottom: 30px;
-            transition: transform 0.2s;
-        }
-        
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            cursor: pointer;
-      		filter: brightness(70%);
-      		transition: 0.3s ease;
-        }
-        
-        .product-image {
-            height: 200px;
-            object-fit: cover;
-        }
-        
-        .product-info {
-            padding: 15px;
-        }
-        
-        .product-title {
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-        }
-        
-        .product-price {
-            font-weight: bold;
-            color: #333;
-        }
-        
-        /* User menu */
-        .user-menu .btn {
-            margin: 0 5px;
-            font-size: 0.9rem;
-        }
-        
-        /* 리모컨 */
-        .recently-viewed-remote {
-		   	position: fixed;
-		    right: 10px;
-		    top: 50%;
-		    transform: translateY(-50%);
-		    display: flex;
-		    flex-direction: column;
-		    gap: 15px;
-		    z-index: 1100;
-		}
-		
-		.remote-btn {
-		    background-color: #fff;
-		    border: 1px solid #ccc;
-		    border-radius: 50%;
-		    width: 50px;
-		    height: 50px;
-		    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-		    cursor: pointer;
-		    display: flex;
-		    align-items: center;
-		    justify-content: center;
-		    color: #333;
-		    font-size: 24px;
-		    transition: background-color 0.3s, color 0.3s;
-		}
-		
-		.remote-btn:hover {
-		    background-color: #c9a797;  /* 카테고리 bg 색 참고 */
-		    color: white;
-		    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-		}
-        
-        .main-category ul {
-            display: flex;
-            justify-content: center;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-        
-        .main-category li {
-         position: relative;
-            padding: 15px 30px;
-        }
-        
-        .main-category .divider {
-            width: 1px;
-            margin: 15px 0;
-            color: #fff;
-        }
-        .category-link {   			 
-    			color: white;
-    			text-shadow: 1px 1px 1px gray;
-    			text-decoration: none;
-		}
-		
-		
-
-			
-    </style>
-  <script type="text/javascript">
-  $(function () {
-	    // 하트 클릭 (동적 요소 대응)
-	    $(document).on("click", ".heart", function () {
-	        let isFilled = $(this).hasClass("bi-suit-heart-fill");
-	        let count = parseInt($(this).text());
-
-	        if (isFilled) {
-	            $(this)
-	                .removeClass("bi-suit-heart-fill")
-	                .addClass("bi-suit-heart")
-	                .css("color", "black")
-	                .text(count - 1);
-	            	
-	        } else {
-	            $(this)
-	                .removeClass("bi-suit-heart")
-	                .addClass("bi-suit-heart-fill")
-	                .css("color", "red")
-	                .text(count + 1);
-	            document.querySelector("#liveToast .toast-body").innerText = "위시리스트에 추가되었습니다!";
-
-	            const toastLiveExample = document.getElementById('liveToast');
-	            const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
-
-	            toastBootstrap.show();
-	            
-	        }
-	    });
-
-	   
-	  
-	});
- 
-
-</script>
+<script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
     
+    .wishlist-header {
+        background-color: white;
+        padding: 20px 0;
+        margin-bottom: 30px;
+        border-bottom: 1px solid #e5e5e5;
+    }
+    
+    .wishlist-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+        margin: 0;
+        padding: 0 20px;
+        background-color: 
+    }
+    
+    .breadcrumb {
+        font-size: 14px;
+        color: #666;
+        margin: 10px 20px 0;
+    }
+    
+    .product-container {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        margin: 20px;
+        padding: 20px;
+    }
+     .product-type {
+        display: grid;
+        grid-template-columns: 120px 2fr 1fr 1fr 150px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+        font-weight: bold;
+        color: #495057;
+        margin-bottom: 10px;
+        font-size: 14px;
+        border-radius: 4px;
+    }
+      .product-type-item {
+        text-align: center;
+        padding: 0 10px;
+    }
+    .product-type-item:first-child {
+        flex: 0 0 120px;
+    }
+    
+    .product-type-item:last-child {
+        flex: 0 0 150px;
+    }
+    #product-list {
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+    }
+    .product-row {
+        display: grid;
+        grid-template-columns: 120px 2fr 1fr 1fr 150px;
+        align-items: center;
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        transition: all 0.3s ease;
+    }
+    
+      .product-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+    
+  .product-info {
+        text-align: left;
+        padding: 0 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .product-company {
+        color: #000;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+    
+     .product-name {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+    
+    .product-price {
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    .product-size,
+    .product-color {
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .product-actions {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .heart {
+        font-size: 20px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .heart:hover {
+        transform: scale(1.1);
+    }
+    
+    .heart.bi-suit-heart-fill {
+        color: #dc3545;
+    }
+    
+    .empty-wishlist {
+        text-align: center;
+        padding: 50px 20px;
+        color: #666;
+    }
+    
+    .toast-container {
+        z-index: 1050;
+    }
+</style>
 </head>
-
 <body>
 <%
+
 	SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	String referer = request.getHeader("referer");
 	String name = (String)session.getAttribute("name");
 	boolean fromMypage = (referer != null && referer.contains("mypage.jsp")); // 또는 마이페이지의 실제 URL 경로
+
 %>
-<div class="alldiv">
-  <!-- 알림창 -->
-<div class="toast-container position-fixed bottom-0 end-0 p-3">
-  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-header">
-      <img src="SemiImg/footerLogo.png" width="20px;" class="rounded me-2" alt="...">
-      <strong class="me-auto">!알림</strong>
-      <small>Now</small>
-      <button type="button" class="btn-close" data-bs-dismiss="toast" 
-      aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-      
-    </div>
-  </div>
-</div>
-   
-   
 
     <!-- Category Navigation -->
    <!-- 카테고리 -->
@@ -200,69 +179,78 @@
         </li>
  		</ul>
    </div>
+
 </div>
 
-
-    <!-- Product Grid -->
-    <div class="container my-5">
-        <div id="product-list" class="row">
-            <!-- Product Card Template - Repeated 16 times (4x4 grid) -->
-            <% for(int i = 0; i < 16; i++) { %>
-            <div class="col-3">
-                <div class="product-card"  data-product-id="<%=i%>">
-                    <img src="SemiImg/footerLogo.png" alt="Product Image" class="product-image"
-                    style="width: 100%; height: 100%;">
-                    <div class="product-info">
-                        <div class="product-company"><b>SSY</b></div>
-                        <div class="product-name">상품명</div>
-                        <div class="product-price"><b>99,000원</b></div>
-                        <i class="bi bi-suit-heart heart" id="liveToastBtn"
-                        style="cursor: pointer; color: black;">0</i>
-                        
-                    </div>
+<!-- 상품 목록 -->
+<div class="container">
+    <div class="product-container">
+        <div class="product-type">
+            <div class="product-type-item">이미지</div>
+            <div class="product-type-item">기본정보</div>
+            <div class="product-type-item">사이즈</div>
+            <div class="product-type-item">컬러</div>
+            <div class="product-type-item">선택</div>
+        </div>
+        <div id="product-list">
+            <!-- 상품 행 템플릿 -->
+            <% for(int i = 0; i < 5; i++) { %>
+            <div class="product-row">
+                <div class="product-type-item">
+                    <img src="SemiImg/footerLogo.png" alt="Product Image" class="product-image">
+                </div>
+                <div class="product-info product-type-item" style="text-align: center;">
+                    <div class="product-company"><b>아우터</b></div>
+                    <div class="product-name">상품명</div>
+                    <div class="product-price">99,000원</div>
+                </div>
+                <div class="product-type-item">
+                    <span>S, M, L</span>
+                </div>
+                <div class="product-type-item">
+                    <span>블랙, 화이트</span>
+                </div>
+                <div class="product-type-item">
+                    <button class="btn btn-sm btn-outline-dark" style="font-size: 11px; margin-bottom: 15px;">장바구니 추가</button>
+                    <button class="btn btn-sm btn-outline-danger" style="font-size: 11px;">위시리스트에서 제거</button>
                 </div>
             </div>
-            <% } %>
+            <%}
+            %>
+        
+        <!-- 빈 위시리스트 메시지 -->
+        <div class="empty-wishlist" style="display: none;">
+            <i class="bi bi-heart" style="font-size: 48px; margin-bottom: 20px;"></i>
+            <h4>위시리스트가 비어있습니다</h4>
+            <p>마음에 드는 상품을 하트 아이콘을 눌러 추가해보세요!</p>
         </div>
     </div>
-	
-    <!-- Recently Viewed Button -->
- 	  <div class="recently-viewed-remote">
-    	<button class="remote-btn" title="위로" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });">
-    	<i class="bi bi-caret-up"></i>
-    	</button>
-        <button class="remote-btn" title="최근 본 상품">
-        <i class="bi bi-eye"></i>
-        </button>
-        <button class="remote-btn" title="위시리스트" onclick="location.href='index.jsp?main=category/catewish.jsp'">
-        <i class="bi bi-heart"></i>
-        </button>
-        <button	onclick="location.href='http://pf.kakao.com/_XsGSn'" 
-					class="counsel-link kakao remote-btn" >
-					<img alt="" src="SemiImg/kakao.png" style="width: 135%; height:110%; border-radius: 100%;">
-	    </button>
-	    <!--window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-	      document.body.scrollHeight 는 문서 전체 높이(스크롤 가능한 최대 높이) 페이지 맨 아래로 부드럽게 이동-->
-	    <button class="remote-btn" title="아래로" onclick="window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });">
-    	<i class="bi bi-caret-down"></i>
-    	</button>
-    </div>
-	
-    <div id="loadingMessage" style="display:none; text-align:center; padding:10px; font-weight:bold;">로딩중...</div>
- 	<div id="observerTarget"></div>
-    
-   </div> 
- <script type="text/javascript">
-/* 5시방향 메세지 뜨는 트리거 */
-const toastTrigger = document.getElementById('liveToastBtn')
-const toastLiveExample = document.getElementById('liveToast')
+</div>
+</div>
 
-if (toastTrigger) {
-  const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
-  toastTrigger.addEventListener('click', () => {
-    toastBootstrap.show()
-  })
-}
+<div>
+    <jsp:include page="controller.jsp"/>
+</div>
+
+<div id="loadingMessage" style="display:none; text-align:center; padding:10px; font-weight:bold;">로딩중...</div>
+<div id="observerTarget"></div>
+
+<script>
+$(function () {
+    
+    
+    // 위시리스트 비어있는지 체크
+    function checkEmptyWishlist() {
+        if ($('.product-row').length === 0) {
+            $('.empty-wishlist').fadeIn();
+        } else {
+            $('.empty-wishlist').fadeOut();
+        }
+    }
+    
+    // 초기 체크
+    checkEmptyWishlist();
+});
 </script>
 </body>
 </html>
