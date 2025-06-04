@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.*, java.math.BigDecimal, java.util.Base64" %>
+<%@ page import="java.util.*, java.math.BigDecimal" %> <%-- Base64 import 제거 --%>
 <%-- ======== 실제 프로젝트의 DTO 및 DAO 패키지 경로로 수정하세요. ======== --%>
 <%@ page import="data.dto.ProductDto" %>
 <%@ page import="data.dto.ProductOptionDto" %>
@@ -133,20 +133,14 @@
                 <% } else { %>
                     <% for (ProductDto product : productList) { %>
                         <% List<ProductOptionDto> options = product.getOptions(); %>
-                        <% byte[] imageBytes = product.getMainImage(); String imageBase64 = null; %>
-                        <%
-                           // 이미지 바이트 배열을 Base64 문자열로 인코딩
-                           if (imageBytes != null && imageBytes.length > 0) {
-                               // 이미지 타입 감지는 생략하고 일반적인 jpeg로 가정 (필요시 실제 타입 감지 로직 추가)
-                               imageBase64 = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
-                           }
-                        %>
+                        <% String imageUrl = product.getMainImageUrl(); %> <%-- URL을 직접 가져옵니다. --%>
+                        
                         <% if (options != null && !options.isEmpty()) { // 옵션이 있는 경우, 각 옵션별로 행 생성 %>
                             <% for (ProductOptionDto option : options) { %>
                                 <tr>
                                     <td>
-                                        <% if (imageBase64 != null) { %>
-                                            <img src="<%= imageBase64 %>" alt="<%= product.getProductName() %>" class="product-image">
+                                        <% if (imageUrl != null && !imageUrl.trim().isEmpty()) { %> <%-- URL이 유효한지 확인 --%>
+                                            <img src="<%= imageUrl %>" alt="<%= product.getProductName() %>" class="product-image">
                                         <% } else { %>
                                             <span>No Image</span>
                                         <% } %>
@@ -167,8 +161,8 @@
                         <% } else { // 옵션이 없는 상품의 경우, 상품 정보만 한 줄로 표시 %>
                             <tr>
                                 <td>
-                                    <% if (imageBase64 != null) { %>
-                                        <img src="<%= imageBase64 %>" alt="<%= product.getProductName() %>" class="product-image">
+                                    <% if (imageUrl != null && !imageUrl.trim().isEmpty()) { %> <%-- URL이 유효한지 확인 --%>
+                                        <img src="<%= imageUrl %>" alt="<%= product.getProductName() %>" class="product-image">
                                     <% } else { %>
                                         <span>No Image</span>
                                     <% } %>
