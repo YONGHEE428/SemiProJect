@@ -13,7 +13,7 @@
     String message = "";
     String redirectUrl = "./sangpumRegist.jsp"; // 기본 리다이렉션 페이지
     ProductDto productDto = new ProductDto();
-    List<ProductOptionDto> optionList = new ArrayList<>();
+    // List<ProductOptionDto> optionList = new ArrayList<>(); // 이 변수 초기화는 mrequest 처리 후에 할 것임
 
     try {
         // 1. 파일 업로드 설정
@@ -39,18 +39,25 @@
         productDto.setCategory(selectedCategory);
         productDto.setDescription(productDetailContent);
 
-        // 1. 파일 업로드 후 이미지 파일을 바이트 배열로 변환
+        // 이미지 파일 바이트 배열로 변환
         if (productImageFileName != null) {
             File imageFile = new File(savePath, productImageFileName);
-            byte[] imageBytes = new byte[(int) imageFile.length()];
-            
-            try (FileInputStream fis = new FileInputStream(imageFile)) {
-                fis.read(imageBytes); // 파일 내용을 바이트 배열로 읽기
-            } catch (IOException e) {
-                throw new IllegalArgumentException("이미지 파일을 읽는 중 오류가 발생했습니다: " + e.getMessage());
+            if (imageFile.exists()) { // 파일이 실제로 존재하는지 확인
+                byte[] imageBytes = new byte[(int) imageFile.length()];
+                
+                try (FileInputStream fis = new FileInputStream(imageFile)) {
+                    fis.read(imageBytes);
+                } catch (IOException e) {
+                    // 이미지 파일을 읽는 중 오류가 발생했음을 사용자에게 알림
+                    throw new IllegalArgumentException("이미지 파일을 읽는 중 오류가 발생했습니다: " + e.getMessage());
+                }
+                productDto.setMainImage(imageBytes);
+            } else {
+                 // 파일이 업로드되지 않았거나 경로에 없는 경우 (선택적 처리)
+                 // 예를 들어, 임시저장 시 이미지가 필수가 아니라면 처리 로직 변경
+                 System.out.println("Warning: Uploaded image file not found at " + imageFile.getAbsolutePath());
+                 productDto.setMainImage(null); // 또는 기존 이미지를 유지하는 로직 추가
             }
-            
-            productDto.setMainImage(imageBytes); // 바이트 배열을 setMainImage 메서드에 전달
         }
 
         // 4. "상품 등록하기" 시 주요 필드 유효성 검사
@@ -66,7 +73,7 @@
                 if (tempPrice.compareTo(BigDecimal.ZERO) <= 0) {
                     throw new IllegalArgumentException("상품 가격은 0보다 커야 합니다.");
                 }
-                productDto.setPrice(tempPrice); // 유효성 검사 통과 시 가격 설정
+                productDto.setPrice(tempPrice);
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("상품 가격은 유효한 숫자로 입력해주세요.");
             }
@@ -84,47 +91,42 @@
                 try {
                     productDto.setPrice(new BigDecimal(productPriceStr));
                 } catch (NumberFormatException e) {
-                    productDto.setPrice(BigDecimal.ZERO); // 임시저장 시 숫자 변환 실패하면 0으로
+                    productDto.setPrice(BigDecimal.ZERO);
                 }
             } else {
-                productDto.setPrice(BigDecimal.ZERO); // 임시저장 시 가격 없으면 0으로
+                productDto.setPrice(BigDecimal.ZERO);
             }
         }
 
-        // 5. ProductOptionDto 리스트 생성 및 값 설정
-        List<ProductOptionDto> optionsList = new ArrayList<>();
-        int optionIndex = 0; // 옵션 인덱스 초기화
+        // 5. ProductOptionDto 리스트 생성 및 값 설정 (수정된 부분)
+        List<ProductOptionDto> optionList = new ArrayList<>(); // 여기에 초기화
 
-        while (true) {
-            String color = mrequest.getParameter("options[" + optionIndex + "][color]");
-            String size = mrequest.getParameter("options[" + optionIndex + "][size]");
-            String quantityStr = mrequest.getParameter("options[" + optionIndex + "][quantity]");
+        String[] colors = mrequest.getParameterValues("options_color[]"); // 배열로 받기
+        String[] sizes = mrequest.getParameterValues("options_size[]");
+        String[] quantities = mrequest.getParameterValues("options_quantity[]");
 
-            // 옵션이 없으면 루프 종료
-            if (color == null && size == null && quantityStr == null) {
-                break;
-            }
-
-            ProductOptionDto optionDto = new ProductOptionDto();
-            optionDto.setColor(color);
-            optionDto.setSize(size);
-            if (quantityStr != null) {
+        // 각 배열의 길이가 같고 null이 아닌지 확인 후 처리
+        if (colors != null && sizes != null && quantities != null &&
+            colors.length == sizes.length && sizes.length == quantities.length) {
+            for (int i = 0; i < colors.length; i++) {
+                ProductOptionDto optionDto = new ProductOptionDto();
+                optionDto.setColor(colors[i]);
+                optionDto.setSize(sizes[i]);
                 try {
-                    int quantity = Integer.parseInt(quantityStr);
-                    optionDto.setStockQuantity(quantity);
+                    optionDto.setStockQuantity(Integer.parseInt(quantities[i]));
                 } catch (NumberFormatException e) {
-                    optionDto.setStockQuantity(0); // 유효하지 않은 경우 기본값 0
+                    optionDto.setStockQuantity(0); // 숫자가 아니면 0으로 처리
                 }
-            } else {
-                optionDto.setStockQuantity(0); // 수량이 없는 경우 기본값 0
+                optionList.add(optionDto);
             }
-
-            optionsList.add(optionDto); // 옵션 리스트에 추가
-            optionIndex++; // 인덱스 증가
+        } else {
+            // 옵션 데이터가 없거나, 배열 길이가 일치하지 않을 경우의 처리 (예: 경고 또는 예외)
+            System.out.println("Warning: Option data incomplete or mismatched array lengths.");
+            // "상품 등록하기" 시에는 옵션이 필수이므로, 여기서 예외를 던질 수 있습니다.
+            if ("register".equals(formActionType)) {
+                 throw new IllegalArgumentException("상품 옵션 데이터가 올바르지 않습니다.");
+            }
         }
-
-        // 옵션 리스트에 추가
-        optionList.addAll(optionsList);
 
         // "상품 등록하기" 시 옵션 항목 자체 및 각 옵션 내부 필드 검사
         if ("register".equals(formActionType)) {
@@ -144,33 +146,31 @@
         }
 
         // 6. DAO를 통해 데이터베이스에 저장
-        ProductDao productDao = new ProductDao(); // 실제 환경에서는 DI 또는 싱글톤 고려
+        ProductDao productDao = new ProductDao();
         if ("register".equals(formActionType)) {
-            productDao.insertProduct(productDto, optionList);
+            productDao.insertProduct(productDto, optionList); // 수정된 DAO 메서드 호출
             message = "상품이 성공적으로 등록되었습니다.";
-            redirectUrl = "./productList.jsp"; // 성공 시 상품 목록 페이지로 이동
+            redirectUrl = "productListAdmin.jsp";
         } else if ("temporary_save".equals(formActionType)) {
             // TODO: 임시저장 로직 구현
-            // 예: productDto.setStatus("TEMPORARY");
-            // productDao.saveOrUpdateTemporaryProduct(productDto, optionList);
             message = "상품 정보가 임시저장되었습니다. (DB 저장 로직 추가 필요)";
-            redirectUrl = "./sangpumRegist.jsp"; // 다시 등록 폼으로
+            redirectUrl = "./sangpumRegist.jsp";
         }
     } catch (IllegalArgumentException iae) {
         message = "입력 값 오류: " + iae.getMessage();
-        redirectUrl = "./sangpumRegist.jsp"; // 오류 발생 시 입력 폼으로 다시 이동
+        redirectUrl = "./sangpumRegist.jsp";
     } catch (Exception e) {
-        e.printStackTrace(); // 개발 중 상세 오류 확인
+        e.printStackTrace();
         message = "상품 처리 중 오류가 발생했습니다. 오류: " + e.getClass().getSimpleName();
-        redirectUrl = "./sangpumRegist.jsp"; // 오류 발생 시 입력 폼으로 다시 이동
+        redirectUrl = "./sangpumRegist.jsp";
     }
 
     // 7. 결과 알림 및 페이지 이동 (PRG 패턴 적용)
 %>
 
 <script type="text/javascript">
-    var alertMessage = '<%= message != null ? message.replace("'", "\\\\'") : "" %>';
-    if (alertMessage) { // 메시지가 있을 경우에만 alert
+    var alertMessage = '<%= message != null ? message.replace("'", "\\'") : "" %>';
+    if (alertMessage) {
         alert(alertMessage);
     }
 
@@ -178,15 +178,12 @@
     var redirectPath = '<%= redirectUrl != null ? redirectUrl : "./sangpumRegist.jsp" %>';
 
     if (redirectPath.startsWith("./")) {
-        targetUrl += redirectPath.substring(1); // ./ 제거하고 contextPath에 바로 붙임
+        targetUrl += redirectPath.substring(1);
     } else if (redirectPath.startsWith("/")) {
-        targetUrl += redirectPath; // 이미 contextPath 포함된 절대경로 또는 루트 상대경로
+        targetUrl += redirectPath;
     } else {
-        // 예기치 않은 형식의 redirectUrl 처리 (기본 페이지로 이동 등)
-        targetUrl += '/sangpumRegist/sangpumRegist.jsp';
+        targetUrl += '/sangpumRegist/sangpumRegist.jsp'; // Fallback
     }
 
     window.location.href = targetUrl;
 </script>
-
-<% // 스크립트 실행 후 JSP의 나머지 부분 처리 중단 %>
