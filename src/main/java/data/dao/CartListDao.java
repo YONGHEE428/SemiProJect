@@ -7,7 +7,47 @@ import data.dto.CartListDto;
 import db.copy.DBConnect;
 
 public class CartListDao {
-    DBConnect db = new DBConnect();
+
+	DBConnect db = new DBConnect();
+
+	
+
+	public void addCart(CartListDto dto) {
+	    String sql = "INSERT INTO cart (product_id, member_id, option_id, size, color, cnt, writeday, buyok) " +
+	                 "VALUES (?, ?, ?, ?, ?, ?, now(), 0)";
+	    
+	    try (Connection conn = db.getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        
+	        pstmt.setString(1, dto.getProduct_id());
+	        pstmt.setString(2, dto.getMember_id());
+	        pstmt.setString(3, dto.getOption_id());
+	        pstmt.setString(4, dto.getSize());
+	        pstmt.setString(5, dto.getColor());
+	        pstmt.setString(6, dto.getCnt());
+
+	        pstmt.executeUpdate();
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+
+	
+    // 장바구니에 상품 추가 (option_id 포함)
+    public void insertCart(CartListDto dto) {
+        String sql = "INSERT INTO cartlist (product_id, option_id, member_id, cnt, writeday, BUYOK) VALUES (?, ?, ?, ?, now(), 0)";
+        try (Connection conn = db.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, dto.getProduct_id());
+            pstmt.setString(2, dto.getOption_id());
+            pstmt.setString(3, dto.getMember_id());
+            pstmt.setString(4, dto.getCnt());
+            pstmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     // 1. 장바구니 목록 조회 (회원 이름 포함)
     public List<CartListDto> getCartListByMember(String member_id) {
@@ -81,6 +121,19 @@ public class CartListDao {
             return false;
         }
     }
+
+    //구매하기 버튼 누르면 buyok=1로 바뀜.
+    public CartListDto getAllDatas(int buyok)
+    {
+    	CartListDto dto=new CartListDto();
+    	
+    	
+    	return dto;
+    }
+    
+    
+} 
+
 
     // 4. 구매 처리: buyok=1로 변경 (추가로 구현 필요 시 확장)
     public void markAsPurchased(int idx) {
