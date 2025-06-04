@@ -25,12 +25,7 @@ public class ProductDto {
 	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
-	public byte[] getMainImage() {
-		return mainImage;
-	}
-	public void setMainImage(byte[] mainImage) {
-		this.mainImage = mainImage;
-	}
+	
 	public String getDescription() {
 		return description;
 	}
@@ -69,7 +64,15 @@ public class ProductDto {
 	}
 	private String productName;
 	private BigDecimal price;
-	private byte[] mainImage;
+	
+	public String getMainImageUrl() {
+		return mainImageUrl;
+	}
+	public void setMainImageUrl(String mainImageUrl) {
+		this.mainImageUrl = mainImageUrl;
+	}
+	
+	private String mainImageUrl;
 	private String description;
 	private String category;
 	private String viewCount;

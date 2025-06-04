@@ -1,91 +1,176 @@
 package data.dao;
 
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import db.copy.DBConnect;
 import data.dto.ProductDto;
 import data.dto.ProductOptionDto;
 
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.math.BigDecimal; // BigDecimal import 추가
+
 public class ProductDao {
 
-    DBConnect db = new DBConnect();
+    DBConnect db = new DBConnect(); // DB 연결 객체
 
-    public void insertProduct(ProductDto productDto, List<ProductOptionDto> optionList) {
-        int generatedProductId = -1;
+    // 상품 및 옵션 저장 메서드 (isTemporary 매개변수 제거)
+    public void saveProduct(ProductDto productDto, List<ProductOptionDto> optionList) {
         Connection conn = null;
+        PreparedStatement pstmtProduct = null;
+        PreparedStatement pstmtOption = null;
+        ResultSet rs = null;
 
         try {
             conn = db.getConnection();
-            conn.setAutoCommit(false);
+            conn.setAutoCommit(false); // 트랜잭션 시작
 
-            String sqlProduct = "INSERT INTO product (product_name, price, main_image, description, category) VALUES (?, ?, ?, ?, ?)";
-            try (PreparedStatement pstmtProduct = conn.prepareStatement(sqlProduct, Statement.RETURN_GENERATED_KEYS)) {
+            String sqlProduct = "";
+            int generatedProductId = productDto.getProductId(); // 초기값으로 DTO의 productId 사용
+
+            if (productDto.getProductId() > 0) { // 기존 상품 업데이트
+                // updated_at 필드를 자동으로 업데이트하는 경우, SQL에서 NOW() 또는 CURRENT_TIMESTAMP 사용
+                sqlProduct = "UPDATE product SET product_name=?, price=?, main_image_url=?, description=?, category=?, updated_at=NOW() WHERE product_id=?";
+                pstmtProduct = conn.prepareStatement(sqlProduct);
                 pstmtProduct.setString(1, productDto.getProductName());
                 pstmtProduct.setBigDecimal(2, productDto.getPrice());
-                // getMainImage()가 byte[]를 반환한다고 가정 (DB에 byte[]로 저장)
-                pstmtProduct.setBytes(3, (byte[]) productDto.getMainImage());
+                pstmtProduct.setString(3, productDto.getMainImageUrl());
                 pstmtProduct.setString(4, productDto.getDescription());
                 pstmtProduct.setString(5, productDto.getCategory());
+                pstmtProduct.setInt(6, productDto.getProductId());
+            } else { // 새로운 상품 삽입
+                // registered_at, updated_at 필드를 자동으로 설정하는 경우, SQL에서 NOW() 사용
+                sqlProduct = "INSERT INTO product (product_name, price, main_image_url, description, category, registered_at, updated_at) VALUES (?, ?, ?, ?, ?, NOW(), NOW())";
+                pstmtProduct = conn.prepareStatement(sqlProduct, Statement.RETURN_GENERATED_KEYS);
+                pstmtProduct.setString(1, productDto.getProductName());
+                pstmtProduct.setBigDecimal(2, productDto.getPrice());
+                pstmtProduct.setString(3, productDto.getMainImageUrl());
+                pstmtProduct.setString(4, productDto.getDescription());
+                pstmtProduct.setString(5, productDto.getCategory());
+            }
 
-                int affectedRows = pstmtProduct.executeUpdate();
+            int affectedRows = pstmtProduct.executeUpdate();
 
-                if (affectedRows > 0) {
-                    try (ResultSet rs = pstmtProduct.getGeneratedKeys()) {
-                        if (rs.next()) {
-                            generatedProductId = rs.getInt(1);
-                            productDto.setProductId(generatedProductId);
-                        }
-                    }
+            if (productDto.getProductId() == 0 && affectedRows > 0) { // 새로 삽입된 경우에만 generated keys를 가져옴
+                rs = pstmtProduct.getGeneratedKeys();
+                if (rs.next()) {
+                    generatedProductId = rs.getInt(1);
                 }
+            }
 
-                if (generatedProductId == -1) {
-                    if (conn != null) conn.rollback();
-                    throw new SQLException("Failed to retrieve generated product_id.");
+            if (generatedProductId <= 0) { // 상품 ID를 가져오지 못했거나 유효하지 않은 경우
+                throw new SQLException("상품 ID를 가져오는 데 실패했습니다.");
+            }
+            productDto.setProductId(generatedProductId); // DTO에 최종 ID 설정
+
+            // 기존 옵션 삭제 후 새로 삽입 (상품 ID가 있는 경우에만)
+            if (productDto.getProductId() > 0) {
+                String deleteOptionsSql = "DELETE FROM product_option WHERE product_id = ?";
+                try (PreparedStatement pstmtDelete = conn.prepareStatement(deleteOptionsSql)) {
+                    pstmtDelete.setInt(1, productDto.getProductId());
+                    pstmtDelete.executeUpdate();
                 }
             }
 
             if (optionList != null && !optionList.isEmpty()) {
                 String sqlOption = "INSERT INTO product_option (product_id, color, size, stock_quantity) VALUES (?, ?, ?, ?)";
-                try (PreparedStatement pstmtOption = conn.prepareStatement(sqlOption)) {
-                    for (ProductOptionDto option : optionList) {
-                        pstmtOption.setInt(1, generatedProductId);
-                        pstmtOption.setString(2, option.getColor());
-                        pstmtOption.setString(3, option.getSize());
-                        pstmtOption.setInt(4, option.getStockQuantity());
-                        pstmtOption.addBatch();
-                    }
-                    pstmtOption.executeBatch();
+                pstmtOption = conn.prepareStatement(sqlOption);
+
+                for (ProductOptionDto option : optionList) {
+                    pstmtOption.setInt(1, productDto.getProductId());
+                    pstmtOption.setString(2, option.getColor());
+                    pstmtOption.setString(3, option.getSize());
+                    pstmtOption.setInt(4, option.getStockQuantity());
+                    pstmtOption.addBatch();
                 }
+                pstmtOption.executeBatch();
             }
 
-            conn.commit();
-            System.out.println("상품 및 옵션 정보 저장 성공. Product ID: " + generatedProductId);
+            conn.commit(); // 트랜잭션 커밋
+            System.out.println("상품 및 옵션 정보가 성공적으로 " + (productDto.getProductId() > 0 && productDto.getProductId() == generatedProductId ? "업데이트" : "등록") + "되었습니다. Product ID: " + productDto.getProductId());
+
 
         } catch (SQLException e) {
-            System.err.println("상품 및 옵션 저장 중 오류: " + e.getMessage());
+            System.err.println("상품 및 옵션 저장 중 오류 발생: " + e.getMessage());
             if (conn != null) {
-                try { conn.rollback(); System.err.println("트랜잭션 롤백 완료."); }
-                catch (SQLException ex) { System.err.println("롤백 중 오류: " + ex.getMessage()); }
+                try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
             }
             e.printStackTrace();
-            throw new RuntimeException("상품 등록 실패", e);
+            throw new RuntimeException("상품 등록/업데이트 실패", e);
         } finally {
-            if (conn != null) {
-                try { conn.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
-                try { conn.close(); } catch (SQLException e) { e.printStackTrace(); }
-            }
+            db.dbClose(rs, pstmtProduct, conn);
+            if (pstmtOption != null) { try { pstmtOption.close(); } catch (SQLException e) { e.printStackTrace(); } }
         }
     }
 
+    // 상품 ID로 상품 전체 정보를 조회하는 메서드
+    public ProductDto getProductById(int productId) { // ⭐️ 새로 추가된 메서드
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        ProductDto productDto = null;
+
+        try {
+            conn = db.getConnection();
+            String sql = "SELECT product_id, product_name, price, main_image_url, description, category, registered_at, updated_at FROM product WHERE product_id = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, productId);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                productDto = new ProductDto();
+                productDto.setProductId(rs.getInt("product_id"));
+                productDto.setProductName(rs.getString("product_name"));
+                productDto.setPrice(rs.getBigDecimal("price"));
+                productDto.setMainImageUrl(rs.getString("main_image_url"));
+                productDto.setDescription(rs.getString("description"));
+                productDto.setCategory(rs.getString("category"));
+                productDto.setRegisteredAt(rs.getTimestamp("registered_at"));
+                productDto.setUpdatedAt(rs.getTimestamp("updated_at"));
+            }
+        } catch (SQLException e) {
+            System.err.println("getProductById 오류: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            db.dbClose(rs, pstmt, conn);
+        }
+        return productDto;
+    }
+
+    // 상품 ID로 해당 상품의 모든 옵션을 조회하는 메서드
+    public List<ProductOptionDto> getProductOptionsByProductId(int productId) { // ⭐️ 기존 메서드, ProductDto에 옵션 List를 설정하는 용도로 활용됨
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        List<ProductOptionDto> optionList = new ArrayList<>();
+
+        try {
+            conn = db.getConnection();
+            String sql = "SELECT * FROM product_option WHERE product_id = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, productId);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                ProductOptionDto option = new ProductOptionDto();
+                option.setOptionId(rs.getInt("option_id"));
+                option.setProductId(rs.getInt("product_id"));
+                option.setColor(rs.getString("color"));
+                option.setSize(rs.getString("size"));
+                option.setStockQuantity(rs.getInt("stock_quantity"));
+                optionList.add(option);
+            }
+        } catch (SQLException e) {
+            System.err.println("getProductOptionsByProductId 오류: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            db.dbClose(rs, pstmt, conn);
+        }
+        return optionList;
+    }
+
+    // 카테고리별 상품 및 옵션 조회 메서드 (기존과 동일)
     public List<ProductDto> getProductsWithOptionsByCategory(String categoryName) {
         Map<Integer, ProductDto> productMap = new LinkedHashMap<>();
         Connection conn = null;
@@ -93,7 +178,7 @@ public class ProductDao {
         ResultSet rs = null;
 
         StringBuilder sql = new StringBuilder(
-            "SELECT p.product_id, p.product_name, p.price, p.category, p.main_image, p.description, " +
+            "SELECT p.product_id, p.product_name, p.price, p.category, p.main_image_url, p.description, p.registered_at, p.updated_at, " +
             "po.option_id, po.color, po.size, po.stock_quantity " +
             "FROM product p " +
             "LEFT JOIN product_option po ON p.product_id = po.product_id "
@@ -124,9 +209,10 @@ public class ProductDao {
                     product.setProductName(rs.getString("product_name"));
                     product.setPrice(rs.getBigDecimal("price"));
                     product.setCategory(rs.getString("category"));
-                    // main_image를 byte[]로 가져오기
-                    product.setMainImage(rs.getBytes("main_image"));
+                    product.setMainImageUrl(rs.getString("main_image_url"));
                     product.setDescription(rs.getString("description"));
+                    product.setRegisteredAt(rs.getTimestamp("registered_at"));
+                    product.setUpdatedAt(rs.getTimestamp("updated_at"));
                     product.setOptions(new ArrayList<>());
                     productMap.put(productId, product);
                 }
@@ -145,9 +231,7 @@ public class ProductDao {
             System.err.println("카테고리별 상품 조회 중 오류: " + e.getMessage());
             e.printStackTrace();
         } finally {
-            try { if (rs != null) rs.close(); } catch (SQLException e) { e.printStackTrace(); }
-            try { if (pstmt != null) pstmt.close(); } catch (SQLException e) { e.printStackTrace(); }
-            try { if (conn != null) conn.close(); } catch (SQLException e) { e.printStackTrace(); }
+            db.dbClose(rs, pstmt, conn);
         }
         return new ArrayList<>(productMap.values());
     }
@@ -216,6 +300,32 @@ public class ProductDao {
     }
 
 
+    // 상품 이미지 URL을 가져오는 메서드 (기존과 동일)
+    public String getProductImageUrl(int productId) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String imageUrl = null;
+
+        try {
+            conn = db.getConnection();
+            String sql = "SELECT main_image_url FROM product WHERE product_id = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, productId);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                imageUrl = rs.getString("main_image_url");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            db.dbClose(rs, pstmt, conn);
+        }
+        return imageUrl;
+    }
+
+    // 상품 옵션 삭제 메서드 (기존과 동일)
     public boolean deleteProductOption(int optionId) {
         String sql = "DELETE FROM product_option WHERE option_id = ?";
         boolean success = false;
@@ -231,6 +341,7 @@ public class ProductDao {
         return success;
     }
 
+    // 상품 삭제 메서드 (기존과 동일)
     public boolean deleteProduct(int productId) {
         Connection conn = null;
         String sqlDeleteOptions = "DELETE FROM product_option WHERE product_id = ?";
@@ -253,7 +364,7 @@ public class ProductDao {
                     success = true;
                 }
             }
-            
+
             if (success) {
                 conn.commit();
             } else {
@@ -263,7 +374,7 @@ public class ProductDao {
         } catch (SQLException e) {
             System.err.println("상품 삭제 트랜잭션 중 오류 (product_id: " + productId + "): " + e.getMessage());
             if (conn != null) {
-                try { conn.rollback(); } catch (SQLException ex) { System.err.println("롤백 중 오류: " + ex.getMessage());}
+                try { conn.rollback(); } catch (SQLException ex) { System.err.println("롤백 중 오류: " + ex.getMessage()); }
             }
             e.printStackTrace();
             success = false;
