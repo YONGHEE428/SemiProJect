@@ -7,6 +7,7 @@ import data.dto.CartListDto;
 import db.copy.DBConnect;
 
 public class CartListDao {
+
 	DBConnect db = new DBConnect();
 
 	// 1. 장바구니 목록 조회 (회원 이름 포함)
@@ -150,6 +151,4 @@ public class CartListDao {
 
 	    return list;
 	}
-
-
 }

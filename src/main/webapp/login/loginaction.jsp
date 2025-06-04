@@ -45,7 +45,6 @@
 			session.setAttribute("role", "user");
 		}
 
-		//redirectPage로 이동
 		response.sendRedirect(redirectPage);
 
 	} else {

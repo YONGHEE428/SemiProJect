@@ -271,8 +271,8 @@
 String memberId = (String) session.getAttribute("myid"); //id받아오기
 if (memberId == null) {
 	// 로그인 후 돌아올 현재 페이지 경로를 redirect 파라미터로 전달
-	String cartPageUrl = request.getContextPath() + "/cart/cartform.jsp"; // 현재 장바구니 페이지 URL
-	response.sendRedirect(request.getContextPath() + "/login/loginform.jsp?redirect="
+	String cartPageUrl = request.getContextPath() + "index.jsp?main=cart/cartform.jsp"; // 현재 장바구니 페이지 URL
+	response.sendRedirect(request.getContextPath() + "index.jsp?main=login/loginform.jsp?redirect="
 	+ java.net.URLEncoder.encode(cartPageUrl, "UTF-8"));
 	return;
 }
