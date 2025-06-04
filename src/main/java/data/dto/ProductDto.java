@@ -49,11 +49,11 @@ public class ProductDto {
 	public void setViewCount(String viewCount) {
 		this.viewCount = viewCount;
 	}
-	public String getLikeCout() {
+	public String getLikeCount() {
 		return likeCount;
 	}
-	public void setLikeCout(String likeCout) {
-		this.likeCount = likeCout;
+	public void setLikeCout(String likeCount) {
+		this.likeCount = likeCount;
 	}
 	public Timestamp getRegisteredAt() {
 		return registeredAt;

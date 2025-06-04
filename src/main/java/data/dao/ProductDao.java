@@ -211,4 +211,52 @@ public class ProductDao {
         }
         return success;
     }
+    //조회수 증가
+	public void updateReadCount(int productId) {
+		String sql="update product set view_count=view_count+1 where product_id=?";
+		Connection conn=db.getConnection();
+		PreparedStatement pstmt=null;
+		
+		try {
+			pstmt=conn.prepareStatement(sql);
+			pstmt.setInt(1, productId);
+			pstmt.execute();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			db.dbClose(pstmt, conn);
+		}
+	}
+	//좋아요 증가
+	public void updateLikeCount(int productId) {
+		Connection conn=db.getConnection();
+		PreparedStatement pstmt=null;
+		String sql="update product set like_count=like_count+1 where product_id=?";
+		try {
+			pstmt=conn.prepareStatement(sql);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			db.dbClose(pstmt, conn);
+		}
+	}
+	public void decreaseLikeCount(int productId) {
+		Connection conn=db.getConnection();
+		PreparedStatement pstmt=null;
+		String sql="update product set like_count=like_count-1 where product_id=?";
+		try {
+			pstmt=conn.prepareStatement(sql);
+			pstmt.setInt(1, productId);
+			
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 }

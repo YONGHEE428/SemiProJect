@@ -33,7 +33,6 @@
         String productDetailContent = mrequest.getParameter("product_detail");
         String formActionType = mrequest.getParameter("form_action_type"); // "register" 또는 "temporary_save"
         String productImageFileName = mrequest.getFilesystemName("productImage"); // 서버에 저장된 실제 파일명
-
         // 3. ProductDto 기본 정보 채우기 (유효성 검사 전 공통 부분)
         productDto.setProductName(productName);
         productDto.setCategory(selectedCategory);
