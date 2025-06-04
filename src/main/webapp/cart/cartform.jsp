@@ -121,17 +121,17 @@
 
 			input.val(val);
 
-			// 1. 수량 변경 시 항목 합계도 업데이트
+			//  수량 변경 시 항목 합계도 업데이트
 			let price = parseInt(item.find(".item-unit-price").data("price"));
 			let itemTotal = price * val;
 			item.find(".item-total-price").text(itemTotal.toLocaleString() + "원");
 
-			// 2. 체크된 항목이면 전체 총액 업데이트
+			//  체크된 항목이면 전체 총액 업데이트
 			if (item.find(".item-check").is(":checked")) {
 				updateSummary();
 			}
 
-			// 3. Ajax로 DB 수량 업데이트
+			//  Ajax로 DB 수량 업데이트
 			let idx = item.data("idx");
 
 			$.ajax({
@@ -201,6 +201,62 @@
 				}
 			});
 		});
+		// 선택상품 주문하기 버튼
+		$("#orderSelectedBtn").click(function() {
+		    let selectedIdxs = [];
+
+		    $(".item-check:checked").each(function () {
+		        selectedIdxs.push($(this).val());
+		    });
+
+		    if (selectedIdxs.length === 0) {
+		        alert("주문할 상품을 선택해주세요.");
+		        return;
+		    }
+
+		    $.ajax({
+		        url: "orderselected.jsp",
+		        type: "POST",
+		        traditional: true, // 배열 전송을 위한 옵션
+		        data: { idxs: selectedIdxs },
+		        success: function (response) {
+	         								//결제 화면 링크
+		            window.location.href = "https://example.com/mock-payment"; 
+		        },
+		        error: function () {
+		            alert("주문 처리 중 오류가 발생했습니다.");
+		        }
+		    });
+		});
+		//전체상품 주문하기 버튼
+		$("#orderAllBtn").click(function() {
+		    let allIdxs = [];
+
+		    $(".item-check").each(function () {
+		        allIdxs.push($(this).val());
+		    });
+
+		    if (allIdxs.length === 0) {
+		        alert("장바구니에 상품이 없습니다.");
+		        return;
+		    }
+
+		    $.ajax({
+		        url: "orderall.jsp",
+		        type: "POST",
+		        traditional: true,
+		        data: { idxs: allIdxs },
+		        success: function (response) {
+		           							 // 실제 결제 페이지로 이동 
+		            window.location.href = "https://example.com/mock-payment"; 
+		        },
+		        error: function () {
+		            alert("전체 주문 처리 중 오류가 발생했습니다.");
+		        }
+		    });
+		});
+
+
 
 		// 초기 실행
 		updateSummary();

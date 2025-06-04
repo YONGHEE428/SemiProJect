@@ -141,7 +141,7 @@
         		<ul>
         			<a href="#" class="Mywish">위시리스트</a>
         			<a href="index.jsp?main=cart/cartform.jsp" class="MyCart">장바구니</a>
-        			<a href="#" class="MybuyList">구매내역</a>
+        			<a href="index.jsp?main=orderlist/orderlistform.jsp" class="MybuyList">구매내역</a>
         		</ul>
        </nav>
     </div>
