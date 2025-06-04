@@ -39,13 +39,13 @@ function loadMoreItems() {
 	  $.ajax({
 	    type: "GET", // 또는 "POST"
 	    dataType: "json",
-	    url: "/SemiProject/data/items-page" + page + ".json",
+	    url: "/Semiproject/data/items-page"+page+".json",
 	    success: function(data) {
 	      setTimeout(() => {
 	        data.forEach(item => {
 	          const el = document.createElement("li");
 	          el.innerHTML =
-	            "<div class=\"item\"><img alt=\"\" src=\"/SemiProject" + item.img + "\"></div>" +
+	            "<div class=\"item\"><a href ='./shop/sangpumpage.jsp'><img alt=\"\" src=\"/Semiproject" + item.img + "\"></a></div>" +
 	            "<div class=\"item-coment\">" +
 	              "<div class=\"item-category\">" + item.category + "</div>" +
 	              "<div class=\"item-name\">" + item.name + "</div>" +
@@ -71,10 +71,57 @@ function loadMoreItems() {
 </script>
 
 <style>
-	.carousel-item >img{
-		max-width: 100%;
-		max-height: 50%;
+	.carousel-item > img{
+		width: 100%;
+		height: 100%;
+
 	}
+	.eventImg > ul{
+		display: flex; 
+		gap : 100px;
+		padding-left: 0px;
+		padding-bottom:100px;
+	}
+	.eventImg> ul >li{
+		width: 100%;
+		height: 600px;
+	}
+	.smalleventimg > a >img{
+		width: 100%;
+		height: 600px;
+	}
+	.smalleventimg {
+    position: relative;
+    display: inline-block;
+  }
+
+  .smalleventimg img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .hover-text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: white;
+    font-size: 1.2em;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none; /* 클릭 이벤트 방해 방지 */
+  }
+
+  .smalleventimg:hover .hover-text {
+    opacity: 1;
+  }
 	.main-item{
 		width: 100%;
 		height: 100%;
@@ -97,7 +144,6 @@ function loadMoreItems() {
 	.main-items >  ul > li{
 		width: 25%;
 		height: 400px;
-		margin-bottom: 50px;
 		padding: 5px 5px;
 	}
 	
@@ -105,7 +151,7 @@ function loadMoreItems() {
 		width: 100%;
 		height: 60%;
 	}
-	.main-items> ul > li > .item > img{
+	.main-items> ul > li > .item > a >img{
 		width: 100%;
 		height: 100%;
 		transition: 0.3s ease;
@@ -138,7 +184,7 @@ function loadMoreItems() {
 		width: 100%;
 		height: 60%;
 	}
-	.main-LikeItems> ul > li > .item > img{
+	.main-LikeItems> ul > li > .item > a >img{
 		width: 100%;
 		height: 100%;
 		transition: 0.3s ease;
@@ -162,7 +208,8 @@ function loadMoreItems() {
 		font-size: 0.8em;
 		color: gray;
 	}
-	.item > img:hover{
+	
+	img:hover{
 		cursor: pointer;
 		filter: brightness(70%);
 		transition: 0.3s ease;
@@ -170,7 +217,7 @@ function loadMoreItems() {
 </style>
 <body>
 <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel"data-bs-interval="5000">
-  <div class="carousel-inner">
+  <div class="carousel-inner" style="height: 550px;">
     <div class="carousel-item active">
       <img src="SemiImg/test.png" class="d-block w-100" alt="...">
     </div>
@@ -178,8 +225,14 @@ function loadMoreItems() {
       <img src="SemiImg/test2.png" class="d-block w-100" alt="...">
     </div>
     <div class="carousel-item">
-      <img src="SemiImg/test.png" class="d-block w-100" alt="...">
+      <img src="SemiImg/test3.jpg" class="d-block w-100" alt="...">
     </div>
+    <div class="carousel-item">
+      <img src="SemiImg/main.png" class="d-block w-100" alt="...">
+    </div>
+     <div class="carousel-item">
+      <img src="SemiImg/main2.png" class="d-block w-100" alt="...">
+    </div>		
   </div>
   <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -190,13 +243,17 @@ function loadMoreItems() {
     <span class="visually-hidden">Next</span>
   </button>
 </div><br>
+
 <%String root = request.getContextPath(); %>
+
+
+
 <div class="main-item">
   <div class="LikeItem-conttent"><span><strong style="font-size: 1.7em;">Popular Listings</strong><br><b>인기 상품</b></span><br></div>
   <div class="main-LikeItems">
   <ul>
   	<li>
-	  	<div class="item"><img alt="" src="<%=root%>/SemiImg/category/top/a81.jpg" ></div>
+	  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/top/a81.jpg" ></a></div>
 	  	<div class="item-coment">
 	  		<div class="item-category">TOP</div>
 		  	<div class="item-name">스트릿 긴팔크롭티</div>
@@ -205,7 +262,7 @@ function loadMoreItems() {
 		</div>
   	</li>
  	<li>
-	  	<div class="item"><img alt="" src="<%=root%>/SemiImg/category/bottom/c11.jpg" ></div>
+	  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/bottom/c11.jpg" ></a></div>
 	  	<div class="item-coment">
 	  		<div class="item-category">BOTTOM</div>
 		  	<div class="item-name">스트링 지퍼 조거팬츠</div>
@@ -214,7 +271,7 @@ function loadMoreItems() {
 		</div>
   	</li>
  	<li>
-	  	<div class="item"><img alt="" src="<%=root%>/SemiImg/category/hat/a31.jpg" ></div>
+	  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/hat/a31.jpg" ></a></div>
 	  	<div class="item-coment">
 	  		<div class="item-category">HAT</div>
 		  	<div class="item-name">KOUNTRY 볼캡</div>
@@ -223,7 +280,7 @@ function loadMoreItems() {
 		</div>
   	</li>
  	<li>
-	  	<div class="item"><img alt="" src="<%=root%>/SemiImg/category/outer/e61.jpg" ></div>
+	  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/outer/e61.jpg" ></a></div>
 	  	<div class="item-coment">
 	  		<div class="item-category">OUTER</div>
 		  	<div class="item-name">STARGIRL 클래식 자켓</div>
@@ -232,7 +289,7 @@ function loadMoreItems() {
 		</div>
   	</li>
  	<li>
-	  	<div class="item"><img alt="" src="<%=root%>/SemiImg/category/top/d81.jpg" ></div>
+	  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/top/d81.jpg" ></a></div>
 	  	<div class="item-coment">
 	  		<div class="item-category">TOP</div>
 		  	<div class="item-name">KAPITAL cat 티셔츠</div>
@@ -241,7 +298,7 @@ function loadMoreItems() {
 		</div>
   	</li>
  	<li>
-	  	<div class="item"><img alt="" src="<%=root%>/SemiImg/category/shoes/a71.jpg" ></div>
+	  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/shoes/a71.jpg" ></a></div>
 	  	<div class="item-coment">
 	  		<div class="item-category">SHOES</div>
 		  	<div class="item-name">TOGA x VANS 콜라보 슈즈</div>
@@ -251,10 +308,53 @@ function loadMoreItems() {
   	</li>
  	</ul>
   </div>
+  
+  <div class="BigeventTitle"><span><strong>SPOTLIGHT</strong></span></div>
+  <div class="Bigeventimg" style="text-align: center;"><a href="#"><img src="<%=root%>/SemiImg/bigeventimg2.jpg" style="width: 100%;"></a></div>
+  <div class="Bigeventcoment" style="padding-bottom: 50px;"><span><strong style="font-size: 1.5em;">#걸즈 올여름 어떤 컬러 티셔츠를 입을래?</strong>
+  <br><b style="color:gray;">본격적인 여름이 시작되면 가볍고 시원한 스타일을 찾게 되기 마련이다. 스타일이 단순해질수록 컬러의 존재감은 커진다.<br> 
+  티셔츠 컬러만 잘 골라도 룩의 분위기는 물론이고 기분 전환까지 가능하기 때문. 여름을 책임질 컬러 티셔츠 코디, 지금 만나보자.</b></span><br></div>
+  	
+  <div class="SmalleventTitle"><span><strong>Today Hot Pick</strong></span></div>
+  <div class="eventImg">
+  <ul>
+    <li>
+      <div class="smalleventimg">
+        <a href="<%=root%>/shop/sangpumpage.jsp">
+          <img src="<%=root%>/SemiImg/eventimg3.jpg">
+          <div class="hover-text"></div>
+        </a>
+      </div>
+      <div class="smalleventcoment">
+        <span>
+          <strong style="font-size: 1.5em;">[한소희 Pick]</strong><br>
+          <b style="color:gray">자연스러운 크롭기장의 반팔티</b>
+        </span>
+      </div>
+    </li>
+
+    <li>
+      <div class="smalleventimg">
+        <a href="<%=root%>/shop/sangpumpage.jsp">
+          <img src="<%=root%>/SemiImg/eventimg5_1.png">
+          <div class="hover-text"></div>
+        </a>
+      </div>
+      <div class="smalleventcoment">
+        <span>
+          <strong style="font-size: 1.5em;">[카리나 Pick]</strong><br>
+          <b style="color:gray">빈티지 스트릿을 느낄 수 있는 과감한 데미지 효과</b>
+        </span>
+      </div>
+    </li>
+  </ul>
+</div>
+  
  <div class="main-items">
+ <div class="main-item-conttent"><span><strong style="font-size: 1.7em;">We Love</strong><br><b>쌍용 픽</b></span><br></div>
 	 <ul>
 	 	<li>
-		  	<div class="item"><img alt="" src="<%=root%>/SemiImg/category/accessory/a1.jpg" ></div>
+		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/accessory/a1.jpg" ></a></div>
 		  	<div class="item-coment">
 		  		<div class="item-category">ACCESSORY</div>
 		  		<div class="item-name">KEPANI 스웨터장갑</div>
@@ -263,7 +363,7 @@ function loadMoreItems() {
 		  	</div>
 	  	</li>
 	  	<li>
-		  	<div class="item"><img alt="" src="<%=root%>/SemiImg/category/bag/a21.jpg" ></div>
+		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/bag/a21.jpg" ></a></div>
 		  	<div class="item-coment">
 		  		<div class="item-category">BAG</div>
 		  		<div class="item-name">로쿠욘 크로스 소형 배낭</div>
@@ -272,7 +372,7 @@ function loadMoreItems() {
 		  	</div>
 	  	</li>
 	  	<li>
-		  	<div class="item"><img alt="" src="<%=root%>/SemiImg/category/bottom/a11.jpg" ></div>
+		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/bottom/a11.jpg" ></a></div>
 		  	<div class="item-coment">
 		  		<div class="item-category">BOTTOM</div>
 		  		<div class="item-name">KAPITAL 데님팬츠</div>
@@ -281,7 +381,7 @@ function loadMoreItems() {
 		  	</div>
 	  	</li>
 	  	<li>
-		  	<div class="item"><img alt="" src="<%=root%>/SemiImg/category/jewelley/b41.jpg" ></div>
+		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/jewelley/b41.jpg" ></a></div>
 		  	<div class="item-coment">
 		  		<div class="item-category">ACCESSORY</div>
 		  		<div class="item-name">TOGA 팔찌</div>
@@ -290,7 +390,7 @@ function loadMoreItems() {
 		  	</div>
 	  	</li>
 	  	<li>
-		  	<div class="item"><img alt="" src="<%=root%>/SemiImg/category/top/e81.jpg" ></div>
+		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/top/e81.jpg" ></a></div>
 		  	<div class="item-coment">
 		  		<div class="item-category">TOP</div>
 		  		<div class="item-name">GU X UNDERCOVER 콜라보레이션 반팔티</div>
@@ -299,47 +399,47 @@ function loadMoreItems() {
 		  	</div>
 	  	</li>
 	  	<li>
-		  	<div class="item"><img alt="" src="<%=root%>/SemiImg/category/bottom/d11.jpg" ></div>
+		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/bottom/d11.jpg" ></a></div>
 		  	<div class="item-coment"></div>
 	  	</li>
 	  	<li>
-		  	<div class="item"><img alt="" src="<%=root%>/SemiImg/category/top/f81.jpg" ></div>
+		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/top/f81.jpg" ></a></div>
 		  	<div class="item-coment"></div>
 	  	</li>
 	  	<li>
-		  	<div class="item"><img alt="" src="<%=root%>/SemiImg/category/hat/a31.jpg" ></div>
+		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/hat/a31.jpg" ></a></div>
 		  	<div class="item-coment"></div>
 	  	</li>
 	  	<li>
-		  	<div class="item"><img alt="" src="<%=root%>/SemiImg/category/bag/c21.jpg" ></div>
+		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/bag/c21.jpg" ></a></div>
 		  	<div class="item-coment"></div>
 	  	</li>
 	  	<li>
-		  	<div class="item"><img alt="" src="<%=root%>/SemiImg/category/outer/a61.jpg" ></div>
+		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/outer/a61.jpg" ></a></div>
 		  	<div class="item-coment"></div>
 	  	</li>
 	  	<li>
-		  	<div class="item"><img alt="" src="<%=root%>/SemiImg/category/jewelley/c41.jpg" ></div>
+		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/jewelley/c41.jpg" ></a></div>
 		  	<div class="item-coment"></div>
 	  	</li>
 	  	<li>
-		  	<div class="item"><img alt="" src="<%=root%>/SemiImg/category/keyring/a51.jpg" ></div>
+		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/keyring/a51.jpg" ></a></div>
 		  	<div class="item-coment"></div>
 	  	</li>
 	  	<li>
-		  	<div class="item"><img alt="" src="<%=root%>/SemiImg/category/wallet/a91.jpg" ></div>
+		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/wallet/a91.jpg" ></a></div>
 		  	<div class="item-coment"></div>
 	  	</li>
 	  	<li>
-		  	<div class="item"><img alt="" src="<%=root%>/SemiImg/category/hat/b31.jpg" ></div>
+		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/hat/b31.jpg" ></a></div>
 		  	<div class="item-coment"></div>
 	  	</li>
 	  	<li>
-		  	<div class="item"><img alt="" src="<%=root%>/SemiImg/category/shoes/c71.jpg" ></div>
+		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/shoes/c71.jpg" ></a></div>
 		  	<div class="item-coment"></div>
 	  	</li>
 	  	<li>
-		  	<div class="item"><img alt="" src="<%=root%>/SemiImg/category/outer/a61.jpg" ></div>
+		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/outer/a61.jpg" ></a></div>
 		  	<div class="item-coment"></div>
 	  	</li>
 	  </ul>
