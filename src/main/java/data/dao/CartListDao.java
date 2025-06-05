@@ -8,7 +8,9 @@ import db.copy.DBConnect;
 
 public class CartListDao {
 
+
 	DBConnect db = new DBConnect();
+
 
 	// 1. 장바구니 목록 조회 (회원 이름 포함)
 	public List<CartListDto> getCartListByMember(String member_id) {
@@ -128,6 +130,7 @@ public class CartListDao {
 	                 "JOIN product p ON c.product_id = p.product_id " +
 	                 "WHERE c.idx = ?";
 
+
 	    try (Connection conn = db.getConnection();
 	         PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -166,7 +169,12 @@ public class CartListDao {
     }
 
 
+    // 회원별 장바구니 목록 (product, product_option 조인)
+
     // 1. 장바구니 목록 조회 (회원 이름 포함)
+
+
+
     public List<CartListDto> getCartListByMember(String member_id) {
         List<CartListDto> list = new ArrayList<>();
 
@@ -200,6 +208,7 @@ public class CartListDao {
                 dto.setSize(rs.getString("size"));
                 dto.setName(rs.getString("member_name")); 
 
+             
                 list.add(dto);
             }
         } catch (SQLException e) {
@@ -239,6 +248,7 @@ public class CartListDao {
         }
     }
 
+
     //구매하기 버튼 누르면 buyok=1로 바뀜.
     public CartListDto getAllDatas(int buyok)
     {
@@ -250,8 +260,6 @@ public class CartListDao {
     
     
  
-
-
     // 4. 구매 처리: buyok=1로 변경 (추가로 구현 필요 시 확장)
     public void markAsPurchased(int idx) {
         String sql = "UPDATE shop.cartlist SET buyok = 1 WHERE idx = ?";
@@ -266,7 +274,20 @@ public class CartListDao {
         }
     }
 
+    //구매하기 버튼 누르면 buyok=1로 바뀜.
+    public CartListDto getAllDatas(int buyok)
+    {
+    	CartListDto dto=new CartListDto();
+    	
+    	
+    	return dto;
+    }
+    
+    
+
+
 	    return list;
 	}
+
 
 }
