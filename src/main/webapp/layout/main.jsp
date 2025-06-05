@@ -1,3 +1,6 @@
+
+<%@page import="data.dto.ProductDto"%>
+
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -252,6 +255,7 @@ function loadMoreItems() {
     </div>
      <div class="carousel-item">
       <a href="index.jsp?main=category/shoes.jsp"><img src="SemiImg/main2.png" class="no-hover d-block w-100" alt="..."></a>
+
     </div>		
   </div>
   <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
