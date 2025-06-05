@@ -78,6 +78,7 @@
   if (redirect == null || redirect.trim().equals("")) {
       redirect = "../index.jsp";  //아무것도 안적혀있으면 기본페이지
   }
+  String root = request.getContextPath();
  %>
 <body>
 <div class="login-main">
@@ -85,7 +86,11 @@
    <p style="font-size: 1.5em">로그인</p>
    </div>
 
+<<<<<<< HEAD
    <form action="../login/loginaction.jsp" method="post">
+=======
+   <form action="<%=root%>/login/loginaction.jsp" method="post">
+>>>>>>> 2bd475264c8bcdccced5b1c2773d2c170d331863
     <span class="login-span"><p>아이디</p></span>
      <input type="text" name="id" class="form-control field" placeholder="" required="required" value="<%=myid%>" >
     <span class="login-span"><p>비밀번호</p></span>

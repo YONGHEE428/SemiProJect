@@ -26,19 +26,19 @@
 	$(function(){
 		$(".searchpage").hide();
 		const originalText = $("#logouting span").text(); // 원래 텍스트 저장
-
-		  $("#logouting").hover(function() {
-		    $(this).find("span").text("로그아웃");
-		  }, function() {
-		    $(this).find("span").text(originalText);
-		  });
 		
 		  $("#searchbar").click(function() {
 			  $(".overlay").fadeIn();
 			  $(".searchpage").fadeIn();
 			  $("body").css("overflow", "hidden");
 			});
-
+		  	$("#logouting").click(function(){
+				console.log($(this).text());
+				if($(this).text().trim() == "관리자님"){
+					alert("로그아웃 하셨습니다.");
+					location.href = "login/logoutform.jsp";
+				}
+		  	});
 			// 배경 클릭 시 닫기
 			$(".overlay").click(function() {
 			  $(".overlay").fadeOut();
@@ -61,7 +61,9 @@
 			    $("body").css("overflow", "auto"); // 스크롤 복원
 			  }
 			});
-
+			$(".logo").click(function(){
+				sessionStorage.setItem("backimgHidden", "false");
+			})
 	});
 	
 </script>
@@ -93,14 +95,14 @@
 							<li><a href="index.jsp?main=member/mypage.jsp">마이페이지</a></li>
 							
 					<%}if(role !=null && role.equals("admin")){%>
-							<li><a href="#">매장관리</a>
+							<li><a href="index.jsp?main=sangpumRegist/productListAdmin.jsp">매장관리</a>
 					<%} 
 					}%>
 					<li>
 					  <%
 					    if(loginok != null && loginok.equals("yes")) {
 					  %>
-					  <a href="#" id="logouting" onclick="logout()"><span><%=name%>님</span></a>
+					  <a href="#" id="logouting"><span><%=name%>님</span></a>
 						<!-- <ul class="sub-menu">
 						
 							<li><a href="#" onclick="logout()">로그아웃</a></li>
