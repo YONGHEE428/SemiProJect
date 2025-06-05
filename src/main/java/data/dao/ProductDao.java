@@ -35,7 +35,7 @@ public class ProductDao {
                 pstmtProduct = conn.prepareStatement(sqlProduct);
                 pstmtProduct.setString(1, productDto.getProductName());
                 pstmtProduct.setBigDecimal(2, productDto.getPrice());
-                pstmtProduct.setString(generatedProductId, sqlProduct);
+                pstmtProduct.setString(3, productDto.getMainImageUrl());
                 pstmtProduct.setString(4, productDto.getDescription());
                 pstmtProduct.setString(5, productDto.getCategory());
                 pstmtProduct.setInt(6, productDto.getProductId());
@@ -105,7 +105,7 @@ public class ProductDao {
     }
 
     // 상품 ID로 상품 전체 정보를 조회하는 메서드
-    public ProductDto getProductById(int productId) { //⭐️ 새로 추가된 메서드
+    public ProductDto getProductById(int productId) { // ⭐️ 새로 추가된 메서드
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -139,7 +139,7 @@ public class ProductDao {
     }
 
     // 상품 ID로 해당 상품의 모든 옵션을 조회하는 메서드
-    public List<ProductOptionDto> getProductOptionsByProductId(int productId) { //⭐️ 기존 메서드, ProductDto에 옵션 List를 설정하는 용도로 활용됨
+    public List<ProductOptionDto> getProductOptionsByProductId(int productId) { // ⭐️ 기존 메서드, ProductDto에 옵션 List를 설정하는 용도로 활용됨
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -267,7 +267,7 @@ public class ProductDao {
                     product.setProductName(rs.getString("product_name"));
                     product.setPrice(rs.getBigDecimal("price"));
                     product.setCategory(rs.getString("category"));
-                    product.setMainImageUrl(sql);
+                    product.setMainImageUrl(rs.getString("mainImageUrl"));
                     product.setDescription(rs.getString("description"));
                     product.setViewCount(rs.getString("view_count"));  
                     product.setLikeCout(rs.getString("like_count"));   

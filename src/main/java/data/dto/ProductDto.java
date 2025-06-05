@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ProductDto {
+public class ProductDto{
 	private int productId;
 	public int getProductId() {
 		return productId;
