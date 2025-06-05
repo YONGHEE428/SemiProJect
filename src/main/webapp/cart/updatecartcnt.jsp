@@ -1,6 +1,4 @@
-
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*" %>
 <%@page import="db.copy.DBConnect"%>
 
@@ -17,9 +15,18 @@
 
         pstmt.setInt(1, Integer.parseInt(cnt));
         pstmt.setInt(2, Integer.parseInt(idx));
-        pstmt.executeUpdate();
+        int result = pstmt.executeUpdate();
+
+        if (result > 0) {
+            out.print("OK"); // 성공 시
+        } else {
+            response.setStatus(500); // 실패 시 error 콜백
+            out.print("fail");
+        }
 
     } catch (Exception e) {
         e.printStackTrace();
+        response.setStatus(500); // 에러 콜백
+        out.print("fail");
     }
 %>
