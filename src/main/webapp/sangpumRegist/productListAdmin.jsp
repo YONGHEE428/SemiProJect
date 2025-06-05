@@ -40,6 +40,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>관리자 - 상품 목록</title>
     <style>
+        /* ... (기존 style 내용) ... */
+
+        /* 새로 추가할 버튼 스타일 */
+        .register-btn-container {
+            text-align: right; /* 버튼을 오른쪽으로 정렬 */
+            margin-bottom: 20px; /* 아래 여백 */
+        }
+        .register-btn {
+            background-color: #28a745; /* 녹색 계열 */
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+            border: none; /* 버튼처럼 보이게 하기 위해 */
+            cursor: pointer;
+        }
+        .register-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+    <style>
+    
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f8f9fa; color: #212529; }
         .container { max-width: 1200px; margin: auto; background-color: #ffffff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
         h1 { color: #343a40; text-align: center; margin-bottom: 25px; font-weight: 600; }
@@ -102,10 +127,14 @@
         <% if (pageErrorMessage != null) { %>
             <p class="error-message"><%= pageErrorMessage %></p>
         <% } %>
-
+ <div class="register-btn-container">
+            <a href="<%= request.getContextPath() %>/index.jsp?main=sangpumRegist/sangpumRegist.jsp" class="register-btn">
+                <i class="bi bi-plus-circle-fill"></i> 상품 등록
+            </a>
+        </div>
         <div class="category-nav">
-            <% for (String category : categories) { %>
-                <a href="productListAdmin.jsp?category=<%= java.net.URLEncoder.encode(category, "UTF-8") %>"
+           <% for (String category : categories) { %>
+                <a href="<%= request.getContextPath() %>/index.jsp?main=sangpumRegist/productListAdmin.jsp&category=<%= java.net.URLEncoder.encode(category, "UTF-8") %>"
                    class="<%= ( (currentCategoryName == null && "전체".equals(category)) || category.equals(currentCategoryName) ) ? "active" : "" %>">
                     <%= category %>
                 </a>

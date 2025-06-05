@@ -337,12 +337,11 @@ h1 {
 </style>
 </head>
 <body>
-    <form id="productRegistrationForm" class="upload-container"
-        method="POST" action="./productRegisterAction.jsp"
+  <form id="productRegistrationForm" class="upload-container"
+        method="POST" action="<%= request.getContextPath() %>/sangpumRegist/productRegisterAction.jsp"
         enctype="multipart/form-data">
 
         <input type="hidden" id="productId" name="productId" value="<%= request.getParameter("productId") != null ? request.getParameter("productId") : "" %>" />
-
 
         <h1>1. 상품 메인 이미지 등록</h1>
 
