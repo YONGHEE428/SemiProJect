@@ -20,10 +20,11 @@ body {
 }
 .order-wrapper {
     max-width: 900px;
-    margin: 40px auto;
+    margin: 70px auto;
     background: #fff;
     border: 1px solid #444;
     padding: 30px 25px;
+    
 }
 .order-title-bar {
     background: #f5f5f5;
@@ -164,6 +165,34 @@ body {
     .order-content-row { flex-direction: column; gap: 8px; }
     .order-actions-col { flex-direction: row; gap: 7px; }
 }
+	/* 상단바 */
+.mypage-content{
+    	height:60px;
+    	line-height:60px;
+    	top:150px;
+    	position:fixed;
+		width:100%;
+		min-height: 5px;
+		font-weight: bold;
+		text-align: center;
+		background-color: white;
+		transition: top 0.3s ease;
+		
+	}
+	.content-title > ul{
+	display: flex;
+	justify-content: center;
+	gap : 170px;
+	}
+	.content-title > ul > li >a{
+		color:gray;
+		text-decoration: none;
+	}
+	.content-title > ul > li > a:hover{
+		color:black;
+		border-bottom: 3px solid black;
+	}
+
 </style>
 </head>
 <%
@@ -184,8 +213,26 @@ List<OrderListDto> orderList = dao.getOrdersByMember(memberNum);
 String keyword = request.getParameter("keyword");
 if (keyword == null) keyword = "";
 %>
-
 <body>
+<div class="mypage-content">
+        <nav class="content-title">
+        		<ul>
+        			<li><a href="index.jsp?main=category/catewish.jsp" class="Mywish" >위시리스트</a></li>
+        			<li><a href="index.jsp?main=cart/cartform.jsp" class="MyCart">장바구니</a></li>
+        			<li><a href="index.jsp?main=orderlist/orderlistform.jsp" class="MybuyList" style="color: black; border-bottom: 3px solid black;">구매내역</a></li>
+        		</ul>
+       </nav>
+    </div>
+    <div class="container mt-5" style="margin-top: 5rem !important; margin-left:30rem !important;">
+      <div class="mb-3 text-secondary">
+         홈 &gt; 마이페이지 &gt; <b>구매내역 (<%=name%>&nbsp;님)
+         </b>
+      </div>
+      <h2 class="mb-4">
+         구매내역 <span style="font-size: 16px; color: #aaa;">ⓘ</span>
+      </h2>
+   </div>
+    
 <div class="order-wrapper">
     <!-- 상단 타이틀 -->
     <div class="order-title-bar"><%=name%>님의 주문목록</div>

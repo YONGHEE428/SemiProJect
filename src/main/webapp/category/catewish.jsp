@@ -150,6 +150,34 @@
     .toast-container {
         z-index: 1050;
     }
+    
+    	/* 상단바 */
+    .mypage-content{
+    	height:60px;
+    	line-height:60px;
+    	top:150px;
+    	position:fixed;
+		width:100%;
+		min-height: 5px;
+		font-weight: bold;
+		text-align: center;
+		background-color: white;
+		transition: top 0.3s ease;
+		
+	}
+	.content-title > ul{
+	display: flex;
+	justify-content: center;
+	gap : 170px;
+	}
+	.content-title > ul > li >a{
+		color:gray;
+		text-decoration: none;
+	}
+	.content-title > ul > li > a:hover{
+		color:black;
+		border-bottom: 3px solid black;
+	}
 </style>
 </head>
 <body>
@@ -161,23 +189,26 @@
 	boolean fromMypage = (referer != null && referer.contains("mypage.jsp")); // 또는 마이페이지의 실제 URL 경로
 
 %>
-
+<div class="mypage-content">
+        <nav class="content-title">
+        		<ul>
+        			<li><a href="index.jsp?main=category/catewish.jsp" class="Mywish" style="color: black; border-bottom: 3px solid black;">위시리스트</a></li>
+        			<li><a href="index.jsp?main=cart/cartform.jsp" class="MyCart">장바구니</a></li>
+        			<li><a href="index.jsp?main=orderlist/orderlistform.jsp" class="MybuyList">구매내역</a></li>
+        		</ul>
+       </nav>
+    </div>
     <!-- Category Navigation -->
    <!-- 카테고리 -->
 <div class="main-category" style="width: 100%; background-color: white; left: 0;">
-<div id="selectedCategory" style="text-align:left; font-size: 24px; font-weight: bold; margin-top: 20px;">
-   		  <ul style="<%= fromMypage ? "gap:250px; margin-left:-510px;" : "" %>">
-   		 <% if(fromMypage) { %>
-		    <li style="font-weight: normal; font-size: 16px; color: gray;">
-		        <span>홈 > 마이페이지 > <strong style="color: #606060">위시리스트 (<%=name%>님)</strong></span>
-		    </li>
-		<% }%>
-   		  <li class="dropdown" style="background-color: ; border-radius: 20px;">
-            <span class="category-link" style="font-size: 30px; color: black;">
-            위시리스트</span>
-            <hr>
-        </li>
- 		</ul>
+<div class="container mt-5" style="margin-top: 5rem !important;">
+      <div class="mb-3 text-secondary">
+         홈 &gt; 마이페이지 &gt; <b>위시리스트 (<%=name%>&nbsp;님)
+         </b>
+      </div>
+      <h2 class="mb-4">
+         위시리스트 <span style="font-size: 16px; color: #aaa;">ⓘ</span>
+      </h2>
    </div>
 </div>
 
@@ -250,6 +281,17 @@ $(function () {
     // 초기 체크
     checkEmptyWishlist();
 });
+
+window.addEventListener("scroll", function () {
+    const mypage = document.querySelector(".mypage-content");
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+    if (scrollTop > 50) {
+      mypage.style.top = "100px";
+    } else {
+      mypage.style.top = "150px";
+    }
+  });
 </script>
 </body>
 </html>

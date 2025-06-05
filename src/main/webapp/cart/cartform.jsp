@@ -98,6 +98,17 @@
 
 <script type="text/javascript">
    $(function() {
+
+	   window.addEventListener("scroll", function () {
+		    const mypage = document.querySelector(".mypage-content");
+		    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+		    if (scrollTop > 50) {
+		      mypage.style.top = "100px";
+		    } else {
+		      mypage.style.top = "150px";
+		    }
+	  });
       // 전체 선택/해제
       $("#allCheck").change(
             function() {
@@ -277,9 +288,20 @@ List<CartListDto> cartItems = cartDao.getCartListByMember(memberId);
 String name = (String) session.getAttribute("name");
 %>
 <body>
-   <div class="container mt-5">
+
+<div class="mypage-content">
+        <nav class="content-title">
+        		<ul>
+        			<li><a href="index.jsp?main=category/catewish.jsp" class="Mywish" >위시리스트</a></li>
+        			<li><a href="index.jsp?main=cart/cartform.jsp" class="MyCart" style="color: black; border-bottom: 3px solid black;">장바구니</a></li>
+        			<li><a href="index.jsp?main=orderlist/orderlistform.jsp" class="MybuyList">구매내역</a></li>
+        		</ul>
+       </nav>
+    </div>
+
+   <div class="container mt-5" style="margin-top: 5rem !important;">
       <div class="mb-3 text-secondary">
-         홈 &gt; 마이페이지 &gt; <b>장바구니 (&nbsp;<%=name%>&nbsp;님)
+         홈 &gt; 마이페이지 &gt; <b>장바구니 (<%=name%>&nbsp;님)
          </b>
       </div>
       <h2 class="mb-4">

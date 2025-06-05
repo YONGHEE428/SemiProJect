@@ -1,89 +1,131 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-  <style>
-        .review-container {
-            width: 400px;
-            max-height: 600px;
-            overflow-y: scroll;
-            padding: 20px;
-            margin: 0 auto;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-        }
+<%@ page contentType="text/html;charset=UTF-8" %>
+<style>
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-        .review-container input, 
-        .review-container textarea,
-        .review-container select,
-        .review-container button {
-            width: 100%;
-            margin: 10px 0;
-            padding: 10px;
-            border-radius: 4px;
-        }
+.modal-box {
+  width: 400px;
+  max-height: 90vh;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  overflow-y: auto;
+  position: relative;
+}
 
-        .star-rating {
-            font-size: 20px;
-            color: gold;
-        }
-    </style>
-</head>
-<body>
-<div class="review-container">
-  <form action="${pageContext.request.contextPath}/submitReview.do" method="post">
-        <p><strong>${memberName} 고객님</strong>, 구매하신 상품은 어떠셨나요?</p>
+.close-btn {
+  position: absolute;
+  top: 10px; right: 15px;
+  font-size: 20px;
+  cursor: pointer;
+}
 
-        
-        <label>리뷰 작성란</label>
-        <textarea name="content" placeholder="리뷰를 남겨주세요."></textarea>
+.submit-btn {
+  background: black;
+  color: white;
+  padding: 10px;
+  width: 100%;
+  border: none;
+  margin-top: 15px;
+  cursor: pointer;
+}
+</style>
 
-        <label>만족도</label>
-        <select name="rating">
-            <option value="5">아주 좋아요 ★★★★★</option>
-            <option value="4">좋아요 ★★★★</option>
-            <option value="3">보통 ★★★</option>
-            <option value="2">별로예요 ★★</option>
-            <option value="1">별로예요 ★</option>
-        </select>
 
-        <label>사이즈 어땠나요?</label>
-        <div>
-            <input type="radio" name="size_fit" value="많이 작아요"> 많이 작아요
-            <input type="radio" name="size_fit" value="조금 작아요"> 조금 작아요
-            <input type="radio" name="size_fit" value="잘 맞아요"> 잘 맞아요
-            <input type="radio" name="size_fit" value="조금 커요"> 조금 커요
-            <input type="radio" name="size_fit" value="많이 커요"> 많이 커요
-        </div>
 
-        <label>사이즈 한줄평</label>
-        <input type="text" name="size_comment" />
+<%
+    String memberName = (String) session.getAttribute("myname");
+    boolean isLoggedIn = (memberName != null);
+%>
 
-        <label>키</label>
-        <input type="text" name="height" />
+<!-- 리뷰 작성 버튼 -->
+<button onclick="openReviewModal()">리뷰 작성</button>
 
-        <label>몸무게</label>
-        <input type="text" name="weight" />
+<!-- 리뷰 작성 모달 -->
+<div id="reviewModal" class="modal-overlay" style="display: none;">
+  <div class="modal-box">
+    <span class="close-btn" onclick="closeReviewModal()">×</span>
 
-        <label>평소 사이즈 - 상의</label>
-        <div>
-            <input type="radio" name="usual_size" value="XS"> XS
-            <input type="radio" name="usual_size" value="S"> S
-            <input type="radio" name="usual_size" value="M"> M
-            <input type="radio" name="usual_size" value="L"> L
-            <input type="radio" name="usual_size" value="XL"> XL
-            <input type="radio" name="usual_size" value="2XL"> 2XL
-        </div>
+    <form id="reviewForm" action="${pageContext.request.contextPath}/SubmitReviewServlet.do" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="member_name" value="<%= memberName %>">
 
-        <button type="submit">리뷰 작성하고 적립금 받기</button>
+      <h5><%= memberName %> 고객님, 리뷰를 남겨주세요!</h5>
+      <p>지금 리뷰를 남기면 적립금 최대 <strong>1,500원</strong>!</p>
+
+      <label>구매 옵션</label><br>
+      <input type="radio" name="purchase_option" value="S"> S
+      <input type="radio" name="purchase_option" value="M"> M
+      <input type="radio" name="purchase_option" value="L"> L
+      <input type="radio" name="purchase_option" value="XL"> XL
+
+      <br><label>리뷰 작성란</label><br>
+      <textarea name="content" rows="4" placeholder="리뷰를 남겨주세요."></textarea>
+
+      <br><label>만족도</label><br>
+      <select name="satisfaction_text">
+          <option value="아주 좋아요">아주 좋아요 ★★★★★</option>
+          <option value="좋아요">좋아요 ★★★★</option>
+          <option value="보통이에요">보통이에요 ★★★</option>
+          <option value="그냥 그래요">그냥 그래요 ★★</option>
+          <option value="별로예요">별로예요 ★</option>
+      </select>
+
+      <br><label>포토 첨부</label><br>
+      <input type="file" name="photo" accept="image/*">
+
+      <br><label>사이즈 어때요?</label><br>
+      <input type="radio" name="size_fit" value="많이 작아요"> 많이 작아요
+      <input type="radio" name="size_fit" value="조금 작아요"> 조금 작아요
+      <input type="radio" name="size_fit" value="잘 맞아요"> 잘 맞아요
+      <input type="radio" name="size_fit" value="조금 커요"> 조금 커요
+      <input type="radio" name="size_fit" value="많이 커요"> 많이 커요
+
+      <br><label>사이즈 한줄평</label><br>
+      <input type="text" name="size_comment" />
+
+      <br><label>키</label><br>
+      <input type="text" name="height" />
+
+      <br><label>몸무게</label><br>
+      <input type="text" name="weight" />
+
+      <br><label>평소 사이즈 – 상의</label><br>
+      <input type="radio" name="usual_size" value="S"> S
+      <input type="radio" name="usual_size" value="M"> M
+      <input type="radio" name="usual_size" value="L"> L
+      <input type="radio" name="usual_size" value="XL"> XL
+
+      <br><br>
+      <button type="button" class="submit-btn" onclick="handleReviewClick()">리뷰 작성하고 적립금 받기</button>
     </form>
+  </div>
 </div>
-</body>
-</html>
-</body>
-</html>
+<script>
+  const isLoggedIn = <%= isLoggedIn %>;
+
+  function openReviewModal() {
+    document.getElementById("reviewModal").style.display = "flex";
+  }
+
+  function closeReviewModal() {
+    document.getElementById("reviewModal").style.display = "none";
+  }
+
+  function handleReviewClick() {
+    if (!isLoggedIn) {
+      if (confirm("로그인이 필요한 서비스입니다. 로그인 하시겠습니까?")) {
+      }
+    } else {
+      document.getElementById("reviewForm").submit();
+    }
+  }
+</script>
+
