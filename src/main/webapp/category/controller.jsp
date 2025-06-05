@@ -6,11 +6,12 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style type="text/css">
-     /* 리모컨 */
+   
+     
         .recently-viewed-remote {
 		   	position: fixed;
 		    right: 10px;
-		    top: 50%;
+		    bottom:50px;
 		    transform: translateY(-50%);
 		    display: flex;
 		    flex-direction: column;
@@ -70,5 +71,22 @@
     	<i class="bi bi-caret-down" style="font-size: 20px;"></i>
     	</button>
     </div>
+    <%
+	String id=(String)session.getAttribute("myid");
+
+    %>
+    <script type="text/javascript">
+    
+    const id="<%=id!=null?id:""%>" 
+
+	    $("#wishchk").click(function(){
+	    		if(id===""){
+	    			alert("로그인 후 이용해주세요.");
+				    location.href="index.jsp?main=login/loginform.jsp";
+	    		}else{
+				    location.href="index.jsp?main=category/catewish.jsp";
+	    		}
+	    });
+    </script>
 </body>
 </html>
