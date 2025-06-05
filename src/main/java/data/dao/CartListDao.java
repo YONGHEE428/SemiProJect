@@ -150,41 +150,8 @@ public class CartListDao {
        }
 
        return list;
+   
+ 
+       
    }
-   // 단일 장바구니 항목을 idx로 가져오기 (주문 처리 등에서 필요)
-   public CartListDto getCartItemByIdx(int idx) {
-       CartListDto dto = null;
-       String sql = "SELECT c.*, p.product_name, p.price, p.main_image_url, o.color, o.size " +
-                    "FROM cartlist c " +
-                    "JOIN product p ON c.product_id = p.product_id " +
-                    "JOIN product_option o ON c.option_id = o.option_id " +
-                    "WHERE c.idx = ?";
-       try (Connection conn = db.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement(sql)) {
-           pstmt.setInt(1, idx);
-           ResultSet rs = pstmt.executeQuery();
-           if (rs.next()) {
-               dto = new CartListDto();
-               dto.setIdx(rs.getString("idx"));
-               dto.setProduct_id(rs.getString("product_id"));
-               dto.setOption_id(rs.getString("option_id"));
-               dto.setMember_id(rs.getString("member_id"));
-               dto.setCnt(rs.getString("cnt"));
-               dto.setWriteday(rs.getTimestamp("writeday"));
-               dto.setBuyok(rs.getInt("BUYOK"));
-               dto.setProduct_name(rs.getString("product_name"));
-               dto.setPrice(rs.getInt("price"));
-               dto.setMain_image_url(rs.getString("main_image_url"));
-               dto.setColor(rs.getString("color"));
-               dto.setSize(rs.getString("size"));
-           }
-           rs.close();
-       } catch (SQLException e) {
-           e.printStackTrace();
-       }
-       return dto;
-   }
-
-
-
 }
