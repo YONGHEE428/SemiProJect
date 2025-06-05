@@ -1,10 +1,13 @@
+
+<%@page import="data.dto.ProductDto"%>
+<%@page import="data.dao.ProductDao"%>
 <%@page import="java.util.Base64"%>
 <%@page import="java.text.DecimalFormat"%>
 <%@page import="java.math.RoundingMode"%>
 <%@page import="java.math.BigDecimal"%>
-<%@page import="data.dto.ProductDto"%>
+
 <%@page import="java.util.ArrayList"%>
-<%@page import="data.dao.ProductDao"%>
+<%-- <%@page import="data.dao.ProductDao"%> --%>
 <%@page import="java.util.List"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
@@ -151,13 +154,15 @@
     </style>
    
   <script type="text/javascript">
-  <%
+   <%
 	String id=(String)session.getAttribute("myid");
+   
 	ProductDao pdao=new ProductDao();
 	String categoryName=(String)session.getAttribute("categoryName");
+	int productId=(Integer)session.getAttribute("productId");
 	List<ProductDto> list=pdao.getProductsWithOptionsByCategory(categoryName);
 	
-	%>
+	%> 
   $(function () {
 	    // 하트 클릭 (동적 요소 대응)
 	    $(document).on("click", ".heart", function () {
@@ -263,7 +268,7 @@
 	        });
 	    }
 	   
-    	const id="<%=id!=null?id:""%>"
+     	const id="<%=id!=null?id:""%>" 
 
 	    $("#wishchk").click(function(){
 	    		if(id===""){
@@ -344,7 +349,7 @@
     </ul>
 </div>
     <!-- Product Grid -->
-    <div class="container my-5">
+     <div class="container my-5">
         <div id="product-list" class="row">
             <!-- Product Card Template - Repeated 16 times (4x4 grid) -->
             <%
@@ -364,18 +369,9 @@
                   				//byte형식으로
 
                              		 // pdto.getMainImage()는 byte[]를 반환함
-               				 byte[] imagePathBytes = pdto.getMainImage();
-
-               				 String imagePath = null;
-                			if (imagePathBytes != null && imagePathBytes.length > 0) {
-			                    // byte[]를 String으로 변환합니다. (기본 인코딩 사용)
-			                    // 정확한 인코딩을 알면 Charset.forName("UTF-8") 등을 사용하는 것이 더 안전합니다.
-			                    imagePath = new String(imagePathBytes);
-			                }
-			                             		// 디버깅용: 경로가 제대로 나오는지 확인
-                                        System.out.println("Image Path: " + imagePath);
-                            if(imagePath != null && !imagePath.isEmpty()){%>
-                     		   <img src="<%= imagePath %>"
+               				 
+                            if(pdto.getMainImageUrl() != null && !pdto.getMainImageUrl().isEmpty()){%>
+                     		   <img src="<%= pdto.getMainImageUrl() %>"
                      			alt="Product Image" class="product-image"
                      			style="width: 100%; height: 100%;">
                          		<%}else{%>
@@ -414,7 +410,7 @@
           	}
           %>
         </div>
-    </div>
+    </div> 
 	
    <div>
    <!-- controller.jsp -->

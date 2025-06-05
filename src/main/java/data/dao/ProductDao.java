@@ -267,7 +267,7 @@ public class ProductDao {
                     product.setProductName(rs.getString("product_name"));
                     product.setPrice(rs.getBigDecimal("price"));
                     product.setCategory(rs.getString("category"));
-                    product.setMainImage(rs.getBytes("main_image"));
+                    product.setMainImageUrl(rs.getString("mainImageUrl"));
                     product.setDescription(rs.getString("description"));
                     product.setViewCount(rs.getString("view_count"));  
                     product.setLikeCout(rs.getString("like_count"));   
