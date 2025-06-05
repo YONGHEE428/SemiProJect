@@ -1,3 +1,14 @@
+
+<%@page import="data.dto.ProductDto"%>
+<%@page import="data.dao.ProductDao"%>
+<%@page import="java.util.Base64"%>
+<%@page import="java.text.DecimalFormat"%>
+<%@page import="java.math.RoundingMode"%>
+<%@page import="java.math.BigDecimal"%>
+
+<%@page import="java.util.ArrayList"%>
+<%-- <%@page import="data.dao.ProductDao"%> --%>
+<%@page import="java.util.List"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
@@ -32,7 +43,7 @@
         }
         
         .product-image {
-            height: 200px;
+            height: 100%;
             object-fit: cover;
         }
         
@@ -141,45 +152,62 @@
 		}
 			
     </style>
-     <%
-	    	String id=(String)session.getAttribute("myid");
-	  %>
+   
   <script type="text/javascript">
+   <%
+	String id=(String)session.getAttribute("myid");
+   
+	ProductDao pdao=new ProductDao();
+	String categoryName=(String)session.getAttribute("categoryName");
+	int productId=(Integer)session.getAttribute("productId");
+	List<ProductDto> list=pdao.getProductsWithOptionsByCategory(categoryName);
+	
+	%> 
   $(function () {
 	    // 하트 클릭 (동적 요소 대응)
 	    $(document).on("click", ".heart", function () {
-	        let isFilled = $(this).hasClass("bi-suit-heart-fill");
-	        let count = parseInt($(this).text());
-		
+	    	const heartIcon=$(this);
+	        const isFilled = heartIcon.hasClass("bi-suit-heart-fill");
+	        const count = parseInt(heartIcon.text());
+	        const productId = heartIcon.closest(".product-card").data("product-id");
+			
 	        if(id===""){
     			alert("로그인 후 이용해주세요.");
 			    location.href="index.jsp?main=login/loginform.jsp";
-    		}else{
-    			 if (isFilled) {
-    		            $(this)
-    		                .removeClass("bi-suit-heart-fill")
-    		                .addClass("bi-suit-heart")
-    		                .css("color", "black")
-    		                .text(count - 1);
-    		            	
-    		        } else {
-    		            $(this)
-    		                .removeClass("bi-suit-heart")
-    		                .addClass("bi-suit-heart-fill")
-    		                .css("color", "red")
-    		                .text(count + 1);
-    		            document.querySelector("#liveToast .toast-body").innerText = "위시리스트에 추가되었습니다!";
-
-    		            const toastLiveExample = document.getElementById('liveToast');
-    		            const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
-
-    		            toastBootstrap.show();
-    		            
-    		        }
+			    return;
     		}
-	       
-	    });
+	        else{
+	        	const action =isFilled?"unlike":"like";
+	        	 $.ajax({
+	        	        url: "likeAction.jsp",
+	        	        type: "POST",
+	        	        data: { productId: productId, action: action },
+	        	        success: function () {
+	        	            if (isFilled) {
+	        	                heartIcon
+	        	                    .removeClass("bi-suit-heart-fill")
+	        	                    .addClass("bi-suit-heart")
+	        	                    .css("color", "black")
+	        	                    .text(count - 1);
+	        	            } else {
+	        	                heartIcon
+	        	                    .removeClass("bi-suit-heart")
+	        	                    .addClass("bi-suit-heart-fill")
+	        	                    .css("color", "red")
+	        	                    .text(count + 1);
 
+	        	                document.querySelector("#liveToast .toast-body").innerText = "위시리스트에 추가되었습니다!";
+	        	                const toast = bootstrap.Toast.getOrCreateInstance(document.getElementById('liveToast'));
+	        	                toast.show();
+	        	            }
+	        	            
+	        	        },
+	        	        error: function () {
+	        	            alert("좋아요 처리 중 오류가 발생했습니다.");
+	        	        }
+	        	    });
+    		}
+	    });
 	    // 무한스크롤
 	    let page = 1;
 	    let isLoading = false;
@@ -215,10 +243,10 @@
 	                        el.classList.add("col-3");
 	                        el.innerHTML =
 	                        	 "<div class=\"product-card\" data-product-id=\"" + item.name + "\">" +
-	                             "<div class=\"item\">" +
+	                             "<div class=\"item\" style=\"width: 100%; height: 100%; height:300px;\">" +
 	                               "<img alt=\"\" src=\"/SemiProject" + item.img + "\" class=\"product-image\" style=\"width: 100%; height: 100%;\">" +
 	                             "</div>" +
-	                             "<div class=\"item-coment\">" +
+	                             "<div class=\"item-coment\" style=\"width: 100%; height: 40%;\">" +
 	                               "<div class=\"item-category\"><b>" + item.category + "</b></div>" +
 	                               "<div class=\"item-name\">" + item.name + "</div>" +
 	                               "<div class=\"item-price\"><b>" + item.price + "</b></div>" +
@@ -240,7 +268,7 @@
 	        });
 	    }
 	   
-    	const id="<%=id!=null?id:""%>"
+     	const id="<%=id!=null?id:""%>" 
 
 	    $("#wishchk").click(function(){
 	    		if(id===""){
@@ -279,9 +307,7 @@
   </div>
 </div>
    
-   
-
-    <!-- Category Navigation -->
+ 
    <!-- 카테고리 -->
 <div class="main-category" style="width: 100%; background-color: white; left: 0;">
 <div id="selectedCategory" style="text-align:center; font-size: 24px; font-weight: bold; margin-top: 20px;"></div>
@@ -323,27 +349,68 @@
     </ul>
 </div>
     <!-- Product Grid -->
-    <div class="container my-5">
+     <div class="container my-5">
         <div id="product-list" class="row">
             <!-- Product Card Template - Repeated 16 times (4x4 grid) -->
-            <% for(int i = 0; i < 16; i++) { %>
-            <div class="col-3">
-                <div class="product-card"  data-product-id="<%=i%>">
-                    <img src="SemiImg/footerLogo.png" alt="Product Image" class="product-image"
-                    style="width: 100%; height: 100%;">
-                    <div class="product-info">
-                        <div class="product-company"><b>SSY</b></div>
-                        <div class="product-name">상품명</div>
-                        <div class="product-price"><b>99,000원</b></div>
-                        <i class="bi bi-suit-heart heart" id="liveToastBtn"
-                        style="cursor: pointer; color: black;">0</i>
-                        
-                    </div>
-                </div>
-            </div>
-            <% } %>
+            <%
+         	DecimalFormat df=new DecimalFormat("#,###");
+
+            if(list.size()==0){%>
+                    <div class="product-card">
+                    등록된 상품이 없습니다.
+					</div>
+            	<%}else{
+             for(int i = 0; i < list.size(); i++) { 
+            	ProductDto pdto=list.get(i);
+            	%>
+            		 <div class="col-3">
+                     <div class="product-card"  data-product-id="<%=pdto.getProductId()%>">
+                     <%
+                  				//byte형식으로
+
+                             		 // pdto.getMainImage()는 byte[]를 반환함
+               				 
+                            if(pdto.getMainImageUrl() != null && !pdto.getMainImageUrl().isEmpty()){%>
+                     		   <img src="<%= pdto.getMainImageUrl() %>"
+                     			alt="Product Image" class="product-image"
+                     			style="width: 100%; height: 100%;">
+                         		<%}else{%>
+                        			<img src="SemiImg/footerLogo.png"> 
+                         <%
+                         	}
+                         %>
+                         
+                         <div class="product-info">
+                             <div class="product-company"><b><%=pdto.getCategory() %></b></div>
+                             <%
+                             	if(pdto.getProductName().length()>10){%>
+                             	
+                             	<div class="product-name" style="font-size: 10px;"><%=pdto.getProductName()%></div>		
+                             	<%}else{%>
+                             	<div class="product-name"><%=pdto.getProductName()%></div>	
+                             	<%}
+                             %>
+                             
+                             <%
+                             	BigDecimal price=pdto.getPrice();
+                             //소수점 없앰
+                             	BigDecimal realprice=price.setScale(0, RoundingMode.DOWN);
+                             %>										<!-- 지수없이(일반숫자형식)으로 출력 -->
+                             <div class="product-price"><b><%=df.format(realprice) %>원</b></div>
+                             
+                            
+                             <i class="bi bi-suit-heart heart" 
+                             style="cursor: pointer; color: black;"><%=(pdto.getLikeCount())==null?0:pdto.getLikeCount() %></i>
+                             
+                         </div>
+                     </div>
+                 </div>
+            		
+            	<%}
+          	}
+          %>
         </div>
-    </div>
+    </div> 
 	
    <div>
    <!-- controller.jsp -->
@@ -354,11 +421,8 @@
  	<div id="observerTarget"></div>
     
    </div> 
- <script type="text/javascript">
-/* 5시방향 메세지 뜨는 트리거 */
-const toastTrigger = document.getElementById('liveToastBtn')
-const toastLiveExample = document.getElementById('liveToast')
 
+<<<<<<< HEAD
 if (toastTrigger) {
   const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
   if(id===""){
@@ -370,5 +434,7 @@ if (toastTrigger) {
   } 
 }
 </script>
+=======
+>>>>>>> b5c1d7f266a25e43863e010e78d4e099b068b355
 </body>
 </html>

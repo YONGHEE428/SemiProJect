@@ -1,647 +1,734 @@
-<%@page import="data.dao.CartListDao"%>
-<%@page import="data.dto.CartListDto"%>
-<%@page import="java.util.List"%>
+<%@page import="org.apache.catalina.Context"%>
 <%@page import="java.util.StringTokenizer"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link
-	href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Nanum+Myeongjo&family=Sunflower:wght@300&display=swap"
-	rel="stylesheet">
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-	rel="stylesheet">
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-<!-- 주소검색 -->
-<script
-	src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-<!-- 아임포트(이니페이) -->
-<script type="text/javascript"
-	src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
-<script type="text/javascript"
-	src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<title>결제하기</title>
-<link rel="stylesheet" href="payment.css">
-<style type="text/css">
-/* 전역 스타일 */
-* {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Nanum+Myeongjo&family=Sunflower:wght@300&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <!-- 다음 주소창api -->
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <title>결제하기</title>
+    
+    <style>
+        /* 전역 스타일 */
+        * {
+            margin: 0;
+            padding: 0;
+            /* padding, border를 포함한 전체 너비로 계산
+				→ 요소가 width: 100px이면 padding 10px 포함해도 100px 유지됨 */
+            box-sizing: border-box;	
+        }
 
-body {
-	font-family: 'Noto Sans KR', sans-serif;
-	line-height: 1.6;
-	color: #333;
-}
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            
+            /* 텍스트 줄간격 (기본: 1.0). 1.6이면 텍스트 간 간격이 넓어짐 */
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
 
-/* 헤더 스타일 */
-header {
-	width: 100%;
-}
+        /* 헤더 스타일 */
+        .top-header {
+            background-color: #fff;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            
+            /* display block: 한 줄 전체 차지
 
-.top-header {
-	background-color: #fff;
-	padding: 10px 20px;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	border-bottom: 1px solid #eee;
-}
-
-.left-section {
-	display: flex;
-	align-items: center;
-	gap: 20px;
-}
-
-.slide-menu-btn {
-	background: none;
-	border: none;
-	cursor: pointer;
-	padding: 5px;
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-}
-
-.slide-menu-btn span {
-	display: block;
-	width: 20px;
-	height: 2px;
-	background-color: #333;
-}
-
-.shop-name {
-	font-size: 1.5rem;
-	font-weight: bold;
-	cursor: pointer;
-}
-
-.user-menu {
-	display: flex;
-	gap: 20px;
-	align-items: center;
-}
-
-.user-menu a {
-	text-decoration: none;
-	color: #333;
-	font-size: 0.9rem;
-}
-
-.user-info {
-	font-size: 0.9rem;
-}
-
-.main-menu {
-	background-color: #fff;
-	padding: 10px 20px;
-	display: flex;
-	justify-content: center;
-	gap: 40px;
-	border-bottom: 1px solid #eee;
-}
-
-.main-menu a {
-	text-decoration: none;
-	color: #333;
-	font-weight: 500;
-}
-
-/* 주문 섹션 스타일 */
-.order-section {
-	padding: 20px;
-	margin: 20px auto;
-	max-width: 1200px;
-}
-
-.order-section h2 {
-	font-size: 30px;
-	margin-bottom: 20px;
-}
-
-.order-list {
-	border: 1px solid #eee;
-	padding: 20px;
-	min-height: 200px;
-}
-
-/* 주문자 정보 섹션 스타일 */
-.customer-info-section {
-	padding: 20px;
-	margin: 20px auto;
-	max-width: 1200px;
-	display: flex;
-	gap: 20px;
-}
-
-.info-container {
-	flex: 1;
-}
-
-.customer-form {
-	display: flex;
-	flex-direction: column;
-	gap: 15px;
-}
-
-.form-group {
-	display: flex;
-	gap: 10px;
-}
-
-.form-group input, .form-group textarea {
-	flex: 1;
-	padding: 10px;
-	border: 1px solid #ddd;
-	border-radius: 4px;
-}
-
-.address-search-btn {
-	padding: 10px 20px;
-	background-color: #f8f8f8;
-	border: 1px solid #ddd;
-	border-radius: 4px;
-	cursor: pointer;
-}
-
-.message-box textarea {
-	width: 100%;
-	resize: none;
-}
-
-.ad-container {
-	width: 200px;
-}
-
-.ad-space {
-	width: 100%;
-	height: 320px;
-	background-color: #f8f8f8;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border: 1px solid #ddd;
-}
-
-/* 결제 섹션 스타일 */
-.payment-section {
-	padding: 20px;
-	margin: 20px auto;
-	max-width: 1200px;
-}
-
-.payment-container {
-	border: 1px solid #eee;
-	padding: 20px;
-}
-
-.payment-methods {
-	display: flex;
-	gap: 20px;
-	margin-bottom: 20px;
-}
-
-.payment-method-btn {
-	padding: 10px 20px;
-	background-color: #fff;
-	border: 1px solid #ddd;
-	border-radius: 4px;
-	cursor: pointer;
-}
-
-.payment-method-btn:hover {
-	background-color: #f8f8f8;
-}
-
-.payment-details {
-	min-height: 100px;
-	margin-bottom: 20px;
-}
-
-.payment-submit-btn {
-	display: block;
-	width: 200px;
-	padding: 15px;
-	background-color: #333;
-	color: #fff;
-	border: none;
-	border-radius: 4px;
-	cursor: pointer;
-	margin-left: auto;
-}
-
-.payment-submit-btn:hover {
-	background-color: #444;
-}
-
-.method-btn {
-	background-color: #c9a797; /* 카테고리 bg 색 참고 */
-	color: white;
-}
-
-.method-btn:hover {
-	background-color: #a47864;
-}
-</style>
-<%
-String name = (String) session.getAttribute("name");
-String hp = (String) session.getAttribute("hp");
-
-StringTokenizer stk = new StringTokenizer(hp, "-");
-%>
-<script type="text/javascript">
-	$(function(){
-		$(".payment-method-btn").click(function() {
-			  $(".payment-method-btn").removeClass("method-btn"); // 기존 선택 해제
-			  $(this).addClass("method-btn"); // 현재 선택한 버튼에 스타일 적용
-			  var selectedPay = $(this).text();
-			    $("#selectedPay").val(selectedPay);
-			    
-			   
-			});
+			   inline: 내용 크기만큼 차지
 		
-		
-		/* 주문자정보 감추기 */
-		/* $(".customer-form").hide(); */
-		/* 결제정보 감추기 */
-		 $(".form-select").change(function(){
-	            var m = $(".form-select option:selected").text();
-	            if(m==="직접 입력"){
-	            	$("#mymessage").show();
-	            }else{
-	            	$("#mymessage").hide();
-	            }
-	        });
-		//주소창 (다음 주소창 api)
-    	$("#findaddress").click(function(){
-    		new daum.Postcode({
-		        oncomplete: function(data) {
-		            // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분입니다.
-		            // 예제를 참고하여 다양한 활용법을 확인해 보세요.
-		        	document.getElementById("userAddress").value = data.address;//주소넣기
-		        	document.getElementById("userPostCode").value = data.zonecode;//우편번호넣기
-		        	var inputDtlAddr = document.getElementById("userDtlAddress");//주소란 읽기전용 설정
-		        	inputDtlAddr.readOnly = false;
-		        }
-		    }).open();
-    	});
-		$("#canceladdress").click(function(){
-			var inputPostCode = document.getElementById("userPostCode");
-			inputPostCode.value = ""; // 우편번호 초기화
-			var inputAddr = document.getElementById("userAddress");
-			inputAddr.value = ""; // 주소란 초기화
-			var inputDtlAddr = document.getElementById("userDtlAddress");
-			inputDtlAddr.value = ""; // 상세주소란 초기화
-			inputDtlAddr.readOnly = true; // 상세주소란 읽기전용 해제
-		});
-		
-		$("#sameinfo").click(function(){
-			if($(this).is(":checked")){
-				$("#name").val("<%=name%>");
-				$("#hp").val("<%=stk.nextToken()%>"+"<%=stk.nextToken()%>"+"<%=stk.nextToken()%>
-	");
+			   flex: 유연하게 정렬, 가로/세로 배치 가능
 
-					} else {
-						$("#name").val("");
-						$("#hp").val("");
-					}
-				});
+			   grid: 격자 형태 배치 */
+            display: flex;
+            
+            /* space-between: 양 끝 정렬, 중간은 균등 간격 */
+            justify-content: space-between;
+            
+            /* align-items 세로축 정렬, center: 세로 가운데 정렬 */   
+            align-items: center;
+        }
 
-	});
+        .left-section {
+            display: flex;
+            align-items: center;
+            
+            /* Flex/Grid 자식 요소 사이 간격 */
+            gap: 2rem;
+        }
 
-	function payrequest() {
-		const selectedPay = $("#selectedPay").val();
-		if (!selectedPay) {
-			alert("결제 수단을 선택해주세요.");
-			return;
-		}
+        .slide-menu-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
 
-		if (selectedPay === "카드결제") {
-			cardPay();
-		} else if (selectedPay === "네이버페이") {
-			naverPay();
-		} else if (selectedPay === "카카오페이") {
-			kakaoPay();
-		} else if (selectedPay === "무통장입금") {
-			bankTransfer();
-		} else if (selectedPay === "TOSS") {
-			tossPay();
-		} else {
-			alert("지원하지 않는 결제 수단입니다.");
-		}
-	}
+        .slide-menu-btn span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background-color: #333;
+            margin: 4px 0;
+            /* 애니메이션 0.3초후 시작 */
+            transition: 0.3s;
+        }
 
-	function cardPay() {
-		var IMP = window.IMP;
-		IMP.init('imp23623506');
+        .shop-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 0;
+        }
 
-		// 가맹점 식별코드 입력
+        .user-menu {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            margin: 0;
+            font-size: 12px;
+        }
 
-		//iamport 대신 자신의 "가맹점 식별코드"를 사용
-		IMP
-				.request_pay(
-						{
-							pg : "kicc",
-							pay_method : "card",
-							merchant_uid : generateOrderNumber(),
-							name : '결제테스트',
-							amount : 100,
-							buyer_email : 'iamport@siot.do',
-							buyer_name : '구매자',
-							buyer_tel : '010-1234-5678',
-							buyer_addr : '서울특별시 강남구 삼성동',
-							buyer_postcode : '123-456'
-						},
-						function(rsp) {
-							if (rsp.success) {
-								// 결제 성공 시 서버 검증 요청
-								$
-										.ajax(
-												{
-													url : "payment/verify",
-													method : "POST",
-													data : {
-														imp_uid : rsp.imp_uid,
-														merchant_uid : rsp.merchant_uid,
-														amount : rsp.paid_amount
-													}
-												})
-										.done(
-												function(data) {
-													if (data.status === "success") {
-														alert('결제가 완료되었습니다.\n'
-																+ '고유ID : '
-																+ rsp.imp_uid
-																+ '\n'
-																+ '주문번호 : '
-																+ rsp.merchant_uid
-																+ '\n'
-																+ '결제 금액 : '
-																+ rsp.paid_amount
-																+ '\n'
-																+ '카드 승인번호 : '
-																+ rsp.apply_num);
+        .user-menu a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
 
-														location.href = 'index.jsp?main=payment_success.jsp';
-													} else {
-														alert('결제 검증에 실패하였습니다.\n'
-																+ data.message);
-														location.href = 'payment_fail.jsp';
-													}
-												});
-							} else {
-								alert('결제에 실패하였습니다.\n' + '에러내용: '
-										+ rsp.error_msg);
-							}
-						});
-	}
-	function naverPay() {
-		alert("공사 중입니다.");
-	}
-	function logout() {
-		alert("로그아웃 하셨습니다.");
-		location.href = "../login/logoutform.jsp";
-	}
-</script>
-<%
-//프로젝트 경로구해기
-String root = request.getContextPath();
-%>
+
+        /* 컨테이너 스타일 */
+        .container {
+            max-width: 1200px;
+            /* auto:좌우여백 자동설정,가운데 정렬 */
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        /* 카드 스타일 */
+        .card {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.05);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border: none;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+        	/* 요소를 Y축으로 -5px만큼 이동 */
+            transform: translateY(-5px);
+        }
+
+        /* 섹션 타이틀 */
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        /* 폼 스타일 */
+        .form-floating {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control, .form-select {
+            height: 3.5rem;
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
+            padding: 1rem 1.25rem;
+            font-size: 1rem;
+            transition: all 0.1s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #fff;
+            box-shadow: 0 0 0 0.25rem rgba(0, 0, 0, 0.5);
+        }
+
+        .form-floating label {
+            padding: 1rem 1.25rem;
+            color: #6c757d;
+        }
+
+        /* 버튼 스타일 */
+        .btn-custom {
+            background: #fff;
+            color: #000;
+            border: 1px solid black;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background: #2c3e50;
+            color:white;
+            box-shadow: 0 5px 15px rgba(164, 120, 100, 0.2);
+        }
+
+        /* 결제 수단 버튼 */
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .payment-method-btn {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 12px;
+            background: #fff;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .payment-method-btn:hover {
+            border-color: #000;
+            background: #fff;
+        }
+
+        .payment-method-btn.active {
+            background: #2c3e50;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* 주문 요약 */
+        .order-summary {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            color: #495057;
+        }
+
+        .total-amount {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #dee2e6;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        /* 체크박스 스타일 */
+        .form-check {
+            margin-top: 1rem;
+        }
+
+        .form-check-input {
+            width: 1.2em;
+            height: 1.2em;
+            border-radius: 6px;
+            border: 2px solid #000;
+            cursor: pointer;
+        }
+
+        .form-check-input:checked {
+            background-color: #2c3e50;
+            border-color: #000;
+        }
+
+        .form-check-label {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* 주소 입력 섹션 */
+        .address-section h3 {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .btn-outline-secondary {
+            color: #6c757d;
+            border-color: #6c757d;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: #6c757d;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+
+            .user-menu {
+                gap: 1rem;
+            }
+
+            .top-header {
+                padding: 0.5rem 1rem;
+            }
+        }
+
+        /* 애니메이션 효과 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* 입력 필드 포커스 효과 */
+        .form-control:focus ~ label,
+        .form-select:focus ~ label {
+            color: #c9a797;
+        }
+
+        /* 버튼 로딩 상태 */
+        .btn-custom.loading {
+            position: relative;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .btn-custom.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            right: 1rem;
+            top: calc(50% - 10px);
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        #logouting {
+  			pointer-events: none; /* 마우스 이벤트 비활성화 */
+ 			 cursor: text;      /* 기본 커서로 유지 */
+ 			 color: inherit;       /* 색상 변경 방지 */
+ 			text-decoration: none; /* 밑줄 제거 */
+			}
+    </style>
 </head>
 <body>
-	<header>
-		<div class="top-header">
-			<div class="left-section">
-				<button class="slide-menu-btn">
-					<span></span> <span></span> <span></span>
-				</button>
-				<h1 class="shop-name">
-					<a href="<%=root%>/index.jsp"> <img
-						src="<%=root%>/SemiImg/mainLogo.png" class="y_mainlogo"
-						style="width: 150px;">
-					</a>
-				</h1>
-			</div>
-			<div class="right-section">
-				<nav class="user-menu">
-					<a href="#">매장찾기</a> <a href="#">고객센터</a> <a href="#">장바구니</a> <a
-						href="#">마이페이지</a>
-					<%
-					String loginok = (String) session.getAttribute("loginok");
+    <%
+    	String root = request.getContextPath();
+    	String name=(String)session.getAttribute("name");
+        String hp=(String)session.getAttribute("hp");
+        StringTokenizer stk= new StringTokenizer(hp,"-");
+    %>
 
-					String role = (String) session.getAttribute("role");
-					if (loginok != null && loginok.equals("yes")) {
-					%>
-					<a href="#" id="logouting"><span><%=name%>님</span></a> <a href="#"
-						onclick="logout()">로그아웃</a>
-					<%
-					} else {
-					%>
-					<!-- 로그인버튼 클릭 시 현재 사용자가 보고있는 페이지 URl를 반환 -->
-					<a
-						href="../index.jsp?main=login/loginform.jsp&redirect=<%=request.getRequestURI()%>">로그인</a>
-					<%
-					}
-					%>
+    <!-- 헤더 -->
+    <header>
+        <div class="top-header">
+            <div class="left-section">
+                <button class="slide-menu-btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <h1 class="shop-name"><a href="<%=root%>/index.jsp">
+                <img src="<%=root%>/SemiImg/mainLogo.png" class="y_mainlogo" 
+                    style="width: 150px;">
+                </a></h1>
+            </div>
+            <div class="right-section">
+                <nav class="user-menu">
+                    <a href="#">매장찾기</a>
+                    <a href="../index.jsp?main=boardlist/boardlist.jsp"> 고객센터</a>
+                    <a href="../index.jsp?main=cart/cartform.jsp"> 장바구니</a>
+                    <a href="../index.jsp?main=member/mypage.jsp"> 마이페이지</a>
+                    <%
+                    String loginok = (String)session.getAttribute("loginok");
+                    String role = (String)session.getAttribute("role");
+                    if(loginok != null && loginok.equals("yes")) {
+                    %>
+                    <a href="#" id="logouting"><span><%=name%>님</span></a>
+                    <a href="#" onclick="logout()"><i class="bi bi-box-arrow-right"></i> 로그아웃</a>
+                    <%
+                    } else {
+                    %>
+                    <a href="../index.jsp?main=login/loginform.jsp&redirect=<%=request.getRequestURI()%>">
+                        <i class="bi bi-box-arrow-in-right"></i> 로그인
+                    </a>
+                    <%
+                    }
+                    %>
+                </nav>
+            </div>
+        </div>
+    </header>
 
-				</nav>
-			</div>
-		</div>
+    <!-- 메인 컨테이너 -->
+    <div class="container">
+        <!-- 주문 섹션 -->
+        <section class="card">
+            <h2 class="section-title">주문 목록</h2>
+            <div class="order-list">
+                <!-- 주문 상품 목록이 여기에 들어갑니다 -->
+            </div>
+        </section>
 
-	</header>
+        <!-- 주문자 정보 섹션 -->
+        <section class="card">
+            <h2 class="section-title">주문자 정보</h2>
+            <form class="customer-form">
+                <div class="row g-4">
+                    <!-- 주문자명 입력 -->
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="name" placeholder="주문자명">
+                            <label for="name">주문자명</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="sameinfo">
+                            <label class="form-check-label" for="sameinfo">회원정보와 동일</label>
+                        </div>
+                    </div>
 
-	<%
-	// 예: ?idxs=2,7,9 로 넘어온 경우
-	String idxsParam = request.getParameter("idxs"); // "2,7,9"
-	List<CartListDto> orderItems = null;
-	if (idxsParam != null && !idxsParam.trim().isEmpty()) {
-		String[] idxArr = idxsParam.split(",");
-		CartListDao cartDao = new CartListDao();
-		orderItems = cartDao.getCartItemsByIdxs(idxArr);
-	}
-	%>
-	<section class="order-section">
-		<h2>주문목록</h2>
-		<div class="order-list">
-			<%
-			if (orderItems == null || orderItems.isEmpty()) {
-			%>
-			<div class="alert alert-info">주문 상품이 없습니다.</div>
-			<%
-			} else {
-			for (CartListDto item : orderItems) {
-			%>
-			<div class="order-item"
-				style="border-bottom: 1px solid #eee; padding: 14px;">
-				<strong><%=item.getProduct_name()%></strong> / <span
-					style="color: #888;"><%=item.getColor()%> / <%=item.getSize()%></span>
-				/ <b><%=item.getCnt()%>개</b> / <span style="color: #b88358;"><%=item.getPrice()%>원</span>
-			</div>
-			<%
-			}
-			}
-			%>
-		</div>
-	</section>
+                    <!-- 전화번호 입력 -->
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="tel" class="form-control" id="hp" placeholder="전화번호">
+                            <label for="hp">전화번호 (-없이 입력)</label>
+                        </div>
+                    </div>
 
-	<!-- 주문자 정보 섹션 -->
-	<section class="customer-info-section">
-		<div class="info-container">
-			<h2 class="orderer">주문자 정보</h2>
-			<form class="customer-form">
-				<div class="form-group" style="width: 260px;">
-					<input type="text" placeholder="주문자명" id="name"
-						style="width: 100%; margin-bottom: 10px;"> <label
-						style="width: 150px; display: inline-block; padding: 2px 5px; cursor: pointer;">
-						<input type="checkbox" id="sameinfo" name="sameinfo"
-						style="vertical-align: middle; margin-right: 5px;"> 회원정보와
-						동일
-					</label>
-				</div>
+                    <!-- 주소 입력 -->
+                    <div class="col-12">
+                        <h3 class="h5 mb-3">배송지 주소</h3>
+                        <div class="d-flex gap-2 mb-3">
+                            <button type="button" class="btn btn-custom" id="findaddress">
+                                <i class="bi bi-search"></i> 주소찾기
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" id="canceladdress">
+                                <i class="bi bi-x-lg"></i> 취소
+                            </button>
+                        </div>
+                    </div>
 
+                    <!-- 우편번호 -->
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                        
+                            <input type="text" class="form-control" id="userPostCode" readonly>
+                            <label for="userPostCode">우편번호</label>
+                        </div>
+                    </div>
 
-				<div class="form-group" style="width: 250px;">
-					<input type="tel" name="hp" id="hp" placeholder="번호(-없이 입력)">
-				</div>
-				<div class="form-group address-group">
-					<span><h3>주소</h3></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<button type="button" class="btn btn-outline-secondary"
-						id="findaddress">
-						<fmt:message key="code_search" />
-						주소찾기
-					</button>
-					<button type="button" class="btn btn-outline-danger"
-						id="canceladdress">
-						<fmt: message key="code_cancel" />
-						취소
-					</button>
-				</div>
-				<!-- 우편번호 -->
-				<div class="mb-2 d-flex align-items-center" style="width: 300px;">
-					<label for="userPostCode" class="form-label mb-0 me-2"
-						style="white-space: nowrap; padding: 5px;">우편번호&nbsp;&nbsp;</label>
-					<input type="text" class="form-control form-control-sm"
-						id="userPostCode" name="userPostCode" readonly
-						style="width: 120px;">
-				</div>
-				<!-- 주소 -->
-				<div class="mb-2 d-flex align-items-center"
-					style="width: 450px; padding: 5px; gap: 10px;">
-					<label for="userAddress" class="form-label mb-0"
-						style="width: 60px; margin-right: 22px;">주소</label> <input
-						type="text" class="form-control" id="userAddress"
-						name="userAddress" readonly style="flex-grow: 1; min-width: 0;">
-				</div>
+                    <!-- 기본주소 -->
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="userAddress" readonly>
+                            <label for="userAddress">기본주소</label>
+                        </div>
+                    </div>
 
-				<!-- 상세주소 -->
-				<div class="mb-2 d-flex align-items-center"
-					style="width: 450px; padding: 5px; gap: 10px;">
-					<label for="userDtlAddress" class="form-label mb-0"
-						style="width: 90px;">상세주소</label> <input type="text"
-						class="form-control" id="userDtlAddress" name="userDtlAddress"
-						maxlength="100" readonly style="flex-grow: 1; min-width: 0;">
-				</div>
-				<section>
+                    <!-- 상세주소 -->
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="userDtlAddress" readonly>
+                            <label for="userDtlAddress">상세주소</label>
+                        </div>
+                    </div>
 
-					<div class="form-group" style="width: 450px;">
-						<span style="padding: 5px;">이메일</span>&nbsp;&nbsp;&nbsp; <input
-							type="email" placeholder="이메일" required="required">
-					</div>
-					<br>
-					<div>
-						<span style="padding: 5px;">쿠폰 적용</span> &nbsp;&nbsp;&nbsp;<span
-							id="usecoupon">선택안함</span>&nbsp;&nbsp;&nbsp;
-						<button type="button" class="btn btn-outline-success btn-sm">찾아보기</button>
-					</div>
-					<br>
-					<div class="form-group">
-						<span style="padding: 5px;">배송 전 메세지</span>
-					</div>
-					<br>
-					<div class="form-group" style="margin-bottom: 10px; width: 450px;">
-						<select class="form-select">
-							<option class="msg" id="message1">부재 시 경비실에 맡겨주세요.</option>
-							<option class="msg" id="message2">문 앞에 놔두고 가세요.</option>
-							<option class="msg" id="message3">배송 전 연락주세요.</option>
-							<option class="msg" id="message4">직접 입력</option>
-						</select>
-					</div>
+                    <!-- 이메일 -->
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="email" class="form-control" id="email" placeholder="이메일">
+                            <label for="email">이메일</label>
+                        </div>
+                    </div>
 
+                    <!-- 쿠폰 선택 -->
+                    <div class="col-12">
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="fw-bold">쿠폰 적용</span>
+                            <span id="usecoupon" class="text-muted">선택안함</span>
+                            <button type="button" class="btn btn-custom btn-sm">
+                                <i class="bi bi-ticket-perforated"></i> 쿠폰찾기
+                            </button>
+                        </div>
+                    </div>
 
-					<div class="form-group message-box" id="mymessage"
-						style="display: none;">
+                    <!-- 배송 메시지 -->
+                    <div class="col-12">
+                        <label class="form-label fw-bold">배송 전 메시지</label>
+                        <select class="form-select mb-3">
+                            <option class="msg" id="message1">부재 시 경비실에 맡겨주세요.</option>
+                            <option class="msg" id="message2">문 앞에 놔두고 가세요.</option>
+                            <option class="msg" id="message3">배송 전 연락주세요.</option>
+                            <option class="msg" id="message4">직접 입력</option>
+                        </select>
+                        
+                        <div class="form-floating" id="mymessage" style="display: none;">
+                            <textarea class="form-control" placeholder="메시지를 입력하세요" style="height: 100px"></textarea>
+                            <label>메시지 입력</label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
 
-						<textarea rows="3" placeholder="메세지 입력"></textarea>
-					</div>
-				</section>
+        <!-- 결제 섹션 -->
+        <section class="card">
+            <h2 class="section-title">결제 수단</h2>
+            <div class="payment-methods">
+                <button class="btn payment-method-btn" name="pay">
+                    <i class="bi bi-credit-card fs-4"></i>
+                    <div class="mt-2">카드결제</div>
+                </button>
+                <button class="btn payment-method-btn" name="pay">
+                    <i class="bi bi-n-circle fs-4"></i>
+                    <div class="mt-2">네이버페이</div>
+                </button>
+                <button class="btn payment-method-btn" name="pay">
+                    <i class="bi bi-chat-fill fs-4"></i>
+                    <div class="mt-2">카카오페이</div>
+                </button>
+                <button class="btn payment-method-btn" name="pay">
+                    <i class="bi bi-bank fs-4"></i>
+                    <div class="mt-2">무통장입금</div>
+                </button>
+                <button class="btn payment-method-btn" name="pay">
+                    <i class="bi bi-wallet2 fs-4"></i>
+                    <div class="mt-2">TOSS</div>
+                </button>
+            </div>
 
-			</form>
-		</div>
-		<div class="ad-container">
-			<div class="ad-space" style="height: 700px;">광고</div>
-		</div>
-	</section>
+            <div class="order-summary">
+                <div class="summary-item">
+                    <span>상품금액</span>
+                    <span>0원</span>
+                </div>
+                <div class="summary-item">
+                    <span>배송비</span>
+                    <span>0원</span>
+                </div>
+                <div class="summary-item">
+                    <span>할인금액</span>
+                    <span>0원</span>
+                </div>
+                <div class="total-amount">
+                    <span>총 결제금액</span>
+                    <span>0원</span>
+                </div>
+            </div>
 
-	<!-- 결제 섹션 -->
-	<section class="payment-section"
-		style="max-width: 1200px; margin: 0 auto;">
-		<div
-			style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; align-items: flex-start;">
+            <input type="hidden" id="selectedPay" name="selectedPay" readonly>
+            <button type="button" class="btn btn-custom w-100 mt-4" onclick="payrequest()">
+                <i class="bi bi-check-circle"></i> 결제하기
+            </button>
+        </section>
+    </div>
 
-			<!-- 왼쪽 박스 -->
-			<div class="payment-box"
-				style="flex: 1 1 550px; height: 300px; display: flex; flex-direction: column;">
-				<h2>결제 수단</h2>
-				<div class="payment-container"
-					style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
-					<div class="payment-methods">
-						<button class="payment-method-btn" name="pay">카드결제</button>
-						<button class="payment-method-btn" name="pay">네이버페이</button>
-						<button class="payment-method-btn" name="pay">카카오페이</button>
-						<button class="payment-method-btn" name="pay">무통장입금</button>
-						<button class="payment-method-btn" name="pay">TOSS</button>
-					</div>
-					<div class="payment-details">
-						<!-- 결제 상세 정보가 여기에 들어갑니다 -->
-					</div>
-				</div>
-			</div>
+    <script>
+        $(function(){
+            // 결제 수단 선택
+            $(".payment-method-btn").click(function() {
+                $(".payment-method-btn").removeClass("active");
+                $(this).addClass("active");
+                var selectedPay = $(this).text().trim();
+                $("#selectedPay").val(selectedPay);
+            });
 
-			<!-- 오른쪽 박스 -->
-			<div class="payment-box"
-				style="flex: 1 1 550px; height: 300px; display: flex; flex-direction: column;">
-				<h2>결제 상세</h2>
-				<div class="payment-container"
-					style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
-					<div>
-						<div class="payment-details">
-							<!-- 결제 상세 정보가 여기에 들어갑니다 -->
-						</div>
-					</div>
-					<span style="text-align: right;"><b>총 결제금액 </b></span>
-					<%
-					String method_btn = request.getParameter("pay");
-					%>
-					<input type="hidden" id="selectedPay" name="selectedPay"
-						readonly="readonly">
-					<button type="button" class="payment-submit-btn"
-						onclick="payrequest()">결제요청</button>
-				</div>
-			</div>
+            // 배송 메시지 직접 입력
+            $(".form-select").change(function(){
+                var m = $(".form-select option:selected").text();
+                if(m === "직접 입력"){
+                    $("#mymessage").show();
+                }else{
+                    $("#mymessage").hide();
+                }
+            });
 
-		</div>
-	</section>
+            // 주소찾기
+            $("#findaddress").click(function(){
+                new daum.Postcode({
+                    oncomplete: function(data) {
+                        document.getElementById("userAddress").value = data.address;
+                        document.getElementById("userPostCode").value = data.zonecode;
+                        var inputDtlAddr = document.getElementById("userDtlAddress");
+                        inputDtlAddr.readOnly = false;
+                    }
+                }).open();
+            });
 
+            // 주소 초기화
+            $("#canceladdress").click(function(){
+                $("#userPostCode").val("");
+                $("#userAddress").val("");
+                $("#userDtlAddress").val("").prop("readonly", true);
+            });
 
+            // 회원정보 동일
+            $("#sameinfo").click(function(){
+                if($(this).is(":checked")){
+                    $("#name").val("<%=name%>");
+                    $("#hp").val("<%=stk.nextToken()%>"+"<%=stk.nextToken()%>"+"<%=stk.nextToken()%>");
+                }else{
+                    $("#name").val("");
+                    $("#hp").val("");
+                }
+            });
+        });
+
+        // 주문번호 생성
+        function generateOrderNumber() {
+            const today = new Date();
+            const year = today.getFullYear().toString().slice(-2);
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const hour = String(today.getHours()).padStart(2, '0');
+            const minute = String(today.getMinutes()).padStart(2, '0');
+            const second = String(today.getSeconds()).padStart(2, '0');
+            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            
+            return `ORDER${year}${month}${day}${hour}${minute}${second}${random}`;
+        }
+
+        // 결제 요청
+        function payrequest(){
+            const selectedPay = $("#selectedPay").val();
+            if (!selectedPay) {
+                alert("결제 수단을 선택해주세요.");
+                return;
+            }
+
+            switch(selectedPay) {
+                case "카드결제":
+                    cardPay();
+                    break;
+                case "네이버페이":
+                    naverPay();
+                    break;
+                case "카카오페이":
+                    kakaoPay();
+                    break;
+                case "무통장입금":
+                    bankTransfer();
+                    break;
+                case "TOSS":
+                    tossPay();
+                    break;
+                default:
+                    alert("지원하지 않는 결제 수단입니다.");
+            }
+        }
+
+        // 카드결제
+        function cardPay(){
+            var IMP = window.IMP;
+            IMP.init('imp23623506');
+
+            IMP.request_pay({
+                pg: "kicc",
+                pay_method: "card",
+                merchant_uid: generateOrderNumber(),
+                name: '결제테스트',
+                amount: 100,
+                buyer_email: 'iamport@siot.do',
+                buyer_name: '구매자',
+                buyer_tel: '010-1234-5678',
+                buyer_addr: '서울특별시 강남구 삼성동',
+                buyer_postcode: '123-456'
+            }, function(rsp) {
+                if (rsp.success) {
+                    $.ajax({
+                        url: "payment/verify",
+                        method: "POST",
+                        data: {
+                            imp_uid: rsp.imp_uid,
+                            merchant_uid: rsp.merchant_uid,
+                            amount: rsp.paid_amount
+                        }
+                    }).done(function(data) {
+                        if (data.status === "success") {
+                            alert('결제가 완료되었습니다.\n' + 
+                                '고유ID : ' + rsp.imp_uid + '\n' +
+                                '주문번호 : ' + rsp.merchant_uid + '\n' +
+                                '결제 금액 : ' + rsp.paid_amount + '\n' +
+                                '카드 승인번호 : ' + rsp.apply_num);
+                            
+                            location.href = 'index.jsp?main=payment_success.jsp';
+                        } else {
+                            alert('결제 검증에 실패하였습니다.\n' + data.message);
+                            location.href = 'payment_fail.jsp';
+                        }
+                    });
+                } else {
+                    alert('결제에 실패하였습니다.\n' + 
+                        '에러내용: ' + rsp.error_msg);
+                }
+            });
+        }
+
+        function naverPay(){
+            alert("공사 중입니다.");
+        }
+
+        function logout(){
+            alert("로그아웃 하셨습니다.");
+            location.href = "../login/logoutform.jsp";
+        }
+    </script>
 </body>
 </html>

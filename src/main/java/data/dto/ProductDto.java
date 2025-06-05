@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ProductDto {
+public class ProductDto{
 	private int productId;
 	public int getProductId() {
 		return productId;
@@ -25,12 +25,7 @@ public class ProductDto {
 	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
-	public byte[] getMainImage() {
-		return mainImage;
-	}
-	public void setMainImage(byte[] mainImage) {
-		this.mainImage = mainImage;
-	}
+	
 	public String getDescription() {
 		return description;
 	}
@@ -49,11 +44,12 @@ public class ProductDto {
 	public void setViewCount(String viewCount) {
 		this.viewCount = viewCount;
 	}
-	public String getLikeCout() {
+	public String getLikeCount() {
 		return likeCount;
 	}
-	public void setLikeCout(String likeCout) {
-		this.likeCount = likeCout;
+	public void setLikeCout(String likeCount) {
+		this.likeCount = likeCount;
+
 	}
 	public Timestamp getRegisteredAt() {
 		return registeredAt;
@@ -69,7 +65,15 @@ public class ProductDto {
 	}
 	private String productName;
 	private BigDecimal price;
-	private byte[] mainImage;
+	
+	public String getMainImageUrl() {
+		return mainImageUrl;
+	}
+	public void setMainImageUrl(String mainImageUrl) {
+		this.mainImageUrl = mainImageUrl;
+	}
+	
+	private String mainImageUrl;
 	private String description;
 	private String category;
 	private String viewCount;
