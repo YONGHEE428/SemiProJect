@@ -1,6 +1,6 @@
 
 <%@page import="data.dto.ProductDto"%>
-
+<%@page import="data.dao.ProductDao"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -21,7 +21,7 @@ let isLoading = false;
 
 $(function() {
   // 최초 로딩
-  //loadMoreItems();
+  loadMoreItems();
 
   // IntersectionObserver로 감지
   const target = document.getElementById("observerTarget");
@@ -269,75 +269,42 @@ function loadMoreItems() {
 </div><br>
 
 <%	String root = request.getContextPath(); 
+	ProductDao dao = new ProductDao();
+	List<ProductDto> list = dao.getTopLikedProducts();
 %>
 <div class="main-item">
 
   <div class="LikeItem-conttent"><span><strong style="font-size: 1.7em;">Popular Listings</strong><br><b>인기 상품</b></span><br></div>
   <div class="main-LikeItems">
   <ul>
-  	<li>
-	  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="https://ssy-img-files.s3.ap-northeast-2.amazonaws.com/product_images/568f738a-36dc-4428-9741-c6c16335c956_바닷가이미지.avif" ></a></div>
-	  	<div class="item-coment">
-	  		<div class="item-category">TOP</div>
-		  	<div class="item-name">스트릿 긴팔크롭티</div>
-		  	<div class="item-price">111,000원</div>
-		  	<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 135 &nbsp;<i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; 72</div>
-		</div>
-  	</li>
- 	<li>
-	  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/bottom/c11.jpg" ></a></div>
-	  	<div class="item-coment">
-	  		<div class="item-category">BOTTOM</div>
-		  	<div class="item-name">스트링 지퍼 조거팬츠</div>
-		  	<div class="item-price">127,000원</div>
-		  	<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 105 &nbsp;<i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; 72</div>
-		</div>
-  	</li>
- 	<li>
-	  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/hat/a31.jpg" ></a></div>
-	  	<div class="item-coment">
-	  		<div class="item-category">HAT</div>
-		  	<div class="item-name">KOUNTRY 볼캡</div>
-		  	<div class="item-price">72,000원</div>
-		  	<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 98 &nbsp;<i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; 72</div>
-		</div>
-  	</li>
- 	<li>
-	  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/outer/e61.jpg" ></a></div>
-	  	<div class="item-coment">
-	  		<div class="item-category">OUTER</div>
-		  	<div class="item-name">STARGIRL 클래식 자켓</div>
-		  	<div class="item-price">232,500원</div>
-		  	<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 91 &nbsp;<i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; 72</div>
-		</div>
-  	</li>
- 	<li>
-	  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/top/d81.jpg" ></a></div>
-	  	<div class="item-coment">
-	  		<div class="item-category">TOP</div>
-		  	<div class="item-name">KAPITAL cat 티셔츠</div>
-		  	<div class="item-price">147,000원</div>
-		  	<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 74 &nbsp;<i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; 72</div>
-		</div>
-  	</li>
- 	<li>
-	  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/shoes/a71.jpg" ></a></div>
-	  	<div class="item-coment">
-	  		<div class="item-category">SHOES</div>
-		  	<div class="item-name">TOGA x VANS 콜라보 슈즈</div>
-		  	<div class="item-price">211,000원</div>
-		  	<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 64 &nbsp;<i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; 72</div>
-		</div>
-  	</li>
+  	<% for (ProductDto dto : list) { %>
+<li>
+    <div class="item">
+        <a href="<%=request.getContextPath()%>/shop/sangpumpage.jsp?product_id=<%=dto.getProductId()%>">
+            <img alt="" src="<%=dto.getMainImageUrl()%>">
+        </a>
+    </div>
+    <div class="item-coment">
+        <div class="item-category"><%=dto.getCategory()%></div>
+        <div class="item-name"><%=dto.getProductName()%></div>
+        <div class="item-price"><%=dto.getPrice()%>원</div>
+        <div class="item-heart">
+            <i class="bi bi-heart"></i>&nbsp; <%=dto.getLikeCount()%> &nbsp;
+            <i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; <%=dto.getViewCount()%>
+        </div>
+    </div>
+</li>
+<% } %>
  	</ul>
   </div>
   
+  <!-- 광고 -->
   <div class="BigeventTitle"><span><strong>SPOTLIGHT</strong></span></div>
-  <div class="Bigeventimg" style="text-align: center;"><a href="#"><img src="<%=root%>/SemiImg/bigeventimg2.jpg" style="width: 100%;"></a></div>
+  <div class="Bigeventimg" style="text-align: center;"><a href="#"><img src="<%=root%>/SemiImg/bigeventimg2.jpg" class="no-hover"style="width: 100%;"></a></div>
   <div class="Bigeventcoment" style="padding-bottom: 50px;"><span><strong style="font-size: 1.5em;">#걸즈 올여름 어떤 컬러 티셔츠를 입을래?</strong>
   <br><b style="color:gray;">본격적인 여름이 시작되면 가볍고 시원한 스타일을 찾게 되기 마련이다. 스타일이 단순해질수록 컬러의 존재감은 커진다.<br> 
   티셔츠 컬러만 잘 골라도 룩의 분위기는 물론이고 기분 전환까지 가능하기 때문. 여름을 책임질 컬러 티셔츠 코디, 지금 만나보자.</b></span><br></div>
-  	
+  
   <div class="SmalleventTitle"><span><strong>Today Hot Pick</strong></span></div>
   <div class="eventImg">
   <ul>
@@ -373,98 +340,11 @@ function loadMoreItems() {
   </ul>
 </div>
   
+ <!-- 메인 아이템목록 -->
  <div class="main-items">
  <div class="main-item-conttent"><span><strong style="font-size: 1.7em;">We Love</strong><br><b>쌍용 픽</b></span><br></div>
 	 <ul>
-	 	<li>
-		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/accessory/a1.jpg" ></a></div>
-		  	<div class="item-coment">
-		  		<div class="item-category">ACCESSORY</div>
-		  		<div class="item-name">KEPANI 스웨터장갑</div>
-		  		<div class="item-price">31,000원</div>
-		  		<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 25 &nbsp;<i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; 72</div>
-		  	</div>
-	  	</li>
-	  	<li>
-		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/bag/a21.jpg" ></a></div>
-		  	<div class="item-coment">
-		  		<div class="item-category">BAG</div>
-		  		<div class="item-name">로쿠욘 크로스 소형 배낭</div>
-		  		<div class="item-price">121,000원</div>
-		  		<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 74 &nbsp;<i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; 72</div>
-		  	</div>
-	  	</li>
-	  	<li>
-		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/bottom/a11.jpg" ></a></div>
-		  	<div class="item-coment">
-		  		<div class="item-category">BOTTOM</div>
-		  		<div class="item-name">KAPITAL 데님팬츠</div>
-		  		<div class="item-price">440,000원</div>
-		  		<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 31 &nbsp;<i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; 72</div>
-		  	</div>
-	  	</li>
-	  	<li>
-		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/jewelley/b41.jpg" ></a></div>
-		  	<div class="item-coment">
-		  		<div class="item-category">ACCESSORY</div>
-		  		<div class="item-name">TOGA 팔찌</div>
-		  		<div class="item-price">262,000원</div>
-		  		<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 44 &nbsp;<i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; 72</div>
-		  	</div>
-	  	</li>
-	  	<li>
-		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/top/e81.jpg" ></a></div>
-		  	<div class="item-coment">
-		  		<div class="item-category">TOP</div>
-		  		<div class="item-name">GU X UNDERCOVER 콜라보레이션 반팔티</div>
-		  		<div class="item-price">352,500원</div>
-		  		<div class="item-heart"><i class="bi bi-heart"></i>&nbsp; 98 &nbsp;<i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; 72</div>
-		  	</div>
-	  	</li>
-	  	<li>
-		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/bottom/d11.jpg" ></a></div>
-		  	<div class="item-coment"></div>
-	  	</li>
-	  	<li>
-		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/top/f81.jpg" ></a></div>
-		  	<div class="item-coment"></div>
-	  	</li>
-	  	<li>
-		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/hat/a31.jpg" ></a></div>
-		  	<div class="item-coment"></div>
-	  	</li>
-	  	<li>
-		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/bag/c21.jpg" ></a></div>
-		  	<div class="item-coment"></div>
-	  	</li>
-	  	<li>
-		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/outer/a61.jpg" ></a></div>
-		  	<div class="item-coment"></div>
-	  	</li>
-	  	<li>
-		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/jewelley/c41.jpg" ></a></div>
-		  	<div class="item-coment"></div>
-	  	</li>
-	  	<li>
-		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/keyring/a51.jpg" ></a></div>
-		  	<div class="item-coment"></div>
-	  	</li>
-	  	<li>
-		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/wallet/a91.jpg" ></a></div>
-		  	<div class="item-coment"></div>
-	  	</li>
-	  	<li>
-		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/hat/b31.jpg" ></a></div>
-		  	<div class="item-coment"></div>
-	  	</li>
-	  	<li>
-		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/shoes/c71.jpg" ></a></div>
-		  	<div class="item-coment"></div>
-	  	</li>
-	  	<li>
-		  	<div class="item"><a href ="<%=root%>/shop/sangpumpage.jsp"><img alt="" src="<%=root%>/SemiImg/category/outer/a61.jpg" ></a></div>
-		  	<div class="item-coment"></div>
-	  	</li>
+	 	
 	  </ul>
  </div> 
  </div>

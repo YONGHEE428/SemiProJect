@@ -76,10 +76,52 @@
 .quantity-input {
    width: 60px;
    text-align: center;
-} /* 수량 입력 필드 스타일 */
+}
+
+	/* 상단바 */
+  .mypage-content{
+    	height:60px;
+    	line-height:60px;
+    	top:150px;
+    	position:fixed;
+		width:100%;
+		min-height: 5px;
+		font-weight: bold;
+		text-align: center;
+		background-color: white;
+		transition: top 0.3s ease;
+		margin-bottom: 20px;
+		
+	}
+	.content-title > ul{
+	display: flex;
+	justify-content: center;
+	gap : 170px;
+	}
+	.content-title > ul > li >a{
+		color:gray;
+		text-decoration: none;
+	}
+	.content-title > ul > li > a:hover{
+		color:black;
+		border-bottom: 3px solid black;
+	}
+
+ /* 수량 입력 필드 스타일 */
 </style>
 <script type="text/javascript">
    $(function() {
+
+	   window.addEventListener("scroll", function () {
+		    const mypage = document.querySelector(".mypage-content");
+		    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+		    if (scrollTop > 50) {
+		      mypage.style.top = "100px";
+		    } else {
+		      mypage.style.top = "150px";
+		    }
+	  });
       // 전체 선택/해제
       $("#allCheck").change(
             function() {
@@ -311,9 +353,20 @@ List<CartListDto> cartItems = cartDao.getCartListByMember(memberId);
 String name = (String) session.getAttribute("name");
 %>
 <body>
-   <div class="container mt-5">
+
+<div class="mypage-content">
+        <nav class="content-title">
+        		<ul>
+        			<li><a href="index.jsp?main=category/catewish.jsp" class="Mywish" >위시리스트</a></li>
+        			<li><a href="index.jsp?main=cart/cartform.jsp" class="MyCart" style="color: black; border-bottom: 3px solid black;">장바구니</a></li>
+        			<li><a href="index.jsp?main=orderlist/orderlistform.jsp" class="MybuyList">구매내역</a></li>
+        		</ul>
+       </nav>
+    </div>
+
+   <div class="container mt-5" style="margin-top: 5rem !important;">
       <div class="mb-3 text-secondary">
-         홈 &gt; 마이페이지 &gt; <b>장바구니 (&nbsp;<%=name%>&nbsp;님)
+         홈 &gt; 마이페이지 &gt; <b>장바구니 (<%=name%>&nbsp;님)
          </b>
       </div>
       <h2 class="mb-4">
