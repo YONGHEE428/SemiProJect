@@ -434,4 +434,44 @@ public class ProductDao {
 		}
 		
 	}
+	
+	// 페이징 처리된 상품 목록을 가져오는 메서드 (JSON 생성용)
+	public List<ProductDto> getProductsByPage(int page, int pageSize) {
+	    List<ProductDto> productList = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+
+	    int offset = (page - 1) * pageSize;
+
+	    String sql = "SELECT product_id, product_name, price, main_image_url, category, like_count, view_count FROM product ORDER BY product_id DESC LIMIT ?, ?";
+
+	    try {
+	        conn = db.getConnection();
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setInt(1, offset);
+	        pstmt.setInt(2, pageSize);
+	        rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            ProductDto dto = new ProductDto();
+	            dto.setProductId(rs.getInt("product_id"));
+	            dto.setProductName(rs.getString("product_name"));
+	            dto.setPrice(rs.getBigDecimal("price"));
+	            dto.setMainImageUrl(rs.getString("main_image_url"));
+	            dto.setCategory(rs.getString("category"));
+	            dto.setLikeCout(rs.getString("like_count"));
+	            dto.setViewCount(rs.getString("view_count"));
+	            productList.add(dto);
+	        }
+	    } catch (SQLException e) {
+	        System.err.println("페이징 상품 조회 오류: " + e.getMessage());
+	        e.printStackTrace();
+	    } finally {
+	        db.dbClose(rs, pstmt, conn);
+	    }
+
+	    return productList;
+	}
+
 }

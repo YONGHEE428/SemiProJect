@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import data.dao.PaymentDao;
 import data.dto.PaymentDto;
+
 import org.json.simple.JSONObject;
 
 //클라이언트가 /payment/verify 경로로 요청할 때 이 서블릿이 동작하도록 설정
@@ -106,4 +107,5 @@ public class PaymentVerifyServlet extends HttpServlet {
         response.getWriter().write(json.toString());
        
     }
+
 }

@@ -35,6 +35,7 @@
         <th width="100">번호</th>
         <th width="150">이름</th>
         <th width="150">아이디</th>
+        <th width="150">전화번호</th>
         <th width="200">이메일</th>
         <th width="200">가입일</th>
         <th width="200">비고</th>
@@ -45,10 +46,12 @@
         {%>
         	<tr align="center">
         	  <td><%=no++ %></td>
-        	  <td><%=dto.getName() %></td>
+        	  <td><%=dto.getName()%></td>
         	  <td><%=dto.getId() %></td>
+        	  <td><%=dto.getHp() %></td>
         	  <td><%=dto.getEmail() %></td>
-        	  <td><%=sdf.format(dto.getBirth()) %></td>
+        	  <td><%=dto.getBirth() %></td>
+        	  
         	  <td><button type="button" class="btn btn-danger btn-sm"
         	  onclick="delfunc('<%=dto.getNum()%>')">강퇴</button></td>
         	</tr>
