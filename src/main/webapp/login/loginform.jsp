@@ -78,7 +78,6 @@
   if (redirect == null || redirect.trim().equals("")) {
       redirect = "../index.jsp";  //아무것도 안적혀있으면 기본페이지
   }
-  String root = request.getContextPath();
  %>
 <body>
 <div class="login-main">
