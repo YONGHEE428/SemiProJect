@@ -150,7 +150,11 @@ public class CartListDao {
        }
 
        return list;
+   
+ 
+       
    }
+
    // 단일 장바구니 항목을 idx로 가져오기 (주문 처리 등에서 필요)
    public CartListDto getCartItemByIdx(int idx) {
        CartListDto dto = null;
