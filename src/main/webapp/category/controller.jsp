@@ -9,14 +9,16 @@
    
      
         .recently-viewed-remote {
-		   	position: fixed;
-		    right: 10px;
-		    bottom:50px;
-		    transform: translateY(-50%);
-		    display: flex;
-		    flex-direction: column;
-		    gap: 15px;
-		    z-index: 1100;
+		        position: fixed;
+			    right: 5px;
+			    top: 50%; /* 뷰포트 상단에서 50% 지점에 위치 */
+			    transform: translateY(-50%); /* 패널 자체 높이의 절반만큼 위로 이동하여 수직 중앙 정렬 */
+			    display: flex;
+			    flex-direction: column;
+			    gap: 15px;
+			    z-index: 9999;
+			    /* 선택 사항: 너무 가장자리에 붙는다면 여백 추가 */
+			    padding: 10px;
 		}
 		
 		.remote-btn {
@@ -36,7 +38,7 @@
 		}
 		
 		.remote-btn:hover {
-		    background-color: #c9a797;  /* 카테고리 bg 색 참고 */
+		    background-color: #2c3e50;  /* 카테고리 bg 색 참고 */
 		    color: white;
 		    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
 		}
@@ -46,7 +48,7 @@
 <body>
 	
 	 <!-- 컨트롤러 -->
- 	  <div class="recently-viewed-remote">
+ 	  <div class="recently-viewed-remote" >
     	<button class="remote-btn" title="위로" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });">
     	<i class="bi bi-caret-up" style="font-size: 20px;"></i>
     	</button>
