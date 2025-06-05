@@ -1,3 +1,5 @@
+<%@page import="java.util.List"%>
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -33,27 +35,34 @@ $(function() {
 });
 
 function loadMoreItems() {
-	  // 로딩 메시지 보이기
 	  document.getElementById("loadingMessage").style.display = "block";
 
 	  $.ajax({
-	    type: "GET", // 또는 "POST"
+	    type: "GET",
 	    dataType: "json",
-	    url: "/Semiproject/data/items-page"+page+".json",
+	    url: "/SemiProject/data/items.jsp?page=" + page,
 	    success: function(data) {
 	      setTimeout(() => {
 	        data.forEach(item => {
 	          const el = document.createElement("li");
 	          el.innerHTML =
-	            "<div class=\"item\"><a href ='./shop/sangpumpage.jsp'><img alt=\"\" src=\"/Semiproject" + item.img + "\"></a></div>" +
-	            "<div class=\"item-coment\">" +
-	              "<div class=\"item-category\">" + item.category + "</div>" +
-	              "<div class=\"item-name\">" + item.name + "</div>" +
-	              "<div class=\"item-price\">" + item.price + "</div>" +
-	              "<div class=\"item-heart\"><i class=\"bi bi-heart\"></i>&nbsp; " + item.heart + "</div>" +
+	            "<div class='item'>" +
+	              "<a href='/Semiproject/shop/sangpumpage.jsp'>" +
+	                "<img src='" + item.mainImageUrl + "' alt=''>" +  // 이미지 경로
+	              "</a>" +
+	            "</div>" +
+	            "<div class='item-coment'>" +
+	              "<div class='item-category'>" + item.category + "</div>" +
+	              "<div class='item-name'>" + item.productName + "</div>" +
+	              "<div class='item-price'>" + formatPrice(item.price) + "</div>" +
+	              "<div class='item-heart'>" +
+	                "<i class='bi bi-heart'></i>&nbsp; " + item.likeCount + " &nbsp;" +
+	                "<i class='bi bi-eye' style='font-size: 16px;'></i>&nbsp; " + item.viewCount +
+	              "</div>" +
 	            "</div>";
 	          document.querySelector(".main-items ul").appendChild(el);
 	        });
+
 	        page++;
 	        isLoading = false;
 	        document.getElementById("loadingMessage").style.display = "none";
@@ -66,6 +75,12 @@ function loadMoreItems() {
 	    }
 	  });
 	}
+
+	// 가격 쉼표 찍기용 함수
+	function formatPrice(price) {
+	  return new Intl.NumberFormat('ko-KR').format(price) + "원";
+	}
+
 
 
 </script>
@@ -225,13 +240,13 @@ function loadMoreItems() {
       <img src="SemiImg/test2.png" class="d-block w-100" alt="...">
     </div>
     <div class="carousel-item">
-      <img src="SemiImg/test3.jpg" class="d-block w-100" alt="...">
+      <a href="index.jsp?main=category/top.jsp"><img src="SemiImg/test3-1.jpg" class="no-hover d-block w-100" alt="..."></a>
     </div>
     <div class="carousel-item">
       <img src="SemiImg/main.png" class="d-block w-100" alt="...">
     </div>
      <div class="carousel-item">
-      <img src="SemiImg/main2.png" class="d-block w-100" alt="...">
+      <a href="index.jsp?main=category/shoes.jsp"><img src="SemiImg/main2.png" class="no-hover d-block w-100" alt="..."></a>
     </div>		
   </div>
   <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
@@ -244,8 +259,9 @@ function loadMoreItems() {
   </button>
 </div><br>
 
-<%String root = request.getContextPath(); %>
-
+<%	String root = request.getContextPath(); 
+%>
+<div class="main-item">
 
 
 <div class="main-item">

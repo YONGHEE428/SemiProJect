@@ -97,6 +97,23 @@
                     s3ImageUrl = existingImageUrl;
                 }
             }
+
+            ProductOptionDto optionDto = new ProductOptionDto();
+            optionDto.setColor(color);
+            optionDto.setSize(size);
+            if (quantityStr != null) {
+                try {
+                    int quantity = Integer.parseInt(quantityStr);
+                    optionDto.setStockQuantity(quantity);
+                } catch (NumberFormatException e) {
+                    optionDto.setStockQuantity(0); // 유효하지 않은 경우 기본값 0
+                }
+            } else {
+                optionDto.setStockQuantity(0); // 수량이 없는 경우 기본값 0
+            }
+
+            optionsList.add(optionDto); // 옵션 리스트에 추가
+            optionIndex++; // 인덱스 증가
         }
         productDto.setMainImageUrl(s3ImageUrl); // ProductDto에 최종 S3 URL 설정
 
