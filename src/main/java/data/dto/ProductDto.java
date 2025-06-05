@@ -49,6 +49,7 @@ public class ProductDto{
 	}
 	public void setLikeCout(String likeCount) {
 		this.likeCount = likeCount;
+
 	}
 	public Timestamp getRegisteredAt() {
 		return registeredAt;

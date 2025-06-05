@@ -20,7 +20,9 @@ public class PaymentDao {
         Connection conn = db.getConnection();
         PreparedStatement pstmt = null;
         
+
         String sql = "insert into payment values (null,?,?,?,?,?,?,?,now())";
+
         
         try {
             pstmt = conn.prepareStatement(sql);
@@ -33,6 +35,7 @@ public class PaymentDao {
             pstmt.setString(5, dto.getAddr());
             pstmt.setString(6, dto.getDelivery_msg());
             pstmt.setString(7, dto.getStatus());
+
             
             pstmt.execute();
         } catch (SQLException e) {
@@ -97,7 +100,9 @@ public class PaymentDao {
         }
     }
     
+
     // 회원의 결제 내역 조회(구매한사람의 결제 내역 확인용)
+
     public List<PaymentDto> getMemberPayments(String member_num) {
         List<PaymentDto> list = new ArrayList<PaymentDto>();
         Connection conn = db.getConnection();
@@ -154,7 +159,6 @@ public class PaymentDao {
     	String sql="select p.*, m.name, m.id, m.email from payment p " + 
     	           "INNER JOIN member m ON p.member_num = m.num " +
     	           "WHERE p.imp_uid = ?";
-
     		try {
 				pstmt=conn.prepareStatement(sql);
 				pstmt.setString(1, imp_uid);
@@ -181,7 +185,7 @@ public class PaymentDao {
 			}
     	return map;
     }
-    
+
  // 상품 결제 내역 조회(관리자의 전체 결제 현황 모니터링용)
     public List<HashMap<String, String>> getProductPaymentList() {
         List<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
