@@ -184,6 +184,7 @@ List<OrderListDto> orderList = dao.getOrdersByMember(memberNum);
 String keyword = request.getParameter("keyword");
 if (keyword == null) keyword = "";
 %>
+
 <body>
 <div class="order-wrapper">
     <!-- 상단 타이틀 -->
@@ -232,11 +233,11 @@ if (keyword == null) keyword = "";
             <div class="order-content-row">
                 <div class="order-thumb-box">
                     <img src="<%= item.getProductImage() != null ? item.getProductImage() : "https://via.placeholder.com/90x90.png?text=이미지" %>"
-                        alt="상품이미지" style="width: 80px; height: 80px; object-fit: cover;">
+                         alt="상품이미지" style="width: 80px; height: 80px; object-fit: cover;">
                 </div>
                 <div class="order-prod-info">
-                    <div class="order-prod-title"><%= item.getProductName() %></div>
-                    <div class="order-prod-desc"><%= item.getColor() %> / <%= item.getSize() %></div>
+                    <div class="order-prod-title"><%= item.getProductName() %> </div>
+                    <div class="order-prod-desc"><%= item.getColor() %> / <%= item.getSize() %><div>
                     <div class="order-prod-price-row">
                         <span class="order-prod-price">
                             <%= NumberFormat.getInstance().format(item.getPrice()) %>원
@@ -257,6 +258,8 @@ if (keyword == null) keyword = "";
         <div class="alert alert-warning">주문 내역이 없습니다.</div>
     <% } %>
     </div>
+</div>
+</div>
 </div>
 </body>
 </html>

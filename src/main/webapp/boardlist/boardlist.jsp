@@ -25,110 +25,179 @@
     var loginId = '<%=loginId%>';
     var role = '<%=role%>';
 </script>
-<style type="text/css">
+<style>
 body {
-	font-family: 'Jua', 'Nanum Myeongjo', 'Gamja Flower', sans-serif;
+  background: #fafbfc;
+  font-family: 'Noto Serif KR', 'Nanum Gothic Coding', sans-serif;
+  color: #222;
+}
+.container {
+  max-width: 900px;
 }
 
-.tapboard {
-	position: relative;
-	width: 100%;
-	max-width: 600px;
-	height: 300px;
-	border-radius: 20px;
-	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
-	margin-bottom: 30px;
+/* 상단 제목/검색 등 */
+.faq-header {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-top: 30px;
+  margin-bottom: 16px;
+  color: #222;
+}
+.faq-search {
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: 12px;
+  border: 1.2px solid #e3e5e8;
+  font-size: 1.08rem;
+  margin-bottom: 28px;
+  background: #f5f6fa;
+  color: #222;
 }
 
-.nav-tabs .nav-link.active {
-	font-weight: 100;
+/* 상단 탭 메뉴 */
+.faq-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1.5px solid #e3e5e8;
+  margin-bottom: 18px;
+  margin-top: 5px;
+}
+.faq-tab {
+  background: none;
+  border: none;
+  outline: none;
+  color: #888;
+  font-weight: 500;
+  font-size: 1.09rem;
+  padding: 0 14px 13px 14px;
+  border-bottom: 2.5px solid transparent;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.faq-tab.active, .faq-tab:focus, .faq-tab:hover {
+  color: #222;
+  font-weight: 700;
+  border-bottom: 2.5px solid #222;
+  background: none;
 }
 
-.nav-tabs .nav-link {
-	font-size: 1.1rem;
-	letter-spacing: 1px;
-	border-radius: 10px 10px 0 0;
-	transition: background 0.2s, color 0.2s;
+/* 서브 필터 버튼 (전체, 교환, 환불 등) */
+.faq-filter-group {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0 18px 0;
+}
+.faq-filter-btn {
+  padding: 7px 18px;
+  border-radius: 6px;
+  border: 1.2px solid #e3e5e8;
+  background: #fff;
+  color: #333;
+  font-weight: 500;
+  font-size: 1.02rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.faq-filter-btn.active, .faq-filter-btn:focus {
+  background: #222;
+  color: #fff;
+  border-color: #222;
 }
 
-.accordion-button {
-	font-size: 1.05rem;
-	font-weight: 500;
+/* 아코디언 리스트 */
+.faq-list {
+  margin-top: 12px;
+  border-radius: 11px;
+}
+.faq-item {
+  border-bottom: 1.1px solid #f1f1f1;
+  background: #fff;
+  transition: background 0.15s;
+}
+.faq-item:last-child { border-bottom: none; }
+.faq-question {
+  padding: 17px 6px 17px 0;
+  font-size: 1.07rem;
+  font-weight: 500;
+  color: #222;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+}
+.faq-question.open {
+  font-weight: 700;
+  color: #222;
+}
+.faq-answer {
+  display: none;
+  background: #fcfcfc;
+  padding: 18px 3px 18px 0;
+  color: #444;
+  font-size: 1.02rem;
+  line-height: 1.6;
+  border-top: 1px solid #f4f4f4;
+}
+.faq-question.open + .faq-answer {
+  display: block;
 }
 
-.accordion-item {
-	border-radius: 12px;
-	margin-bottom: 10px;
-	border: 1px solid;
-	overflow: hidden;
+.faq-tag {
+  font-size: 0.97rem;
+  color: #bbb;
+  margin-right: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
 }
 
-.card {
-	border-radius: 20px;
-	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-	border: none;
-}
-
-.tab-content {
-	border-radius: 0 0 20px 20px;
-}
-
-.info-right {
-	position: absolute;
-	right: 20px;
-	bottom: 20px;
-	font-size: 1.1rem;
-	font-weight: bold;
-}
-
-.counsel-link {
-	display: block;
-	width: 100%;
-	padding: 18px 0;
-	margin-bottom: 12px;
-	border-radius: 10px;
-	font-size: 1.1rem;
-	font-weight: bold;
-	text-align: center;
-	text-decoration: none;
-	border: 1px solid #eee;
-	transition: box-shadow 0.2s;
-}
-
+/* 카카오/네이버 브랜드 컬러 버튼 */
 .counsel-link.kakao {
-	background: #fff3cd;
-	color: #856404;
-	border-color: #ffe69c;
+  background: #ffe066;
+  color: #3d2600;
+  border: 1.2px solid #ffe066;
 }
-
-.counsel-link.kakao:hover {
-	box-shadow: 0 2px 8px #ffe69c55;
+.counsel-link.kakao:hover, .counsel-link.kakao:focus {
+  background: #ffcd38;
+  color: #3d2600;
+  border-color: #ffcd38;
 }
-
 .counsel-link.naver {
-	background: #d1e7dd;
-	color: #0f5132;
-	border-color: #a3cfbb;
+  background: #63e6be;
+  color: #034f1a;
+  border: 1.2px solid #63e6be;
+}
+.counsel-link.naver:hover, .counsel-link.naver:focus {
+  background: #20c997;
+  color: #034f1a;
+  border-color: #20c997;
 }
 
-.counsel-link.naver:hover {
-	box-shadow: 0 2px 8px #a3cfbb55;
+/* 일반 상담 버튼 (밝은 톤) */
+.counsel-link {
+  display: block;
+  width: 100%;
+  padding: 15px 0;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  font-size: 1.04rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  background: #fff;
+  color: #222;
+  border: 1.2px solid #e3e5e8;
+  transition: background 0.16s, color 0.16s, border-color 0.16s;
 }
-
-.counsel-link.phone {
-	background: #cfe2ff;
-	color: #084298;
-	border-color: #9ec5fe;
-}
-
-.counsel-link.phone:hover {
-	box-shadow: 0 2px 8px #9ec5fe55;
-}
-
-.btn btn-outline-primary {
-	float: right;
+.counsel-link.phone:hover, .counsel-link.phone:focus {
+  background: #222;
+  color: #fff;
+  border-color: #222;
 }
 </style>
+
+
+
 <script type="text/javascript">
 	$(function() {
 		
