@@ -75,7 +75,7 @@
 	<ul class="footer-menu">
    		<li><a class="Footer-link" href="#" rel="noopener noreferrer" onclick="openTermsWindow()"><b>이용약관</b></a></li>
 		<li><a class="Footer-link" href="#" rel="noopener noreferrer" onclick="openPrivacy()">개인정보방침</a></li>
-		<li><a class="Footer-link" href="index.jsp?main=footer-category/CompanyInfo.jsp">회사소개</a></li>		
+		<li><a class="Footer-link" href="#" rel="noopener noreferrer" target="_blank">회사소개</a></li>		
 		<li><a class="Footer-link" href="index.jsp?main=footer-category/Guide.jsp">이용안내</a></li>
   </ul>
 <div class="footer-content">
