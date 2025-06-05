@@ -232,7 +232,7 @@ public class CartListDao {
     }
 
     // 3. 장바구니 항목 삭제
-    public boolean deleteCartItem(int idx) {
+    public Boolean deleteCartItem(int idx) {
         String sql = "DELETE FROM shop.cartlist WHERE idx = ?";
         try (Connection conn = db.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {

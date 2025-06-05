@@ -1,4 +1,4 @@
-<%@page import="java.util.Base64"%>
+
 <%@page import="data.dto.ProductDto"%>
 <%@page import="java.util.List"%>
 <%@page import="data.dao.ProductDao"%>

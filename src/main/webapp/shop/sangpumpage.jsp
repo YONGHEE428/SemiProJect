@@ -21,20 +21,25 @@
   gap: 40px;
   align-items: flex-start;
   margin-top: 30px;
+  overflow: visible;
 }
 
   .left-panel {
   flex: 2;
-  
+  align-self: flex-start;
 }
-    .right-panel { flex: 1; min-width: 320px; align-self: flex-start; }
+    .right-panel { 
+    flex: 1; 
+    min-width: 320px; 
+    align-self: flex-start; 
+    }
 
  .img-container {
   max-width: 600px;
   width: 100%;
   border: 1px solid #ddd;
   overflow: hidden;
-  position: relative;
+  position: sticky;
 
   /* 이미지 중앙 정렬 추가 */
   display: flex;
@@ -194,7 +199,7 @@
     }
 
     .sticky-fixed {
-      position: fixed;
+     position: static;
       top: 0;
       left: 0;
       right: 0;
@@ -508,6 +513,10 @@ function continueShopping() {
           - 공휴일 및 휴일은 배송이 불가합니다.<br />
           - SSY 자체발송은 오후 2시까지 결제확인된 주문은 당일 출고되고 10만원 이상 주문은 무료배송, 10만원 미만은 3,000원의 배송비가 추가됩니다.<br />
         </div>
+       
+    </div>
+    <div style="margin-top: 20px; text-align: right; width: 200px; height:900;" >
+      <img src="../image/sale.png" alt="여름 아이템 할인 배너" style="max-width: 100%; height: auto;" />
     </div>
   </div>
 </div>

@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8"> 
 <title>Insert title here</title>
 <link href="https://fonts.googleapis.com/css2?family=Dongle&family=Gaegu&family=Hi+Melody&family=Nanum+Myeongjo&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -146,12 +146,12 @@ window.addEventListener("DOMContentLoaded", function () {
 
 <body>
   <div class="wrapper">
-    <div class="backimg">
+   <!--  <div class="backimg">
     	<video autoplay muted loop playsinline style="width: 100%;">
   		<source src="SemiImg/ADmain.mp4" type="video/mp4">
   		브라우저가 비디오 태그를 지원하지 않습니다.
 		</video>
-    </div>
+    </div> -->
 
     <div class="title">
       <jsp:include page="layout/title.jsp" />
