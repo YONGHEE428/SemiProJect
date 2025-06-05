@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    <%@ page import="java.sql.*, data.dto.CartListDto, data.dao.CartListDao" %>
-<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="java.sql.*, data.dto.CartListDto, data.dao.CartListDao" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
+
 <%
     // 1. 파라미터 받기
     String product_id = request.getParameter("product_id");
@@ -30,7 +30,8 @@
 
     // 4. DAO 호출
     CartListDao dao = new CartListDao();
-    dao.addCart(dto);
+    
+    /*수정바람 dao.addCart(dto); */
 
     // 5. 장바구니 페이지로 리디렉션
     response.sendRedirect("cart.jsp");

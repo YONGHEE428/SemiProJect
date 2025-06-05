@@ -16,31 +16,43 @@
     }
 
     .product-page {
-      display: flex;
-      gap: 40px;
-      align-items: flex-start;
-      margin-top: 30px;
+  display: flex;
+  justify-content: center; /* 중앙 정렬 */
+  gap: 40px;
+  align-items: flex-start;
+  margin-top: 30px;
+  overflow: visible;
+}
+
+  .left-panel {
+  flex: 2;
+  align-self: flex-start;
+}
+    .right-panel { 
+    flex: 1; 
+    min-width: 320px; 
+    align-self: flex-start; 
     }
 
-    .left-panel { flex: 2; min-width: 600px; }
-    .right-panel { flex: 1; min-width: 320px; align-self: flex-start; }
+ .img-container {
+  max-width: 600px;
+  width: 100%;
+  border: 1px solid #ddd;
+  overflow: hidden;
+  position: sticky;
 
-    .img-container {
-      max-width: 600px;
-      border: 1px solid #ddd;
-      overflow: hidden;
-      position: relative;
-    }
+  /* 이미지 중앙 정렬 추가 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto; /* 컨테이너 자체 중앙 배치 */
+}
 
-    .zoom-img {
-      width: 100%;
-      transition: transform 0.3s ease;
-    }
-
-    .img-container:hover .zoom-img {
-      transform: scale(1.2);
-      cursor: zoom-in;
-    }
+.zoom-img {
+  max-width: 100%;
+  height: auto;
+  transition: transform 0.3s ease;
+}
 
     .slide-btn {
       position: absolute;
@@ -187,7 +199,7 @@
     }
 
     .sticky-fixed {
-      position: fixed;
+     position: static;
       top: 0;
       left: 0;
       right: 0;
@@ -268,7 +280,7 @@
     </div>
 
     <section id="desc"><h2>상품 설명</h2><%@ include file="../shop/product.jsp" %></section>
-    <section id="reviews"><h2>리뷰</h2><%@ include file="../shop/reviews.jsp" %></section>
+    <section id="reviews"><h2>리뷰</h2><%@ include file="../shop/reviewList.jsp" %></section>
     <section id="qna"><h2>문의</h2></section>
   </div>
 
@@ -323,6 +335,48 @@
         <button class="btn btn-secondary" onclick="changeQty(1)">+</button>
       </div>
     </div>
+    <script>
+let quantity = 1;
+const pricePerUnit = 89000;
+
+function changeQty(delta) {
+  if (delta === -1 && quantity > 1) {
+    quantity--;
+  } else if (delta === 1) {
+    if (quantity >= 5) {
+      showLimitModal();
+      return;
+    }
+    quantity++;
+  }
+  updateTotalPrice();
+}
+
+function updateTotalPrice() {
+  const total = pricePerUnit * quantity;
+  document.getElementById("qty").textContent = quantity;
+  document.getElementById("Price").textContent = total.toLocaleString() + "원";
+  document.getElementById("minus").disabled = quantity === 1;
+}
+
+function showLimitModal() {
+  document.getElementById("limitModal").style.display = "flex";
+}
+
+function closeLimitModal() {
+  document.getElementById("limitModal").style.display = "none";
+}
+
+document.addEventListener("DOMContentLoaded", updateTotalPrice);
+</script>
+    <div id="limitModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeLimitModal()">×</span>
+    <h4>알림</h4>
+    <p>최대 구매 가능 수량은 5개입니다.</p>
+    <button onclick="closeLimitModal()" class="btn-black">확인</button>
+  </div>
+</div>
 
     <div class="mt-2"><strong>총 가격:</strong> <span id="Price">89,000원</span></div>
 
@@ -355,14 +409,6 @@
 
 <script>
 const isLoggedIn = <%= isLoggedIn %>;
-
-// 수량 증가/감소
-function changeQty(delta) {
-    const qtySpan = document.getElementById("qty");
-    let qty = parseInt(qtySpan.textContent);
-    qty = Math.max(1, qty + delta);
-    qtySpan.textContent = qty;
-}
 
 // 옵션 ID 자동 생성 (예: opt-M-red)
 function updateOptionId() {
@@ -467,6 +513,10 @@ function continueShopping() {
           - 공휴일 및 휴일은 배송이 불가합니다.<br />
           - SSY 자체발송은 오후 2시까지 결제확인된 주문은 당일 출고되고 10만원 이상 주문은 무료배송, 10만원 미만은 3,000원의 배송비가 추가됩니다.<br />
         </div>
+       
+    </div>
+    <div style="margin-top: 20px; text-align: right; width: 200px; height:900;" >
+      <img src="../image/sale.png" alt="여름 아이템 할인 배너" style="max-width: 100%; height: auto;" />
     </div>
   </div>
 </div>
@@ -479,28 +529,8 @@ function continueShopping() {
     "<%= request.getContextPath() %>/image/top/f83.jpg",
     "<%= request.getContextPath() %>/image/top/f84.jpg"
   ];
-  let currentImageIndex = 0;
-  const pricePerUnit = 89000;
-  let quantity = 1;
-
-  function changeImage(dir) {
-    currentImageIndex = (currentImageIndex + dir + images.length) % images.length;
-    document.getElementById("productImage").src = images[currentImageIndex];
-  }
-
-  function updateTotalPrice() {
-    const total = pricePerUnit * quantity;
-    document.getElementById("Price").innerText = total.toLocaleString() + "원";
-    document.getElementById("qty").innerText = quantity;
-    document.getElementById("minus").disabled = quantity === 1;
-  }
-
-  function changeQty(change) {
-    if (change === -1 && quantity > 1) quantity--;
-    else if (change === 1) quantity++;
-    updateTotalPrice();
-  }
-
+  
+ 
   function goToReviews() {
     const reviewsSection = document.getElementById("reviews");
     window.scrollTo({ top: reviewsSection.offsetTop - 100, behavior: "smooth" });

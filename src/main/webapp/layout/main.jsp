@@ -1,3 +1,4 @@
+
 <%@page import="data.dto.ProductDto"%>
 <%@page import="data.dao.ProductDao"%>
 <%@page import="java.util.List"%>
@@ -246,6 +247,7 @@ function loadMoreItems() {
       <a href="index.jsp?main=category/accesories.jsp"><img src="SemiImg/test2.png" class="no-hover d-block w-100" alt="..."></a>
     </div>
     <div class="carousel-item">
+
       <a href="index.jsp?main=category/top.jsp"><img src="SemiImg/test3-1.jpg" class="no-hover d-block w-100" alt="..."></a>
     </div>
     <div class="carousel-item">
@@ -253,6 +255,7 @@ function loadMoreItems() {
     </div>
      <div class="carousel-item">
       <a href="index.jsp?main=category/shoes.jsp"><img src="SemiImg/main2.png" class="no-hover d-block w-100" alt="..."></a>
+
     </div>		
   </div>
   <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
