@@ -92,7 +92,7 @@
     text-align: center;
     background-color: white;
     margin-top: 50px;
-    z-index: 999;
+    z-index: 996;
   }
 
   a, a:hover {
