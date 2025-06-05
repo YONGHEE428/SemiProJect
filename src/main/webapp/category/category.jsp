@@ -29,33 +29,44 @@
 		}
         /* Product grid */
         .product-card {
-            border: 0px solid #ddd;
-            margin-bottom: 30px;
-            transition: transform 0.2s;
+             border: 1px solid #ddd;
+			    margin: 10px;
+			    border-radius: 8px;
+			    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
         .product-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             cursor: pointer;
       		filter: brightness(70%);
       		transition: 0.3s ease;
+      		 border: none; 
         }
         
         .product-image {
             height: 100%;
-            object-fit: cover;
+            width: 100%;
         }
         
         .product-info {
-            padding: 15px;
+            padding: 10px 0;
         }
         
         .product-title {
             font-size: 0.9rem;
             margin-bottom: 5px;
+            padding:5px;
         }
-        
+        .product-company {
+		    font-size: 12px;
+		    color: #777;
+		}
+		
+		.product-name {
+		    font-size: 14px;
+		    font-weight: bold;
+		    margin: 5px 0;
+		}
         .product-price {
             font-weight: bold;
             color: #333;
@@ -150,7 +161,8 @@
 			background-color: #c9a797;
 			border-radius: 20px;
 		}
-			
+   
+
     </style>
    
   <script type="text/javascript">
@@ -209,75 +221,123 @@
     		}
 	    });
 	    // 무한스크롤
-	    let page = 1;
-	    let isLoading = false;
-	    const target = document.getElementById("observerTarget");
-	    const observer = new IntersectionObserver(entries => {
-	        entries.forEach(entry => {
-	            if (entry.isIntersecting && !isLoading) {
-	                isLoading = true;
-	                loadMoreItems();
-	            }
-	        });
-	    });
-	    observer.observe(target);
+	let page = 2;  // 처음 16개 아이템을 이미 로드했으므로, 다음 페이지는 2부터 시작
+let isLoading = false;  // 중복 요청을 방지하기 위한 플래그
+function loadInitialItems() {
+    $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: "/SemiProject/data/items.jsp?page=1",  // 페이지 1에서 16개 로드
+        success: function(data) {
+            // 데이터가 없으면 로딩 종료
+            if (data.length === 0) {
+                return;
+            }
 
-	    function loadMoreItems() {
-	        // 로딩 메시지 보이기
-	        document.getElementById("loadingMessage").style.display = "block";
+            // 상품 목록에 처음 16개 아이템 추가
+            const container = document.getElementById("product-list");
+            data.forEach(item => {
+                const el = document.createElement("div");
+                el.classList.add("col-3");  // 상품 카드 스타일을 위한 클래스 추가
+                el.innerHTML =
+                    "<div class='product-card' data-product-id='" + item.productId + "'>" +
+                    "<div class='item'>" +
+                    "<a href='/Semiproject/shop/sangpumpage.jsp'>" +
+                    "<img src='" + item.mainImageUrl + "' alt='' class='product-image'>" +  // 상품 이미지
+                    "</a>" +
+                    "</div>" +
+                    "<div class='product-info'>" +
+                    "<div class='product-company'>" + item.category + "</div>" +
+                    "<div class='product-name'>" + item.productName + "</div>" +
+                    "<div class='product-price'>" + item.price + "원</div>" + // 가격 그대로 출력
+                    "<div class='item-heart'>" +
+                    "<i class='bi bi-suit-heart heart' style='cursor: pointer; color: black;'>" + 
+                    (item.likeCount == null ? 0 : item.likeCount) + "</i>" +  // 좋아요 수
+                    "<i class='bi bi-eye' style='font-size: 16px;'></i>&nbsp; " + item.viewCount +  // 조회수
+                    "</div>" +
+                    "</div>" +
+                    "</div>";
+                container.appendChild(el);
+            });
 
-	        $.ajax({
-	            type: "GET",
-	            dataType: "json",
-	            url: "/SemiProject/data/items-page" + page + ".json",
-	            success: function(data) {
-	                setTimeout(() => {
-	                	//새 상품 추가
-	                	  const container = document.getElementById("product-list");
-	                	  if (!container) {
-	                	    console.warn("#product-list 요소가 없습니다.");
-	                	    return;
-	                	  }
-	                    data.forEach(item => {
-	                        const el = document.createElement("div");
-	                        el.classList.add("col-3");
-	                        el.innerHTML =
-	                        	 "<div class=\"product-card\" data-product-id=\"" + item.name + "\">" +
-	                             "<div class=\"item\" style=\"width: 100%; height: 100%; height:300px;\">" +
-	                               "<img alt=\"\" src=\"/SemiProject" + item.img + "\" class=\"product-image\" style=\"width: 100%; height: 100%;\">" +
-	                             "</div>" +
-	                             "<div class=\"item-coment\" style=\"width: 100%; height: 40%;\">" +
-	                               "<div class=\"item-category\"><b>" + item.category + "</b></div>" +
-	                               "<div class=\"item-name\">" + item.name + "</div>" +
-	                               "<div class=\"item-price\"><b>" + item.price + "</b></div>" +
-	                               "<div class=\"item-heart\"><i class=\"bi bi-suit-heart heart\" style=\"cursor: pointer; color: black;\">" + item.heart + "</i></div>" +
-	                             "</div>" +
-	                           "</div>";
-	                        container.appendChild(el);
-	                    });
-	                    page++;
-	                    isLoading = false;
-	                    document.getElementById("loadingMessage").style.display = "none";
-	                }, 500);
-	            },
-	            error: function(xhr, status, error) {
-	                console.error("불러오기 실패", error);
-	                isLoading = false;
-	                document.getElementById("loadingMessage").style.display = "none";
-	            }
-	        });
-	    }
-	   
-     	const id="<%=id!=null?id:""%>" 
 
-	    $("#wishchk").click(function(){
-	    		if(id===""){
-	    			alert("로그인 후 이용해주세요.");
-				    location.href="index.jsp?main=login/loginform.jsp";
-	    		}else{
-				    location.href="index.jsp?main=category/catewish.jsp";
-	    		}
-	    });
+        },
+        error: function(xhr, status, error) {
+            console.error("불러오기 실패", error);
+        }
+    });
+}
+// 처음 로딩 시, 16개 상품을 표시
+loadInitialItems();
+// 스크롤이 끝까지 내려가면 더 많은 데이터를 불러오는 함수
+function loadMoreItems() {
+    if (isLoading) return;  // 로딩 중이면 중복 요청 방지
+    isLoading = true;  // 로딩 중으로 상태 변경
+    document.getElementById("loadingMessage").style.display = "block";  // 로딩 메시지 보이기
+
+    $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: "/SemiProject/data/items.jsp?page=" + page,  // page는 서버에서 다음 데이터를 요청하는 파라미터
+        success: function(data) {
+            setTimeout(() => {
+                // 데이터가 없으면 로딩 종료
+                if (data.length === 0) {
+                    document.getElementById("loadingMessage").style.display = "none";  // 로딩 메시지 숨기기
+                    return;
+                }
+
+                // 새 상품 추가
+                const container = document.getElementById("product-list");
+                data.forEach(item => {
+                    const el = document.createElement("div");
+                    el.classList.add("col-3");  // 상품 카드 스타일을 위한 클래스 추가
+                    el.innerHTML =
+                        "<div class='product-card' data-product-id='" + item.productId + "'>" +
+                        "<div class='item'>" +
+                        "<a href='/Semiproject/shop/sangpumpage.jsp'>" +
+                        "<img src='" + item.mainImageUrl + "' alt='' class='product-image'>" +  // 상품 이미지
+                        "</a>" +
+                        "</div>" +
+                        "<div class='product-info'>" +
+                        "<div class='product-company'>" + item.category + "</div>" +
+                        "<div class='product-name'>" + item.productName + "</div>" +
+                        "<div class='product-price'>" + item.price + "원</div>" + // 가격 그대로 출력
+                        "<div class='item-heart'>" +
+                        "<i class='bi bi-suit-heart heart' style='cursor: pointer; color: black;'>" + 
+                        (item.likeCount == null ? 0 : item.likeCount) + "</i>" +  // 좋아요 수
+                        "<i class='bi bi-eye' style='font-size: 16px;'></i>&nbsp; " + item.viewCount +  // 조회수
+                        "</div>" +
+                        "</div>" +
+                        "</div>";
+
+                    // 새로 생성한 상품 카드를 상품 목록에 추가
+                    container.appendChild(el);
+                });
+
+                // 페이지 번호 증가
+                page++;
+
+                // 로딩 상태 해제
+                isLoading = false;
+                document.getElementById("loadingMessage").style.display = "none";  // 로딩 메시지 숨기기
+            }, 500);  // 데이터를 추가하기 전에 500ms 지연
+        },
+        error: function(xhr, status, error) {
+            console.error("불러오기 실패", error);
+            isLoading = false;  // 에러 발생 시 로딩 상태 해제
+            document.getElementById("loadingMessage").style.display = "none";  // 로딩 메시지 숨기기
+        }
+    });
+}
+// 스크롤 이벤트를 통해 끝까지 내리면 loadMoreItems() 호출
+window.onscroll = function() {
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 100) {
+        loadMoreItems();
+    }
+};
+
+     	
 	    <!-- location.href='index.jsp?main=category/catewish.jsp' -->
 	});
  
@@ -352,63 +412,7 @@
      <div class="container my-5">
         <div id="product-list" class="row">
             <!-- Product Card Template - Repeated 16 times (4x4 grid) -->
-            <%
-         	DecimalFormat df=new DecimalFormat("#,###");
-
-            if(list.size()==0){%>
-                    <div class="product-card">
-                    등록된 상품이 없습니다.
-					</div>
-            	<%}else{
-             for(int i = 0; i < list.size(); i++) { 
-            	ProductDto pdto=list.get(i);
-            	%>
-            		 <div class="col-3">
-                     <div class="product-card"  data-product-id="<%=pdto.getProductId()%>">
-                     <%
-                  				//byte형식으로
-
-                             		 // pdto.getMainImage()는 byte[]를 반환함
-               				 
-                            if(pdto.getMainImageUrl() != null && !pdto.getMainImageUrl().isEmpty()){%>
-                     		   <img src="<%= pdto.getMainImageUrl() %>"
-                     			alt="Product Image" class="product-image"
-                     			style="width: 100%; height: 100%;">
-                         		<%}else{%>
-                        			<img src="SemiImg/footerLogo.png"> 
-                         <%
-                         	}
-                         %>
-                         
-                         <div class="product-info">
-                             <div class="product-company"><b><%=pdto.getCategory() %></b></div>
-                             <%
-                             	if(pdto.getProductName().length()>10){%>
-                             	
-                             	<div class="product-name" style="font-size: 10px;"><%=pdto.getProductName()%></div>		
-                             	<%}else{%>
-                             	<div class="product-name"><%=pdto.getProductName()%></div>	
-                             	<%}
-                             %>
-                             
-                             <%
-                             	BigDecimal price=pdto.getPrice();
-                             //소수점 없앰
-                             	BigDecimal realprice=price.setScale(0, RoundingMode.DOWN);
-                             %>										<!-- 지수없이(일반숫자형식)으로 출력 -->
-                             <div class="product-price"><b><%=df.format(realprice) %>원</b></div>
-                             
-                            
-                             <i class="bi bi-suit-heart heart" 
-                             style="cursor: pointer; color: black;"><%=(pdto.getLikeCount())==null?0:pdto.getLikeCount() %></i>
-                             
-                         </div>
-                     </div>
-                 </div>
-            		
-            	<%}
-          	}
-          %>
+           
         </div>
     </div> 
 	
@@ -422,19 +426,7 @@
     
    </div> 
 
-<<<<<<< HEAD
-if (toastTrigger) {
-  const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
-  if(id===""){
-	toastBootstrap.hide()	
-  }else{
-	  toastTrigger.addEventListener('click', () => {
-		    toastBootstrap.show()
-		  })  
-  } 
-}
-</script>
-=======
->>>>>>> b5c1d7f266a25e43863e010e78d4e099b068b355
+
+
 </body>
 </html>
