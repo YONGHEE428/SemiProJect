@@ -248,14 +248,6 @@ function loadMoreItems() {
     </div>
     <div class="carousel-item">
 
-      <img src="SemiImg/test3.jpg" class="d-block w-100" alt="...">
-    </div>
-    <div class="carousel-item">
-      <img src="SemiImg/main.png" class="d-block w-100" alt="...">
-    </div>
-     <div class="carousel-item">
-      <img src="SemiImg/main2.png" class="d-block w-100" alt="...">
-
       <a href="index.jsp?main=category/top.jsp"><img src="SemiImg/test3-1.jpg" class="no-hover d-block w-100" alt="..."></a>
     </div>
     <div class="carousel-item">
