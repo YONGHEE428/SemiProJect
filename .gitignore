@@ -3,6 +3,10 @@
 
 # Package Files
 
+# .gitignore
+# 민감한 정보가 포함된 환경 변수 설정 파일
+setenv.sh
+setenv.bat
 
 # Maven
 target/
