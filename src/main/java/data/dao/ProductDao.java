@@ -235,6 +235,7 @@ public class ProductDao {
         }
         return new ArrayList<>(productMap.values());
     }
+    
     //상위 6개 좋아요 기준으로출력
     public List<ProductDto> getTopLikedProducts() {
         Map<Integer, ProductDto> productMap = new LinkedHashMap<>();
@@ -297,6 +298,7 @@ public class ProductDao {
 
         return new ArrayList<>(productMap.values());
     }
+
 
     // 상품 이미지 URL을 가져오는 메서드 (기존과 동일)
     public String getProductImageUrl(int productId) {
