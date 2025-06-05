@@ -157,6 +157,7 @@
 
 	SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	String referer = request.getHeader("referer");
+	String name = (String)session.getAttribute("name");
 	boolean fromMypage = (referer != null && referer.contains("mypage.jsp")); // 또는 마이페이지의 실제 URL 경로
 
 %>
@@ -167,8 +168,8 @@
 <div id="selectedCategory" style="text-align:left; font-size: 24px; font-weight: bold; margin-top: 20px;">
    		  <ul style="<%= fromMypage ? "gap:250px; margin-left:-510px;" : "" %>">
    		 <% if(fromMypage) { %>
-		    <li style="font-weight: normal; font-size: 15px; color: gray;">
-		        <span>홈 > 마이페이지 > <strong>위시리스트</strong></span>
+		    <li style="font-weight: normal; font-size: 16px; color: gray;">
+		        <span>홈 > 마이페이지 > <strong style="color: #606060">위시리스트 (<%=name%>님)</strong></span>
 		    </li>
 		<% }%>
    		  <li class="dropdown" style="background-color: ; border-radius: 20px;">
