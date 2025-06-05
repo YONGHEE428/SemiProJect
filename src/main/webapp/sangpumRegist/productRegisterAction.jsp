@@ -17,7 +17,7 @@
     String message = "";
     String redirectUrl = "./sangpumRegist.jsp"; // 기본 리다이렉션 페이지
     ProductDto productDto = new ProductDto();
-    List<ProductOptionDto> optionList = new ArrayList<>(); // 옵션 리스트 초기화
+    List<ProductOptionDto> optionList = new ArrayList<>(); // 옵션 리스트 초기화 - 이미 여기 선언되어 있음
 
     // S3 클라이언트 초기화
     AmazonS3 s3Client = S3Config.getS3Client();
@@ -97,23 +97,6 @@
                     s3ImageUrl = existingImageUrl;
                 }
             }
-
-            ProductOptionDto optionDto = new ProductOptionDto();
-            optionDto.setColor(color);
-            optionDto.setSize(size);
-            if (quantityStr != null) {
-                try {
-                    int quantity = Integer.parseInt(quantityStr);
-                    optionDto.setStockQuantity(quantity);
-                } catch (NumberFormatException e) {
-                    optionDto.setStockQuantity(0); // 유효하지 않은 경우 기본값 0
-                }
-            } else {
-                optionDto.setStockQuantity(0); // 수량이 없는 경우 기본값 0
-            }
-
-            optionsList.add(optionDto); // 옵션 리스트에 추가
-            optionIndex++; // 인덱스 증가
         }
         productDto.setMainImageUrl(s3ImageUrl); // ProductDto에 최종 S3 URL 설정
 
@@ -155,7 +138,9 @@
             throw new IllegalArgumentException("상품 옵션 데이터가 올바르지 않습니다. 모든 옵션 필드를 채우거나 적어도 하나의 옵션을 추가해주세요.");
         }
 
-        for (int i = 0; i < colors.length; i++) {
+        // ⭐️⭐️⭐️ 이 for 루프가 누락되었거나 잘못 작성되었을 가능성이 높습니다. ⭐️⭐️⭐️
+        // 'colors' 배열의 길이만큼 반복하면서 각 옵션의 값을 가져와야 합니다.
+        for (int i = 0; i < colors.length; i++) { // <--- 여기에 for 루프 추가
             String color = colors[i] != null ? colors[i].trim() : "";
             String size = sizes[i] != null ? sizes[i].trim() : "";
             String quantityStr = quantities[i] != null ? quantities[i].trim() : "";
@@ -179,8 +164,11 @@
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("옵션 #" + (i + 1) + "의 상품 수량을 올바르게 입력해주세요.");
             }
-            optionList.add(optionDto);
-        }
+            optionList.add(optionDto); // 'optionsList'가 아닌 'optionList' 사용
+            // optionIndex++ // 필요 없는 변수이므로 제거
+        } // <--- for 루프 끝
+
+        // productDto.setMainImageUrl(s3ImageUrl); // 이 라인은 이미 위에서 설정됨. 중복이라 제거해도 무방.
 
         // 7. DAO를 통해 데이터베이스에 저장
         ProductDao productDao = new ProductDao();
