@@ -85,7 +85,6 @@
 	<div class="login-title">
    <p style="font-size: 1.5em">로그인</p>
    </div>
-
    <form action="<%=root%>/login/loginaction.jsp" method="post">
     <span class="login-span"><p>아이디</p></span>
      <input type="text" name="id" class="form-control field" placeholder="" required="required" value="<%=myid%>" >

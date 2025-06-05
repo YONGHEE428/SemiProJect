@@ -422,5 +422,19 @@
     
    </div> 
 
+<<<<<<< HEAD
+if (toastTrigger) {
+  const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+  if(id===""){
+	toastBootstrap.hide()	
+  }else{
+	  toastTrigger.addEventListener('click', () => {
+		    toastBootstrap.show()
+		  })  
+  } 
+}
+</script>
+=======
+>>>>>>> b5c1d7f266a25e43863e010e78d4e099b068b355
 </body>
 </html>

@@ -68,4 +68,5 @@ public class PaymentDto {
 	public void setDelivery_msg(String delivery_msg) {
 		this.delivery_msg = delivery_msg;
 	}
+
 }

@@ -16,8 +16,8 @@
 <link
    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
    rel="stylesheet">
-<link rel="stylesheet"
-   href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+<link rel="stylesheet"  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <title>장바구니</title>
 <style>
@@ -86,7 +86,6 @@
                $(".item-check").prop("checked", $(this).is(":checked"))
                      .trigger("change");
             });
-
       // 선택한 상품 수, 총액 계산
       function updateSummary() {
          let total = 0;
@@ -185,8 +184,7 @@
             alert("삭제할 항목을 선택해주세요.");
             return;
          }
-
-         if (!confirm("선택한 상품을 삭제하시겠습니까?"))
+        if (!confirm("선택한 상품을 삭제하시겠습니까?"))
             return;
 
          let selectedIdxs = [];
@@ -195,7 +193,6 @@
             let idx = $(this).closest(".cart-item").data("idx");
             selectedIdxs.push(idx);
          });
-
          // Ajax 요청으로 선택된 항목 삭제
          $.ajax({
             url : "cart/cartdelete_selected.jsp", // 👉 선택삭제용 JSP
@@ -355,7 +352,6 @@ String name = (String) session.getAttribute("name");
             "Warning: Cart item count format error for idx " + item.getIdx() + ", cnt value: " + item.getCnt());
             cnt = 1; // 안전하게 기본값으로
          }
-
          // itemPrice는 int, quantity도 int이므로 itemTotalPrice도 int
          int itemTotalPrice = itemPrice * cnt;
       %>
@@ -427,5 +423,6 @@ String name = (String) session.getAttribute("name");
             주문하기</button>
       </div>
    </div>
+
 </body>
 </html>
