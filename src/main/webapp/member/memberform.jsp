@@ -253,7 +253,7 @@
        <input type="hidden" value="" id ="pinpass">
        <div class="input-group">
          <input type="text" name="hp" class="form-control"required="required" style="max-width: 330px;" maxlength="11">&nbsp;&nbsp;&nbsp;
-          <button type="button" id="hpCheck">인증번호 발송</button>
+          <button type="button" id="hpCheck" disabled>인증번호 발송</button>
        </div>
      </div>
      <div class = "pinfield">

@@ -12,7 +12,7 @@
     } catch (Exception e) {}
     
     ProductDao dao = new ProductDao();
-    List<ProductDto> items = dao.getProductsByPage(currentPage, 10);
+    List<ProductDto> items = dao.getProductsByPage(currentPage, 8);
     
     Gson gson = new Gson();
     String json = gson.toJson(items);

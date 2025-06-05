@@ -243,14 +243,10 @@ public class ProductDao {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
 
-        String sql =
-            "SELECT p.product_id, p.product_name, p.price, p.category, p.main_image, p.description, " +
-            "p.view_count, p.like_count, p.registered_at, p.updated_at, " +
-            "po.option_id, po.color, po.size, po.stock_quantity " +
-            "FROM product p " +
-            "LEFT JOIN product_option po ON p.product_id = po.product_id " +
-            "ORDER BY p.like_count DESC " +
-            "LIMIT 6";
+        String sql = "SELECT p.product_id, p.product_name, p.price, p.category, p.main_image_url, p.description, " +
+                "p.view_count, p.like_count, p.registered_at, p.updated_at " +
+                "FROM product p ORDER BY p.like_count DESC LIMIT 6";
+
 
         try {
             conn = db.getConnection();
@@ -267,7 +263,7 @@ public class ProductDao {
                     product.setProductName(rs.getString("product_name"));
                     product.setPrice(rs.getBigDecimal("price"));
                     product.setCategory(rs.getString("category"));
-                    product.setMainImageUrl(rs.getString("mainImageUrl"));
+                    product.setMainImageUrl(rs.getString("main_image_url"));
                     product.setDescription(rs.getString("description"));
                     product.setViewCount(rs.getString("view_count"));  
                     product.setLikeCout(rs.getString("like_count"));   
@@ -276,24 +272,12 @@ public class ProductDao {
                     product.setOptions(new ArrayList<>());
                     productMap.put(productId, product);
                 }
-
-                if (rs.getObject("option_id") != null) {
-                    ProductOptionDto option = new ProductOptionDto();
-                    option.setOptionId(rs.getInt("option_id"));
-                    option.setProductId(productId);
-                    option.setColor(rs.getString("color"));
-                    option.setSize(rs.getString("size"));
-                    option.setStockQuantity(rs.getInt("stock_quantity"));
-                    product.getOptions().add(option);
-                }
             }
         } catch (SQLException e) {
             System.err.println("상위 좋아요 상품 조회 중 오류: " + e.getMessage());
             e.printStackTrace();
         } finally {
-            try { if (rs != null) rs.close(); } catch (SQLException e) { e.printStackTrace(); }
-            try { if (pstmt != null) pstmt.close(); } catch (SQLException e) { e.printStackTrace(); }
-            try { if (conn != null) conn.close(); } catch (SQLException e) { e.printStackTrace(); }
+           db.dbClose(rs, pstmt, conn);
         }
 
         return new ArrayList<>(productMap.values());
