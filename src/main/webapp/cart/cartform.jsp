@@ -18,7 +18,7 @@
 	rel="stylesheet">
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <title>장바구니</title>
 <style>
 .cart-item {
@@ -81,23 +81,27 @@
 <script type="text/javascript">
 	$(function() {
 		// 전체 선택/해제
-		$("#allCheck").change(function() {
-			$(".item-check").prop("checked", $(this).is(":checked")).trigger("change");
-		});
+		$("#allCheck").change(
+				function() {
+					$(".item-check").prop("checked", $(this).is(":checked"))
+							.trigger("change");
+				});
 
 		// 선택한 상품 수, 총액 계산
 		function updateSummary() {
 			let total = 0;
 			let count = 0;
 
-			$(".item-check:checked").each(function() {
-				let item = $(this).closest(".cart-item");
-				let price = parseInt(item.find(".item-unit-price").data("price"));
-				let qty = parseInt(item.find(".quantity-input").val());
+			$(".item-check:checked").each(
+					function() {
+						let item = $(this).closest(".cart-item");
+						let price = parseInt(item.find(".item-unit-price")
+								.data("price"));
+						let qty = parseInt(item.find(".quantity-input").val());
 
-				count++;
-				total += price * qty;
-			});
+						count++;
+						total += price * qty;
+					});
 
 			$("#selectedCount").text(count);
 			$("#selectedTotalPrice").text(total.toLocaleString());
@@ -109,56 +113,65 @@
 		$(".item-check").change(updateSummary);
 
 		// 수량 증가/감소
-		$(".quantity-plus, .quantity-minus").click(function() {
-			let item = $(this).closest(".cart-item");
-			let input = item.find(".quantity-input");
-			let val = parseInt(input.val());
+		$(".quantity-plus, .quantity-minus").click(
+				function() {
+					let item = $(this).closest(".cart-item");
+					let input = item.find(".quantity-input");
+					let val = parseInt(input.val());
 
-			if ($(this).hasClass("quantity-plus"))
-				val++;
-			else if (val > 1)
-				val--;
+					if ($(this).hasClass("quantity-plus"))
+						val++;
+					else if (val > 1)
+						val--;
 
-			input.val(val);
+					input.val(val);
 
-			// 1. 수량 변경 시 항목 합계도 업데이트
-			let price = parseInt(item.find(".item-unit-price").data("price"));
-			let itemTotal = price * val;
-			item.find(".item-total-price").text(itemTotal.toLocaleString() + "원");
+					//  수량 변경 시 항목 합계도 업데이트
+					let price = parseInt(item.find(".item-unit-price").data(
+							"price"));
+					let itemTotal = price * val;
+					item.find(".item-total-price").text(
+							itemTotal.toLocaleString() + "원");
 
-			// 2. 체크된 항목이면 전체 총액 업데이트
-			if (item.find(".item-check").is(":checked")) {
-				updateSummary();
-			}
+					//  체크된 항목이면 전체 총액 업데이트
+					if (item.find(".item-check").is(":checked")) {
+						updateSummary();
+					}
 
-			// 3. Ajax로 DB 수량 업데이트
-			let idx = item.data("idx");
+					//  Ajax로 DB 수량 업데이트
+					let idx = item.data("idx");
 
-			$.ajax({
-				url: "updatecartcnt.jsp",
-				type: "POST",
-				data: { idx: idx, cnt: val },
-				success: function() {
-					console.log("수량 업데이트 완료");
-				},
-				error: function() {
-					alert("수량 변경 실패");
-				}
-			});
-		});
+					$.ajax({
+						url : "cart/updatecartcnt.jsp",
+						type : "POST",
+						data : {
+							idx : idx,
+							cnt : val
+						},
+						success : function() {
+							console.log("수량 업데이트 완료");
+						},
+						error : function() {
+							alert("수량 변경 실패");
+						}
+					});
+				});
 
 		// 단일 삭제 버튼
 		$(".delete-item-btn").click(function() {
-			if (!confirm("정말 삭제하시겠습니까?")) return;
+			if (!confirm("정말 삭제하시겠습니까?"))
+				return;
 
 			let item = $(this).closest(".cart-item");
 			let idx = item.data("idx");
 
 			$.ajax({
-				url: "cartdelete.jsp",
-				type: "POST",
-				data: { idx: idx },
-				success: function() {
+				url : "cart/cartdelete.jsp",
+				type : "POST",
+				data : {
+					idx : idx
+				},
+				success : function() {
 					item.remove();
 					$("#allCheck").prop("checked", false);
 					updateSummary();
@@ -173,7 +186,8 @@
 				return;
 			}
 
-			if (!confirm("선택한 상품을 삭제하시겠습니까?")) return;
+			if (!confirm("선택한 상품을 삭제하시겠습니까?"))
+				return;
 
 			let selectedIdxs = [];
 
@@ -184,11 +198,13 @@
 
 			// Ajax 요청으로 선택된 항목 삭제
 			$.ajax({
-				url: "cartdelete_selected.jsp", // 👉 선택삭제용 JSP
-				type: "POST",
-				traditional: true, // 배열 전송
-				data: { idxs: selectedIdxs },
-				success: function() {
+				url : "cart/cartdelete_selected.jsp", // 👉 선택삭제용 JSP
+				type : "POST",
+				traditional : true, // 배열 전송
+				data : {
+					idxs : selectedIdxs
+				},
+				success : function() {
 					// 삭제된 항목 화면에서 제거
 					$(".item-check:checked").each(function() {
 						$(this).closest(".cart-item").remove();
@@ -196,10 +212,82 @@
 					$("#allCheck").prop("checked", false);
 					updateSummary();
 				},
-				error: function() {
+				error : function() {
 					alert("선택삭제 실패");
 				}
 			});
+		});
+		// 선택상품 주문하기 버튼
+		$("#orderSelectedBtn").click(function() {
+			let selectedIdxs = [];
+
+			$(".item-check:checked").each(function() {
+				selectedIdxs.push($(this).val());
+			});
+
+			if (selectedIdxs.length === 0) {
+
+				return;
+			}
+
+			$.ajax({
+				url : "cart/orderselected.jsp",
+				type : "POST",
+				traditional : true, // 배열 전송을 위한 옵션
+				data : {
+					idxs : selectedIdxs
+				},
+				success : function(response) {
+					//결제 화면 링크
+					window.location.href = "https://example.com/mock-payment";
+				},
+				error : function() {
+					alert("주문 처리 중 오류가 발생했습니다.");
+				}
+			});
+		});
+		//전체상품 주문하기 버튼
+		$("#orderAllBtn").click(function() {
+			let allIdxs = [];
+
+			$(".item-check").each(function() {
+				allIdxs.push($(this).val());
+			});
+
+			if (allIdxs.length === 0) {
+				alert("장바구니에 상품이 없습니다.");
+				return;
+			}
+
+			$.ajax({
+				url : "orderall.jsp",
+				type : "POST",
+				traditional : true,
+				data : {
+					idxs : allIdxs
+				},
+				success : function(response) {
+					// 실제 결제 페이지로 이동 
+					window.location.href = "https://example.com/mock-payment";
+				},
+				error : function() {
+					alert("전체 주문 처리 중 오류가 발생했습니다.");
+				}
+			});
+		});
+		$("#orderSelectedBtn").click(function() {
+			let checkedIdxs = [];
+			$(".item-check:checked").each(function() {
+				checkedIdxs.push($(this).val());
+			});
+
+			if (checkedIdxs.length === 0) {
+				alert("주문할 상품을 선택해주세요.");
+				return;
+			}
+
+			// 👉 주문서 페이지로 GET 방식으로 이동
+			location.href = "orderform.jsp?idxs=" + checkedIdxs.join(",");
 		});
 
 		// 초기 실행
@@ -215,8 +303,8 @@
 String memberId = (String) session.getAttribute("myid"); //id받아오기
 if (memberId == null) {
 	// 로그인 후 돌아올 현재 페이지 경로를 redirect 파라미터로 전달
-	String cartPageUrl = request.getContextPath() + "/cart/cartform.jsp"; // 현재 장바구니 페이지 URL
-	response.sendRedirect(request.getContextPath() + "/login/loginform.jsp?redirect="
+	String cartPageUrl = request.getContextPath() + "index.jsp?main=cart/cartform.jsp"; // 현재 장바구니 페이지 URL
+	response.sendRedirect(request.getContextPath() + "index.jsp?main=login/loginform.jsp?redirect="
 	+ java.net.URLEncoder.encode(cartPageUrl, "UTF-8"));
 	return;
 }
@@ -275,9 +363,11 @@ String name = (String) session.getAttribute("name");
 			data-product-id="<%=item.getProduct_id()%>"
 			data-option-id="<%=item.getOption_id()%>">
 			<input type="checkbox" class="form-check-input me-3 item-check"
-				value="<%=item.getIdx()%>">
-			<%--                 <img src="<%= request.getContextPath() %>/product_images/<%= item.getMain_image() %>" onerror="this.src='https://via.placeholder.com/100x120.png?text=No+Image'" class="cart-img me-4" alt="<%= item.getProduct_name() %>">
- --%>
+				value="<%=item.getIdx()%>"> 
+			<!-- <img src="<%=request.getContextPath()%>/product_images/<%=item.getMain_image_url()%>"
+				onerror="this.src='https://via.placeholder.com/100x120.png?text=No+Image'"
+				class="cart-img me-4" alt="<%=item.getProduct_name()%>"> -->
+
 			<div class="flex-grow-1">
 				<div class="fw-bold"><%=item.getProduct_name()%></div>
 				<div class="text-secondary" style="font-size: 14px;"><%=item.getColor()%>
@@ -291,28 +381,31 @@ String name = (String) session.getAttribute("name");
 				</div>
 			</div>
 			<div class="d-flex align-items-center ms-4">
-    <div style="width: 80px; text-align: right; margin-right: 10px;">
-        <span class="item-unit-price" data-price="<%=itemPrice%>">
-            <%=NumberFormat.getInstance().format(itemPrice)%>원
-        </span>
-    </div>
+				<div style="width: 80px; text-align: right; margin-right: 10px;">
+					<span class="item-unit-price" data-price="<%=itemPrice%>"> <%=NumberFormat.getInstance().format(itemPrice)%>원
+					</span>
+				</div>
 
-    <button class="btn btn-outline-secondary btn-sm quantity-minus" type="button">-</button>
-    <input type="text" class="form-control form-control-sm mx-1 quantity-input" value="<%=cnt%>" readonly>
-    <button class="btn btn-outline-secondary btn-sm quantity-plus" type="button">+</button>
+				<button class="btn btn-outline-secondary btn-sm quantity-minus"
+					type="button">-</button>
+				<input type="text"
+					class="form-control form-control-sm mx-1 quantity-input"
+					value="<%=cnt%>" readonly>
+				<button class="btn btn-outline-secondary btn-sm quantity-plus"
+					type="button">+</button>
 
-    <div class="ms-3 text-end" style="width: 100px;">
-        <div class="fw-bold item-total-price" style="font-size: 18px;">
-            <%=NumberFormat.getInstance().format(itemTotalPrice)%>원
-        </div>
-    </div>
-</div>
+				<div class="ms-3 text-end" style="width: 100px;">
+					<div class="fw-bold item-total-price" style="font-size: 18px;">
+						<%=NumberFormat.getInstance().format(itemTotalPrice)%>원
+					</div>
+				</div>
+			</div>
 
 			<button type="button"
 				class="btn btn-link text-danger ms-3 delete-item-btn">×</button>
 		</div>
-<%}%>
-<%}%>
+		<%}%>
+		<%}%>
 		<div
 			class="cart-summary d-flex justify-content-between align-items-center">
 			<div>

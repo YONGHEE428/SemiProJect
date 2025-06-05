@@ -52,7 +52,8 @@
         } catch (NumberFormatException e) {
             errorMessage = "오류: 유효하지 않은 상품 ID 형식입니다.";
             // session.setAttribute("errorMessage", errorMessage);
-        }  catch (Exception e) {
+        } 
+         catch (Exception e) {
             errorMessage = "처리 중 예기치 않은 오류가 발생했습니다: " + e.getMessage();
             e.printStackTrace();
             // session.setAttribute("errorMessage", errorMessage);

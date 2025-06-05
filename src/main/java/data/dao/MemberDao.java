@@ -105,6 +105,33 @@ public class MemberDao {
 		}
 		
 	}
+	// 아이디에 따른 회원 번호(num) 반환
+	public int getMemberNumById(String id) {
+	    int memberNum = -1;
+
+	    Connection conn = db.getConnection();
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+
+	    String sql = "SELECT num FROM member WHERE id=?";
+
+	    try {
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, id);
+	        rs = pstmt.executeQuery();
+
+	        if (rs.next()) {
+	            memberNum = rs.getInt("num");
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        db.dbClose(rs, pstmt, conn);
+	    }
+
+	    return memberNum;
+	}
+
 	
 	//회원목록
 	public List<MemberDto> getAllMembers()

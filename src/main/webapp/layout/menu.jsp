@@ -11,7 +11,7 @@
    String root=request.getContextPath();
 %>
 	<link rel="stylesheet" type="text/css" href="<%=root%>/menu/css/font-awesome.css">
-	<link rel="stylesheet" type="text/css" href="<%=root%>/menu/css/menu.css?v=20240530">
+	<link rel="stylesheet" type="text/css" href="<%=root%>/menu/css/menu.css?v=202406021">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 	<script type="text/javascript" src="<%=root %>/menu/js/jquery.js"></script>
 	<script type="text/javascript" src="<%=root %>/menu/js/function.js"></script>
@@ -93,7 +93,7 @@
 							<li><a href="index.jsp?main=member/mypage.jsp">마이페이지</a></li>
 							
 					<%}if(role !=null && role.equals("admin")){%>
-							<li><a href="#">매장관리</a>
+							<li><a href="index.jsp?main=sangpumRegist/productListAdmin.jsp">매장관리</a>
 					<%} 
 					}%>
 					<li>
@@ -158,7 +158,11 @@
   	</div>
   </div>
   <div class="search-Ad">
-  	<img src="<%=root%>/SemiImg/coupon_b.png">
+	<%if(loginok != null && loginok.equals("yes")){ %>
+		<a href="index.jsp?main=category/category.jsp"><img src="<%=root%>/SemiImg/SScoupon2.jpg"></a>
+	<%}else{ %>
+  		<a href="index.jsp?main=member/memberform.jsp"><img src="<%=root%>/SemiImg/coupon_b.png"></a>
+  	<%} %>
   </div>
 </div>
 
@@ -198,14 +202,15 @@
 	height: 100px;
 	line-height: 100px;}
 	.search-Ad{
-		padding:20px 50px 20px 50px;
+		padding:20px 30px 0px 30px;
 		width: 100%;
 		height: 150px;
 	}
-	.search-Ad >img{
+	.search-Ad > a >img{
 	border: 0.5px solid #f2f2f2;
 	width: 100%;
 	height: 100px;
 	}
+
 </style>
 </html>
