@@ -18,11 +18,64 @@
 <script type="text/javascript">
 let page = 1;
 let isLoading = false;
-
 $(function() {
   // 최초 로딩
   loadMoreItems();
+  
+//로그인 아이디 변수 할당 (예시: 세션에서 가져오기)
+  const id = "<%= session.getAttribute("myid") != null ? session.getAttribute("myid") : "" %>";
 
+  $(function() {
+    // 하트 클릭 이벤트
+    $(document).on("click", ".heart", function () {
+      const heartIcon = $(this);
+      const isFilled = heartIcon.hasClass("bi-heart-fill");
+      const count = parseInt(heartIcon.text());
+      const productId = heartIcon.data("product-id");  // 또는 data 속성 맞게 변경
+
+      if (id === "") {
+        alert("로그인 후 이용해주세요.");
+        location.href = "index.jsp?main=login/loginform.jsp";
+        return;
+      }
+
+      const action = isFilled ? "unlike" : "like";
+
+      $.ajax({
+        url: "category/likeupdate.jsp",
+        type: "POST",
+        data: {
+          productId: productId,
+          action: action 
+        },
+        success: function () {
+          if (isFilled) {
+            heartIcon
+              .removeClass("bi-heart-fill")
+              .addClass("bi-heart")
+              .css("color", "gray")
+              .html("&nbsp;" + (count - 1));
+          } else {
+            heartIcon
+              .removeClass("bi-heart")
+              .addClass("bi-heart-fill")
+              .css("color", "red")
+              .html("&nbsp;" + (count + 1));
+
+            // Toast 알림 보여주기
+            document.querySelector("#liveToast .toast-body").innerText = "위시리스트에 추가되었습니다!";
+            const toast = bootstrap.Toast.getOrCreateInstance(document.getElementById('liveToast'));
+            toast.show();
+          }
+        },
+        error: function () {
+          alert("좋아요 처리 중 오류가 발생했습니다.");
+        }
+      });
+    });
+  });
+
+  
   // IntersectionObserver로 감지
   const target = document.getElementById("observerTarget");
   const observer = new IntersectionObserver(entries => {
@@ -49,7 +102,7 @@ function loadMoreItems() {
 	          const el = document.createElement("li");
 	          el.innerHTML =
 	            "<div class='item'>" +
-	              "<a href='/SemiProject/index.jsp?main=shop/sangpumpage.jsp'>" +
+	            "<a href='/SemiProject/index.jsp?main=shop/sangpumpage.jsp&product_id=" + item.productId + "'>" +
 	                "<img src='" + item.mainImageUrl + "' alt=''>" +  // 이미지 경로
 	              "</a>" +
 	            "</div>" +
@@ -58,10 +111,15 @@ function loadMoreItems() {
 	              "<div class='item-name'>" + item.productName + "</div>" +
 	              "<div class='item-price'>" + formatPrice(item.price) + "</div>" +
 	              "<div class='item-heart'>" +
-	                "<i class='bi bi-heart'></i>&nbsp; " + item.likeCount + " &nbsp;" +
-	                "<i class='bi bi-eye' style='font-size: 16px;'></i>&nbsp; " + item.viewCount +
+	              "<i class='bi bi-heart heart' " +
+	              "style='cursor: pointer; color: gray; font-style:normal;' " +
+	              "data-product-id='" + item.productId + "'>&nbsp;" +
+	              (item.likeCount == null ? 0 : item.likeCount) +
+	              "</i>&nbsp; " +
+	              "<i class='bi bi-eye' style='font-size: 16px;'></i>&nbsp;" +
+	              "<span style='font-size: 15px;'>" + item.viewCount + "</span>"
 	              "</div>" +
-	            "</div>";
+	            "</div>"; 
 	          document.querySelector(".main-items ul").appendChild(el);
 	        });
 
@@ -83,8 +141,7 @@ function loadMoreItems() {
 	  return new Intl.NumberFormat('ko-KR').format(price) + "원";
 	}
 
-
-
+	   
 </script>
 
 <style>
@@ -238,6 +295,20 @@ function loadMoreItems() {
 }
 </style>
 <body>
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <img src="SemiImg/footerLogo.png" width="20px;" class="rounded me-2" alt="...">
+                <strong class="me-auto">!알림</strong>
+                <small>Now</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+
+            </div>
+        </div>
+    </div>
 <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel"data-bs-interval="5000">
   <div class="carousel-inner" style="height: 550px;">
     <div class="carousel-item active">
@@ -268,7 +339,8 @@ function loadMoreItems() {
   </button>
 </div><br>
 
-<%	String root = request.getContextPath(); 
+<%
+	String root = request.getContextPath(); 
 	ProductDao dao = new ProductDao();
 	List<ProductDto> list = dao.getTopLikedProducts();
 %>
@@ -280,7 +352,7 @@ function loadMoreItems() {
   	<% for (ProductDto dto : list) { %>
 <li>
     <div class="item">
-        <a href="<%=request.getContextPath()%>/index.jsp?main=shop/sangpumpage.jsp?product_id=<%=dto.getProductId()%>">
+        <a href="<%=request.getContextPath()%>/index.jsp?main=shop/sangpumpage.jsp&product_id=<%=dto.getProductId()%>">
             <img alt="" src="<%=dto.getMainImageUrl()%>">
         </a>
     </div>
@@ -289,8 +361,12 @@ function loadMoreItems() {
         <div class="item-name"><%=dto.getProductName()%></div>
         <div class="item-price"><%=String.format("%,d", dto.getPrice().intValue())%>원</div>
         <div class="item-heart">
-            <i class="bi bi-heart"></i>&nbsp; <%=dto.getLikeCount()%> &nbsp;
-            <i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; <%=dto.getViewCount()%>
+            <i class="bi bi-heart heart"
+			   style="cursor: pointer; color: gray; font-style:normal;"
+			   data-product-id="<%=dto.getProductId()%>">
+			   <%=dto.getLikeCount() == null ?0 :dto.getLikeCount()%>
+			</i>
+            <i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp;<span style="font-size: 15px;"><%=dto.getViewCount()%></span>
         </div>
     </div>
 </li>

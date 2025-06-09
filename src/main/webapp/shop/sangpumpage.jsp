@@ -5,7 +5,7 @@
 <%@ page import="java.util.*" %>
 
 <%
-    String idParam = request.getParameter("id");
+    String idParam = request.getParameter("product_id");
     int productId = 0;
     if (idParam != null && !idParam.trim().isEmpty()) {
         productId = Integer.parseInt(idParam);

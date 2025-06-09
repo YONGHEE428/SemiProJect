@@ -18,7 +18,7 @@
     ProductDao dao = new ProductDao();
     List<ProductDto> items = dao.getProductsByCategory(category1, category2, currentPage, 8);
 
-    System.out.println("요청된 page 값: " + currentPage + "/요청된 category : " + category1 + "," + category2);  // 여기가 핵심!
+    //System.out.println("요청된 page 값: " + currentPage + "/요청된 category : " + category1 + "," + category2);  // 여기가 핵심!
     Gson gson = new Gson();
     String json = gson.toJson(items);
     out.print(json);

@@ -17,7 +17,7 @@
     Gson gson = new Gson();
     String json = gson.toJson(items);
     
-    System.out.println("요청된 page 값: " + currentPage);  // 여기가 핵심!
+    //System.out.println("요청된 page 값: " + currentPage);  // 여기가 핵심!
     out.print(json);
 %>
  
