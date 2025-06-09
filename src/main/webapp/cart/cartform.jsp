@@ -21,6 +21,130 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <title>장바구니</title>
 <style>
+body {
+    background: #f8f8f8;
+}
+.cart-wrapper {
+    max-width: 900px;
+    margin: 70px auto;
+    background: #fff;
+    border: 1px solid #444;
+    padding: 30px 25px;
+}
+.cart-title-bar {
+    background: #f5f5f5;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-weight: bold;
+    font-size: 1.15rem;
+    margin-bottom: 22px;
+    display: inline-block;
+}
+.cart-list-section {
+    margin-top: 14px;
+}
+.cart-box {
+    border: 2px solid #bbb;
+    border-radius: 15px;
+    padding: 19px 22px 14px 22px;
+    margin-bottom: 22px;
+    background: #fafafa;
+}
+.cart-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+.cart-content-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
+.cart-thumb-box {
+    border: 1px solid #aaa;
+    width: 92px; height: 92px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 0.97rem; color: #666;
+}
+.cart-prod-info {
+    flex: 1;
+    min-width: 0;
+}
+.cart-prod-title {
+    font-weight: bold;
+    font-size: 1.07rem;
+    margin-bottom: 7px;
+}
+.cart-prod-desc {
+    font-size: 0.97rem;
+    color: #555;
+    margin-bottom: 7px;
+}
+.cart-prod-price-row {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    margin-bottom: 5px;
+}
+.cart-prod-price {
+    font-size: 0.99rem;
+    border: 1px solid #bbb;
+    background: #fff;
+    border-radius: 4px;
+    padding: 4px 16px;
+    margin-right: 6px;
+}
+.cart-actions-col {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 87px;
+}
+.cart-actions-col .btn {
+    font-size: 0.96rem;
+    border-radius: 4px;
+    padding: 3px 0;
+    border: 1px solid #bbb;
+    background: #fff;
+}
+.cart-actions-col .btn:hover {
+    background: #e7e7e7;
+}
+@media (max-width: 700px) {
+    .cart-wrapper { padding: 12px 2px; }
+    .cart-content-row { flex-direction: column; gap: 8px; }
+    .cart-actions-col { flex-direction: row; gap: 7px; }
+}
+/* 상단바 */
+.mypage-content{
+    height:60px;
+    line-height:60px;
+    top:150px;
+    position:fixed;
+    width:100%;
+    min-height: 5px;
+    font-weight: bold;
+    text-align: center;
+    background-color: white;
+    transition: top 0.3s ease;
+}
+.content-title > ul{
+    display: flex;
+    justify-content: center;
+    gap : 170px;
+}
+.content-title > ul > li >a{
+    color:gray;
+    text-decoration: none;
+}
+.content-title > ul > li > a:hover{
+    color:black;
+    border-bottom: 3px solid black;
+}
 .cart-btn, .btn-outline-secondary {
   background: #fff !important;
   color: #232323 !important;
@@ -277,8 +401,8 @@
 String memberId = (String) session.getAttribute("myid"); //id받아오기
 if (memberId == null) {
    // 로그인 후 돌아올 현재 페이지 경로를 redirect 파라미터로 전달
-   String cartPageUrl = request.getContextPath() + "index.jsp?main=cart/cartform.jsp"; // 현재 장바구니 페이지 URL
-   response.sendRedirect(request.getContextPath() + "index.jsp?main=login/loginform.jsp?redirect="
+   String cartPageUrl = request.getContextPath() + "/index.jsp?main=cart/cartform.jsp"; // 현재 장바구니 페이지 URL
+   response.sendRedirect(request.getContextPath() + "/index.jsp?main=login/loginform.jsp&redirect="
    + java.net.URLEncoder.encode(cartPageUrl, "UTF-8"));
    return;
 }
@@ -290,13 +414,13 @@ String name = (String) session.getAttribute("name");
 <body>
 
 <div class="mypage-content">
-        <nav class="content-title">
-        		<ul>
-        			<li><a href="index.jsp?main=category/catewish.jsp" class="Mywish" >위시리스트</a></li>
-        			<li><a href="index.jsp?main=cart/cartform.jsp" class="MyCart" style="color: black; border-bottom: 3px solid black;">장바구니</a></li>
-        			<li><a href="index.jsp?main=orderlist/orderlistform.jsp" class="MybuyList">구매내역</a></li>
-        		</ul>
-       </nav>
+        <div class="content-title">
+            <ul>
+                <li><a onclick="location.href='index.jsp?main=cart/cartform.jsp'" style="color: black; border-bottom: 3px solid black;">장바구니</a></li>
+                <li><a onclick="location.href='index.jsp?main=orderlist/orderlistform.jsp'">구매내역</a></li>
+                <li><a onclick="location.href='index.jsp?main=category/catewish.jsp'">위시리스트</a></li>
+            </ul>
+        </div>
     </div>
 
    <div class="container mt-5" style="margin-top: 5rem !important;">

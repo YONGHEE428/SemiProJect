@@ -9,13 +9,12 @@ public class CartListDto {
     private String cnt;
     private Timestamp writeday;
     private int buyok;
-
+    
     // product 테이블 조인용
     private String product_name;
     private int price;
-    private String main_image_url; // ← 여기가 main_image_url임
+    private String main_image_url;
     private String description;
-    private String category;
 
     // 옵션 정보 product_option 조인용
     private int option_id;
@@ -57,9 +56,6 @@ public class CartListDto {
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
-
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
 
     public int getOption_id() { return option_id; }
     public void setOption_id(int option_id) { this.option_id = option_id; }

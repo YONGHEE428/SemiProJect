@@ -471,10 +471,11 @@ function closeModal() {
     document.getElementById("cartModal").style.display = "none";
 }
 function goToCart() {
-    window.location.href = "cart.jsp";
+    window.location.href = "../index.jsp?main=cart/cartform.jsp";
 }
 function continueShopping() {
     closeModal();
+    window.location.href = "../index.jsp?main=category/category.jsp";
 }
 </script>
       <button class="btn btn-primary" onclick="location.href='../payment/payment.jsp'">바로구매</button>

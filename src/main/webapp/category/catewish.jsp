@@ -190,13 +190,13 @@
 
 %>
 <div class="mypage-content">
-        <nav class="content-title">
-        		<ul>
-        			<li><a href="index.jsp?main=category/catewish.jsp" class="Mywish" style="color: black; border-bottom: 3px solid black;">위시리스트</a></li>
-        			<li><a href="index.jsp?main=cart/cartform.jsp" class="MyCart">장바구니</a></li>
-        			<li><a href="index.jsp?main=orderlist/orderlistform.jsp" class="MybuyList">구매내역</a></li>
-        		</ul>
-       </nav>
+        <div class="content-title">
+            <ul>
+                <li><a onclick="location.href='index.jsp?main=cart/cartform.jsp'">장바구니</a></li>
+                <li><a onclick="location.href='index.jsp?main=orderlist/orderlistform.jsp'">구매내역</a></li>
+                <li><a onclick="location.href='index.jsp?main=category/catewish.jsp'" style="color: black; border-bottom: 3px solid black;">위시리스트</a></li>            
+            </ul>
+        </div>
     </div>
     <!-- Category Navigation -->
    <!-- 카테고리 -->
