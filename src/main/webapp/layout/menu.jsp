@@ -94,7 +94,7 @@
 						<%if(role !=null && role.equals("user")){%>
 							<li><a href="index.jsp?main=member/mypage.jsp">마이페이지</a></li>
 					<%}if(role !=null && role.equals("admin")){%>
-							<li><a href="sangpumRegist/productListAdmin.jsp">매장관리</a>
+							<li><a href="sangpumRegist/adminMain.jsp" target="_blank">매장관리</a>
 					<%} 
 					}%>
 					<li>

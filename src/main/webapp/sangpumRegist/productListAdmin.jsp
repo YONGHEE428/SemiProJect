@@ -128,13 +128,13 @@
             <p class="error-message"><%= pageErrorMessage %></p>
         <% } %>
  <div class="register-btn-container">
-            <a href="<%= request.getContextPath() %>/index.jsp?main=sangpumRegist/sangpumRegist.jsp" class="register-btn">
+            <a  href=http://localhost:8080/SemiProject/sangpumRegist/sangpumRegist.jsp class="register-btn">
                 <i class="bi bi-plus-circle-fill"></i> 상품 등록
             </a>
         </div>
         <div class="category-nav">
            <% for (String category : categories) { %>
-                <a href="<%= request.getContextPath() %>/index.jsp?main=sangpumRegist/productListAdmin.jsp&category=<%= java.net.URLEncoder.encode(category, "UTF-8") %>"
+                <a href="<%= request.getContextPath() %>/sangpumRegist/productListAdmin.jsp?category=<%= java.net.URLEncoder.encode(category, "UTF-8") %>"
                    class="<%= ( (currentCategoryName == null && "전체".equals(category)) || category.equals(currentCategoryName) ) ? "active" : "" %>">
                     <%= category %>
                 </a>
