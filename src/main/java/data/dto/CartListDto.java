@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 public class CartListDto {
     private String idx;
-    private String product_id;
+    private int product_id;
     private String member_id;
     private String cnt;
     private Timestamp writeday;
@@ -18,7 +18,7 @@ public class CartListDto {
     private String category;
 
     // 옵션 정보 product_option 조인용
-    private String option_id; // 옵션 PK
+    private int option_id;
     private String color; // 옵션 색상
     private String size;  // 옵션 사이즈
 
@@ -31,8 +31,8 @@ public class CartListDto {
     public String getIdx() { return idx; }
     public void setIdx(String idx) { this.idx = idx; }
 
-    public String getProduct_id() { return product_id; }
-    public void setProduct_id(String product_id) { this.product_id = product_id; }
+    public int getProduct_id() { return product_id; }
+    public void setProduct_id(int product_id) { this.product_id = product_id; }
 
     public String getMember_id() { return member_id; }
     public void setMember_id(String member_id) { this.member_id = member_id; }
@@ -61,8 +61,8 @@ public class CartListDto {
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
 
-    public String getOption_id() { return option_id; }
-    public void setOption_id(String option_id) { this.option_id = option_id; }
+    public int getOption_id() { return option_id; }
+    public void setOption_id(int option_id) { this.option_id = option_id; }
 
     public String getColor() { return color; }
     public void setColor(String color) { this.color = color; }
