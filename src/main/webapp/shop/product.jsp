@@ -7,7 +7,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-s
+
   <!-- 플레이어가 삽입될 div -->
   <div id="player"></div>
 
