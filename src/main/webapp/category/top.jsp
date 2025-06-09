@@ -25,144 +25,128 @@
   <script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
     <style>
 
-        /* Product grid */
-        .product-card {
-             border: 1px solid #ddd;
-			    margin: 10px;
-			    border-radius: 8px;
-			    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .product-card:hover {
-            transform: translateY(-5px);
-            cursor: pointer;
-      		filter: brightness(70%);
-      		transition: 0.3s ease;
-      		 border: none; 
-        }
-        
-        .product-image {
-            height: 280px;  /* 원하는 높이 설정 (예: 200px) */
-   			object-fit: cover;
-            width: 100%;
-        }
-        
-        .product-info {
-            padding: 10px 0;
-            margin-left: 10px;
-        }
-        
-        .product-title {
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-            padding:5px;
-        }
-        .product-company {
-		    font-size: 12px;
-		    color: #777;
-		}
-		
-		.product-name {
-		    font-size: 14px;
-		    font-weight: bold;
-		    margin: 5px 0;
-		}
-        .product-price {
-            font-weight: bold;
-            color: #333;
-        }
-        
-        /* User menu */
-        .user-menu .btn {
-            margin: 0 5px;
-            font-size: 0.9rem;
-        }
-        
-   
-        .main-category ul {
-            display: flex;
-            justify-content: center;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-        
-        .main-category li {
-         position: relative;
-            padding: 15px 30px;
-        }
-        
-        .main-category a {
-            text-decoration: none;
-            color: black;
-            font-size: 20px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .main-category a:hover
-         {
-            color: #fff;
-        }
+         /* Product grid */
+    .product-card {
+        margin: 10px;
+        border-radius: 8px;
+        border:none;
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+        cursor: pointer;
+        filter: brightness(70%);
+        transition: 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border: none;
+    }
+    .product-image {
+        height: 280px;  /* 원하는 높이 설정 (예: 200px) */
+        object-fit: cover;
+        width: 100%;
+    }
+    .product-info {
+        padding: 10px 0;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+    .product-company {
+        font-size: 12px;
+        color: #777;
+    }
+    .product-name {
+        font-size: 14px;
+        font-weight: bold;
+        margin: 5px 0;
+        white-space: nowrap;           /* 줄바꿈 방지 */
+        overflow: hidden;              /* 넘친 텍스트 숨김 */
+        text-overflow: ellipsis;       /* 말줄임 (...) 처리 */
+    }
+    .product-price {
+        font-weight: bold;
+        color: #333;
+    }
 
-        .main-category .divider {
-            width: 1px;
-            margin: 15px 0;
-            color: #fff;
-        }
-        .category-link {   			 
-    			color: white;
-    			text-shadow: 1px 1px 1px gray;
-    			text-decoration: none;
-		}
-		
-		.dropdown {
- 		   position: relative;
-		}
-		.dropdown-menu {
-  			 display: none;
-    		 opacity: 0;
-    		 visibility: hidden;
-    		 transition: opacity 0.3s ease;
-    		 position: absolute;
-    		 top: 100%;
-    		 left: 50%; 
-		 	 transform: translateX(-50%);  /* 레이어 가운데 수평 정렬 */
-		 	
-    		 background-color: white;
-    		 padding: 10px 20px;
-    		 display: flex;
-    	  	 flex-direction:column; /* 세로정렬 */
-    		 gap: 10px;		/* 아이템간 간격 */
-    		 z-index: 999;
-    		 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-		}
-		.dropdown-menu li {
-    		list-style: none;
-    		text-align: center;
-		}
-/* 호버 시 드롭다운 메뉴 보이기 */
-		.dropdown:hover > .dropdown-menu {
-  			  display: flex;
-   			  opacity: 1;
-    		  visibility: visible;
-		}
-		.dropdown-menu a {
-   			 text-decoration: none;
-    		 font-size: 20px;
-    		 font-weight: bold;
-    		 color: black;
-    		 padding: 10px 20px;
-    		 display: block;
-    		 transition: background-color 0.2s, color 0.2s;
-		}
-		.dropdown-menu a:hover{
-			background-color: #2c3e50;
-			border-radius: 20px;
-		}
-   
+    /* User menu */
+    .user-menu .btn {
+        margin: 0 5px;
+        font-size: 0.9rem;
+    }
 
+    .main-category ul {
+        display: flex;
+        justify-content: center;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    .main-category li {
+        position: relative;
+        padding: 15px 30px;
+    }
+    .main-category a {
+        text-decoration: none;
+        color: black;
+        font-size: 20px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .main-category a:hover {
+        color: #fff;
+    }
+    .main-category .divider {
+        width: 1px;
+        margin: 15px 0;
+        color: #fff;
+    }
+    .category-link {
+        color: white;
+        text-shadow: 1px 1px 1px gray;
+        text-decoration: none;
+    }
+    .dropdown {
+        position: relative;
+    }
+    .dropdown-menu {
+        display: none;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease;
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);  /* 레이어 가운데 수평 정렬 */
+        background-color: white;
+        padding: 10px 20px;
+        display: flex;
+        flex-direction:column; /* 세로정렬 */
+        gap: 10px;		/* 아이템간 간격 */
+        z-index: 999;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    .dropdown-menu li {
+        list-style: none;
+        text-align: center;
+    }
+    /* 호버 시 드롭다운 메뉴 보이기 */
+    .dropdown:hover > .dropdown-menu {
+        display: flex;
+        opacity: 1;
+        visibility: visible;
+    }
+    .dropdown-menu a {
+        text-decoration: none;
+        font-size: 20px;
+        font-weight: bold;
+        color: black;
+        padding: 10px 20px;
+        display: block;
+        transition: background-color 0.2s, color 0.2s;
+    }
+    .dropdown-menu a:hover{
+        background-color: #2c3e50;
+        border-radius: 20px;
+    }
     </style>
    
   <script type="text/javascript">

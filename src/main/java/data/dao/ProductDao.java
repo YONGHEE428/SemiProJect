@@ -426,7 +426,7 @@ public class ProductDao {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		 
 	}
 	
 	// 페이징 처리된 상품 목록을 가져오는 메서드 (JSON 생성용)
@@ -467,7 +467,7 @@ public class ProductDao {
 
 	    return productList;
 	}
-	
+
 	public List<ProductDto> getProductsByCategory(String category1, String catgory2, int page, int pageSize) {
 	    List<ProductDto> productList = new ArrayList<>();
 	    Connection conn = null;

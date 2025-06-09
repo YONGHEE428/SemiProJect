@@ -1,3 +1,4 @@
+<%@page import="data.dao.WishListDao"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <jsp:useBean id="pdao" class="data.dao.ProductDao"/>
@@ -8,9 +9,9 @@
 
 	String productIdStr=request.getParameter("productId");
 	String action=request.getParameter("action");
-	
+		
 	int memberId=mdao.getMemberNumById((String)session.getAttribute("myid"));
-			
+	
 			
 	String optionIdStr=request.getParameter("optionId");
 	
@@ -18,11 +19,11 @@
 		
 		int productId=Integer.parseInt(productIdStr);
 		int optionId= optionIdStr !=null?Integer.parseInt(optionIdStr):0;
-		System.out.println(memberId+","+optionId+","+productId);	
+		System.out.println(memberId+","+productId);	
 		if("like".equals(action)){
 			pdao.updateLikeCount(productId);
 						
-			boolean isInserted = wdao.insertWishList(memberId, productId, optionId);
+			boolean isInserted = wdao.insertWishList(memberId, productId);
 			if(isInserted){
 				//위시리스트에 추가되었을때 처리할 로직(예:메시지 출력)
 				response.getWriter().write("추가되었습니다.");
@@ -32,6 +33,7 @@
             
 		}else if("unlike".equals(action)){
 			pdao.decreaseLikeCount(productId);
+			
 		}
 	}
 	
