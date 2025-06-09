@@ -197,6 +197,7 @@ $(function () {
                 url: "category/likeupdate.jsp",
                 type: "POST",
                 data: { productId: productId,
+                        optionId:optionId,
                         action: action},
                 success: function () {
                     if (isFilled) {
@@ -247,7 +248,7 @@ $(function () {
                     const el = document.createElement("div");
                     el.classList.add("col-3");  // 상품 카드 스타일을 위한 클래스 추가
                     el.innerHTML =
-                        "<div class='product-card' data-product-id='"+item.productId +"'>" +
+                        "<div class='product-card' data-product-id='"+item.productId +"' data-option-id='"+productOptionId+"'>" +
                         "<div class='item'>" +
                         "<a href='/SemiProject/index.jsp?main=shop/sangpumpage.jsp'>" +
                         "<img src='" + item.mainImageUrl + "' alt='' class='product-image'>" +  // 상품 이미지
@@ -307,7 +308,7 @@ $(function () {
                         const el = document.createElement("div");
                         el.classList.add("col-3");  // 상품 카드 스타일을 위한 클래스 추가
                         el.innerHTML =
-                            "<div class='product-card' data-product-id='" + item.productId + "'>" +
+                            "<div class='product-card' data-product-id='" + item.productId + "' data-option-id='"+productOptionId+"'>" +
                             "<div class='item'>" +
                             "<a href='/Semiproject/shop/sangpumpage.jsp'>" +
                             "<img src='" + item.mainImageUrl + "' alt='' class='product-image'>" +  // 상품 이미지
