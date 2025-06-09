@@ -30,6 +30,4 @@ public class WishListDto {
 	public void setProduct(ProductDto product) {
 		this.product = product;
 	}
-	
-	
 }

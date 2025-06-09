@@ -6,6 +6,7 @@
 <%@page import="java.util.StringTokenizer"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ page import="java.text.NumberFormat"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -373,6 +374,32 @@ body {
 	String name = (String) session.getAttribute("name");
 	String hp = (String) session.getAttribute("hp");
 	StringTokenizer stk = new StringTokenizer(hp, "-");
+
+	String idxs = request.getParameter("idxs"); // "2,4,8"
+	List<CartListDto> orderItems = new ArrayList<>();
+	if (idxs != null && !idxs.trim().isEmpty()) {
+		String[] arr = idxs.split(",");
+		CartListDao cartDao = new CartListDao();
+		for (String idx : arr) {
+			CartListDto dto = cartDao.getCartItemByIdx(Integer.parseInt(idx));
+			if (dto != null)
+				orderItems.add(dto);
+		}
+	}
+
+	// 총 상품 금액 계산
+	int totalProductPrice = 0;
+	int totalQuantity = 0;
+	for (CartListDto item : orderItems) {
+		int price = item.getPrice();
+		int quantity = Integer.parseInt(item.getCnt());
+		totalProductPrice += price * quantity;
+		totalQuantity += quantity;
+	}
+
+	// 배송비 계산 (8만원 이상 무료, 미만 3000원)
+	int deliveryFee = totalProductPrice >= 80000 ? 0 : 3000;
+	int totalPrice = totalProductPrice + deliveryFee;
 	%>
 
 	<!-- 헤더 -->
@@ -424,17 +451,6 @@ body {
 			<h2 class="section-title">주문 목록</h2>
 			<div class="order-list">
 				<%
-				String idxs = request.getParameter("idxs"); // "2,4,8"
-				List<CartListDto> orderItems = new ArrayList<>();
-				if (idxs != null && !idxs.trim().isEmpty()) {
-					String[] arr = idxs.split(",");
-					CartListDao cartDao = new CartListDao();
-					for (String idx : arr) {
-						CartListDto dto = cartDao.getCartItemByIdx(Integer.parseInt(idx));
-						if (dto != null)
-					orderItems.add(dto);
-					}
-				}
 				for (CartListDto item : orderItems) {
 				%>
 				<div class="order-item"
@@ -449,14 +465,13 @@ body {
 						<div style="color: #666; font-size: 0.97rem;">
 							<%=item.getColor()%> 
 							/<%=item.getSize()%>
-							/<%=item.getCnt()%>개 / <span style="color: #b28555;"><%=item.getPrice()%>원</span>
+							/<%=item.getCnt()%>개 / <span style="color: #b28555;"><%=NumberFormat.getInstance().format(item.getPrice() * Integer.parseInt(item.getCnt()))%>원</span>
 						</div>
 					</div>
 				</div>
 				<%}%>
 			</div>
 		</section>
-
 
 		<!-- 주문자 정보 섹션 -->
 		<section class="card">
@@ -589,16 +604,16 @@ body {
 
 			<div class="order-summary">
 				<div class="summary-item">
-					<span>상품금액</span> <span>0원</span>
+					<span>상품금액</span> <span><%=NumberFormat.getInstance().format(totalProductPrice)%>원</span>
 				</div>
 				<div class="summary-item">
-					<span>배송비</span> <span>0원</span>
+					<span>배송비</span> <span><%=NumberFormat.getInstance().format(deliveryFee)%>원</span>
 				</div>
 				<div class="summary-item">
 					<span>할인금액</span> <span>0원</span>
 				</div>
 				<div class="total-amount">
-					<span>총 결제금액</span> <span>0원</span>
+					<span>총 결제금액</span> <span><%=NumberFormat.getInstance().format(totalPrice)%>원</span>
 				</div>
 			</div>
 
@@ -711,61 +726,40 @@ body {
 			var IMP = window.IMP;
 			IMP.init('imp23623506');
 
-			IMP
-					.request_pay(
-							{
-								pg : "kicc",
-								pay_method : "card",
-								merchant_uid : generateOrderNumber(),
-								name : '결제테스트',
-								amount : 100,
-								buyer_email : 'iamport@siot.do',
-								buyer_name : '구매자',
-								buyer_tel : '010-1234-5678',
-								buyer_addr : '서울특별시 강남구 삼성동',
-								buyer_postcode : '123-456'
-							},
-							function(rsp) {
-								if (rsp.success) {
-									$
-											.ajax(
-													{
-														url : "payment/verify",
-														method : "POST",
-														data : {
-															imp_uid : rsp.imp_uid,
-															merchant_uid : rsp.merchant_uid,
-															amount : rsp.paid_amount
-														}
-													})
-											.done(
-													function(data) {
-														if (data.status === "success") {
-															alert('결제가 완료되었습니다.\n'
-																	+ '고유ID : '
-																	+ rsp.imp_uid
-																	+ '\n'
-																	+ '주문번호 : '
-																	+ rsp.merchant_uid
-																	+ '\n'
-																	+ '결제 금액 : '
-																	+ rsp.paid_amount
-																	+ '\n'
-																	+ '카드 승인번호 : '
-																	+ rsp.apply_num);
-
-															location.href = 'index.jsp?main=payment_success.jsp';
-														} else {
-															alert('결제 검증에 실패하였습니다.\n'
-																	+ data.message);
-															location.href = 'payment_fail.jsp';
-														}
-													});
-								} else {
-									alert('결제에 실패하였습니다.\n' + '에러내용: '
-											+ rsp.error_msg);
-								}
-							});
+			IMP.request_pay({
+				pg: "kicc",
+				pay_method: "card",
+				merchant_uid: generateOrderNumber(),
+				name: '결제테스트',
+				amount: <%=totalPrice%>,  // 실제 계산된 금액으로 변경
+				buyer_email: 'iamport@siot.do',
+				buyer_name: '구매자',
+				buyer_tel: '010-1234-5678',
+				buyer_addr: '서울특별시 강남구 삼성동',
+				buyer_postcode: '123-456'
+			}, function(rsp) {
+				if (rsp.success) {
+					// 결제 성공 시 buyok 값 업데이트
+					$.ajax({
+						url: "updateBuyOk.jsp",
+						method: "POST",
+						data: {
+							"idxs": "<%=request.getParameter("idxs")%>",  // 선택상품 주문의 경우
+							"all": "<%=request.getParameter("all")%>",  // 전체상품 주문의 경우
+							"member_id": "<%=session.getAttribute("myid")%>"  // 전체상품 주문 시 필요
+						},
+						success: function(response) {
+							alert('결제가 완료되었습니다.');
+							location.href = '../orderlist/orderlistform.jsp';
+						},
+						error: function() {
+							alert('결제는 완료되었으나 상태 업데이트에 실패했습니다.');
+						}
+					});
+				} else {
+					alert('결제에 실패하였습니다.\n' + '에러내용: ' + rsp.error_msg);
+				}
+			});
 		}
 
 		function naverPay() {

@@ -1,4 +1,3 @@
-
 <%@page import="data.dto.MemberDto"%>
 <%@page import="data.dao.MemberDao"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -47,7 +46,6 @@
 		}
 
 		response.sendRedirect(redirectPage);
-
 	} else {
 	    // 로그인 실패 시 메시지와 함께 로그인폼으로 이동
 	    out.println("<script>");
