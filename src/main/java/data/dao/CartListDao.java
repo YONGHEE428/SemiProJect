@@ -27,8 +27,8 @@ public class CartListDao {
 			while (rs.next()) {
 				CartListDto dto = new CartListDto();
 				dto.setIdx(rs.getString("idx"));
-				dto.setProduct_id(rs.getString("product_id"));
-				dto.setOption_id(rs.getString("option_id"));
+				dto.setProduct_id(rs.getInt("product_id"));
+				dto.setOption_id(rs.getInt("option_id"));
 				dto.setMember_id(rs.getString("member_id"));
 				dto.setCnt(rs.getString("cnt"));
 				dto.setWriteday(rs.getTimestamp("writeday"));
@@ -150,8 +150,8 @@ public class CartListDao {
 				if (rs.next()) {
 					CartListDto dto = new CartListDto();
 					dto.setIdx(rs.getString("idx"));
-					dto.setProduct_id(rs.getString("product_id"));
-					dto.setOption_id(rs.getString("option_id"));
+					dto.setProduct_id(rs.getInt("product_id"));
+					dto.setOption_id(rs.getInt("option_id"));
 					dto.setCnt(rs.getString("cnt"));
 					dto.setPrice(rs.getInt("price"));
 					list.add(dto);

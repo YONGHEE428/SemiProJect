@@ -196,7 +196,7 @@ body {
 </style>
 </head>
 <%
-String memberId = (String) session.getAttribute("myid");
+String memberId = (String)session.getAttribute("myid");
 String name = (String) session.getAttribute("name");
 
 if (memberId == null) {

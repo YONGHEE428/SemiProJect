@@ -394,8 +394,8 @@ public class OrderListDao {
             
             for(OrderListDto.OrderItem item : order.getItems()) {
                 pstmt.setString(1, order.getOrderCode());
-                pstmt.setInt(2, item.getProduct_id());
-                pstmt.setInt(3, item.getOption_id());
+                pstmt.setInt(2, item.getProductId());
+                pstmt.setInt(3, item.getOptionId());
                 pstmt.setInt(4, item.getCnt());
                 pstmt.setInt(5, item.getPrice());
                 pstmt.executeUpdate();
