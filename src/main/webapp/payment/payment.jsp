@@ -315,16 +315,15 @@ body {
 }
 
 /* 애니메이션 효과 */
-@
-keyframes fadeIn {from { opacity:0;
-	transform: translateY(20px);
-}
-
-to {
-	opacity: 1;
-	transform: translateY(0);
-}
-
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 .card {
 	animation: fadeIn 0.6s ease-out;
@@ -355,11 +354,10 @@ to {
 	top: calc(50% - 10px);
 }
 
-@
-keyframes spin {to { transform:rotate(360deg);
-	
-}
-
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
 }
 #logouting {
 	pointer-events: none; /* 마우스 이벤트 비활성화 */
@@ -655,129 +653,128 @@ keyframes spin {to { transform:rotate(360deg);
             $("#sameinfo").click(function(){
                 if($(this).is(":checked")){
                     $("#name").val("<%=name%>");
-                    $("#hp").val("<%=stk.nextToken()%>"+"<%=stk.nextToken()%>"+"<%=stk.nextToken()%>
-		");
-						} else {
-							$("#name").val("");
-							$("#hp").val("");
-						}
-					});
-		});
+                    $("#hp").val("<%=stk.nextToken()%>"+"<%=stk.nextToken()%>"+"<%=stk.nextToken()%>");
+                } else {
+                    $("#name").val("");
+                    $("#hp").val("");
+                }
+            });
+        });
 
-		// 주문번호 생성
-		function generateOrderNumber() {
-			const today = new Date();
-			const year = today.getFullYear().toString().slice(-2);
-			const month = String(today.getMonth() + 1).padStart(2, '0');
-			const day = String(today.getDate()).padStart(2, '0');
-			const hour = String(today.getHours()).padStart(2, '0');
-			const minute = String(today.getMinutes()).padStart(2, '0');
-			const second = String(today.getSeconds()).padStart(2, '0');
-			const random = Math.floor(Math.random() * 1000).toString()
-					.padStart(3, '0');
+        // 주문번호 생성
+        function generateOrderNumber() {
+            const today = new Date();
+            const year = today.getFullYear().toString().slice(-2);
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const hour = String(today.getHours()).padStart(2, '0');
+            const minute = String(today.getMinutes()).padStart(2, '0');
+            const second = String(today.getSeconds()).padStart(2, '0');
+            const random = Math.floor(Math.random() * 1000).toString()
+                    .padStart(3, '0');
 
-			return `ORDER${year}${month}${day}${hour}${minute}${second}${random}`;
-		}
+            return `ORDER${year}${month}${day}${hour}${minute}${second}${random}`;
+        }
 
-		// 결제 요청
-		function payrequest() {
-			const selectedPay = $("#selectedPay").val();
-			if (!selectedPay) {
-				alert("결제 수단을 선택해주세요.");
-				return;
-			}
+        // 결제 요청
+        function payrequest() {
+            const selectedPay = $("#selectedPay").val();
+            if (!selectedPay) {
+                alert("결제 수단을 선택해주세요.");
+                return;
+            }
 
-			switch (selectedPay) {
-			case "카드결제":
-				cardPay();
-				break;
-			case "네이버페이":
-				naverPay();
-				break;
-			case "카카오페이":
-				kakaoPay();
-				break;
-			case "무통장입금":
-				bankTransfer();
-				break;
-			case "TOSS":
-				tossPay();
-				break;
-			default:
-				alert("지원하지 않는 결제 수단입니다.");
-			}
-		}
+            switch (selectedPay) {
+            case "카드결제":
+                cardPay();
+                break;
+            case "네이버페이":
+                naverPay();
+                break;
+            case "카카오페이":
+                kakaoPay();
+                break;
+            case "무통장입금":
+                bankTransfer();
+                break;
+            case "TOSS":
+                tossPay();
+                break;
+            default:
+                alert("지원하지 않는 결제 수단입니다.");
+            }
+        }
 
-		// 카드결제
-		function cardPay() {
-			var IMP = window.IMP;
-			IMP.init('imp23623506');
+        // 카드결제
+        function cardPay() {
+            var IMP = window.IMP;
+            IMP.init('imp23623506');
 
-			IMP
-					.request_pay(
-							{
-								pg : "kicc",
-								pay_method : "card",
-								merchant_uid : generateOrderNumber(),
-								name : '결제테스트',
-								amount : 100,
-								buyer_email : 'iamport@siot.do',
-								buyer_name : '구매자',
-								buyer_tel : '010-1234-5678',
-								buyer_addr : '서울특별시 강남구 삼성동',
-								buyer_postcode : '123-456'
-							},
-							function(rsp) {
-								if (rsp.success) {
-									$
-											.ajax(
-													{
-														url : "payment/verify",
-														method : "POST",
-														data : {
-															imp_uid : rsp.imp_uid,
-															merchant_uid : rsp.merchant_uid,
-															amount : rsp.paid_amount
-														}
-													})
-											.done(
-													function(data) {
-														if (data.status === "success") {
-															alert('결제가 완료되었습니다.\n'
-																	+ '고유ID : '
-																	+ rsp.imp_uid
-																	+ '\n'
-																	+ '주문번호 : '
-																	+ rsp.merchant_uid
-																	+ '\n'
-																	+ '결제 금액 : '
-																	+ rsp.paid_amount
-																	+ '\n'
-																	+ '카드 승인번호 : '
-																	+ rsp.apply_num);
+            IMP
+                    .request_pay(
+                            {
+                                pg : "kicc",
+                                pay_method : "card",
+                                merchant_uid : generateOrderNumber(),
+                                name : '결제테스트',
+                                amount : 100,
+                                buyer_email : 'iamport@siot.do',
+                                buyer_name : '구매자',
+                                buyer_tel : '010-1234-5678',
+                                buyer_addr : '서울특별시 강남구 삼성동',
+                                buyer_postcode : '123-456'
+                            },
+                            function(rsp) {
+                                if (rsp.success) {
+                                    $
+                                            .ajax(
+                                                    {
+                                                        url : "payment/verify",
+                                                        method : "POST",
+                                                        data : {
+                                                            imp_uid : rsp.imp_uid,
+                                                            merchant_uid : rsp.merchant_uid,
+                                                            amount : rsp.paid_amount
+                                                        }
+                                                    })
+                                            .done(
+                                                    function(data) {
+                                                        if (data.status === "success") {
+                                                            alert('결제가 완료되었습니다.\n'
+                                                                    + '고유ID : '
+                                                                    + rsp.imp_uid
+                                                                    + '\n'
+                                                                    + '주문번호 : '
+                                                                    + rsp.merchant_uid
+                                                                    + '\n'
+                                                                    + '결제 금액 : '
+                                                                    + rsp.paid_amount
+                                                                    + '\n'
+                                                                    + '카드 승인번호 : '
+                                                                    + rsp.apply_num);
 
-															location.href = 'index.jsp?main=payment_success.jsp';
-														} else {
-															alert('결제 검증에 실패하였습니다.\n'
-																	+ data.message);
-															location.href = 'payment_fail.jsp';
-														}
-													});
-								} else {
-									alert('결제에 실패하였습니다.\n' + '에러내용: '
-											+ rsp.error_msg);
-								}
-							});
-		}
+                                                            location.href = 'index.jsp?main=payment_success.jsp';
+                                                        } else {
+                                                            alert('결제 검증에 실패하였습니다.\n'
+                                                                    + data.message);
+                                                            location.href = 'payment_fail.jsp';
+                                                        }
+                                                    });
+                                } else {
+                                    alert('결제에 실패하였습니다.\n' + '에러내용: '
+                                            + rsp.error_msg);
+                                }
+                            });
+        }
 
-		function naverPay() {
-			alert("공사 중입니다.");
-		}
+        function naverPay() {
+            alert("공사 중입니다.");
+        }
 
-		function logout() {
-			alert("로그아웃 하셨습니다.");
-			location.href = "../login/logoutform.jsp";
-		}
+        function logout() {
+            alert("로그아웃 하셨습니다.");
+            location.href = "../login/logoutform.jsp";
+        }
 	</script>
 </body>
 </html>
