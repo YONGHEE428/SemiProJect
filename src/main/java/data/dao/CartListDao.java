@@ -1,4 +1,3 @@
-
 package data.dao;
 
 import java.sql.*;
@@ -90,14 +89,19 @@ public class CartListDao {
 
 	// 4. 구매 처리: buyok=1로 변경 (추가로 구현 필요 시 확장)
 	public void markAsPurchased(int idx) {
-		String sql = "UPDATE shop.cartlist SET buyok = 1 WHERE idx = ?";
-		try (Connection conn = db.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
+		Connection conn = db.getConnection();
+		PreparedStatement pstmt = null;
+		
+		String sql = "UPDATE cartlist SET buyok=1 WHERE idx=?";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, idx);
-			pstmt.executeUpdate();
-
+			pstmt.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			db.dbClose(pstmt, conn);
 		}
 	}
 
@@ -174,8 +178,8 @@ public class CartListDao {
 			if (rs.next()) {
 				dto = new CartListDto();
 				dto.setIdx(rs.getString("idx"));
-				dto.setProduct_id(rs.getString("product_id"));
-				dto.setOption_id(rs.getString("option_id"));
+				dto.setProduct_id(rs.getInt("product_id"));
+				dto.setOption_id(rs.getInt("option_id"));
 				dto.setMember_id(rs.getString("member_id"));
 				dto.setCnt(rs.getString("cnt"));
 				dto.setWriteday(rs.getTimestamp("writeday"));
@@ -210,8 +214,8 @@ public class CartListDao {
 			while (rs.next()) {
 				CartListDto dto = new CartListDto();
 				dto.setIdx(rs.getString("idx"));
-				dto.setProduct_id(rs.getString("product_id"));
-				dto.setOption_id(rs.getString("option_id"));
+				dto.setProduct_id(rs.getInt("product_id"));
+				dto.setOption_id(rs.getInt("option_id"));
 				dto.setMember_id(rs.getString("member_id"));
 				dto.setCnt(rs.getString("cnt"));
 				dto.setWriteday(rs.getTimestamp("writeday"));
@@ -247,8 +251,8 @@ public class CartListDao {
 			while (rs.next()) {
 				CartListDto dto = new CartListDto();
 				dto.setIdx(rs.getString("idx"));
-				dto.setProduct_id(rs.getString("product_id"));
-				dto.setOption_id(rs.getString("option_id"));
+				dto.setProduct_id(rs.getInt("product_id"));
+				dto.setOption_id(rs.getInt("option_id"));
 				dto.setMember_id(rs.getString("member_id"));
 				dto.setCnt(rs.getString("cnt"));
 				dto.setWriteday(rs.getTimestamp("writeday"));
