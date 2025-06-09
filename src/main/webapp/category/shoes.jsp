@@ -310,7 +310,7 @@ function loadMoreItems() {
                         "<div class='product-price'>" + formatPrice(item.price) + "원</div>" + // 가격 그대로 출력
                         "<div class='item-heart'>" +
                         "<i class='bi bi-suit-heart heart' style='cursor: pointer; color: black;'>" + 
-                        (item.likeCount == null ? 0 : item.likeCount) + "</i>" +  // 좋아요 수
+                        (item.likeCount == null ? 0 : item.likeCount) + "</i>&nbsp;" +  // 좋아요 수
                         "<i class='bi bi-eye' style='font-size: 16px;'></i>&nbsp; " + item.viewCount +  // 조회수
                         "</div>" +
                         "</div>" +

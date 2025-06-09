@@ -315,16 +315,15 @@ body {
 }
 
 /* 애니메이션 효과 */
-@
-keyframes fadeIn {from { opacity:0;
-	transform: translateY(20px);
-}
-
-to {
-	opacity: 1;
-	transform: translateY(0);
-}
-
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 .card {
 	animation: fadeIn 0.6s ease-out;
@@ -355,11 +354,10 @@ to {
 	top: calc(50% - 10px);
 }
 
-@
-keyframes spin {to { transform:rotate(360deg);
-	
-}
-
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
 }
 #logouting {
 	pointer-events: none; /* 마우스 이벤트 비활성화 */
@@ -616,6 +614,7 @@ keyframes spin {to { transform:rotate(360deg);
         $(function(){
             // 결제 수단 선택
             $(".payment-method-btn").click(function() {
+            	
                 $(".payment-method-btn").removeClass("active");
                 $(this).addClass("active");
                 var selectedPay = $(this).text().trim();
@@ -655,8 +654,7 @@ keyframes spin {to { transform:rotate(360deg);
             $("#sameinfo").click(function(){
                 if($(this).is(":checked")){
                     $("#name").val("<%=name%>");
-                    $("#hp").val("<%=stk.nextToken()%>"+"<%=stk.nextToken()%>"+"<%=stk.nextToken()%>
-		");
+                    $("#hp").val("<%=stk.nextToken()%>"+"<%=stk.nextToken()%>"+"<%=stk.nextToken()%>");
 						} else {
 							$("#name").val("");
 							$("#hp").val("");
@@ -778,6 +776,7 @@ keyframes spin {to { transform:rotate(360deg);
 			alert("로그아웃 하셨습니다.");
 			location.href = "../login/logoutform.jsp";
 		}
+
 	</script>
 </body>
 </html>

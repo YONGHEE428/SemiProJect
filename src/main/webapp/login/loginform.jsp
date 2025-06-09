@@ -87,12 +87,8 @@
    </div>
 
 
-   <form action="../login/loginaction.jsp" method="post">
-
-
 
    <form action="<%=root%>/login/loginaction.jsp" method="post">
->>>>>>> 58c6f126be887d0607ff8c05d706a42b4694a57d
     <span class="login-span"><p>아이디</p></span>
      <input type="text" name="id" class="form-control field" placeholder="" required="required" value="<%=myid%>" >
     <span class="login-span"><p>비밀번호</p></span>

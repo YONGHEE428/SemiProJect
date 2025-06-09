@@ -1,7 +1,28 @@
+<%@page import="java.text.NumberFormat"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="data.dto.OrderListDto"%>
+<%@page import="data.dao.OrderListDao"%>
+<%@page import="data.dto.PaymentDto"%>
+<%@page import="data.dao.PaymentDao"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%
-  
+String orderCode = request.getParameter("order_code"); // URL에서 주문번호 받기
+
+OrderListDao orderDao = new OrderListDao();
+PaymentDao paymentDao = new PaymentDao();
+
+OrderListDto order = orderDao.getOrderDetailByCode(orderCode);
+PaymentDto payment = paymentDao.getPaymentByOrderCode(orderCode);
+
+// 주문 정보가 없는 경우 처리
+if (order == null || payment == null) {
+    response.sendRedirect(request.getContextPath() + "/orderlist/orderlistform.jsp");
+    return;
+}
+
+NumberFormat nf = NumberFormat.getInstance();
+SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 %>
 <!DOCTYPE html>
 
@@ -31,19 +52,25 @@ body { background: #f8f9fa; }
         <div class="section-title">주문정보</div>
         <div class="row mb-2">
             <div class="col-4 text-secondary">주문번호</div>
-            <div class="col-8">ORD20240619-0001</div>
+            <div class="col-8"><%=orderCode%></div>
         </div>
         <div class="row mb-2">
             <div class="col-4 text-secondary">주문일시</div>
-            <div class="col-8">2024-06-19 14:23:11</div>
+            <div class="col-8">
+                <% if (order.getOrderDate() != null) { %>
+                    <%=sdf.format(order.getOrderDate())%>
+                <% } else { %>
+                    -
+                <% } %>
+            </div>
         </div>
         <div class="row mb-2">
             <div class="col-4 text-secondary">주문자</div>
-            <div class="col-8">홍길동 (010-1234-5678)</div>
+            <div class="col-8">회원번호: <%=order.getMemberNum()%></div>
         </div>
         <div class="row mb-2">
             <div class="col-4 text-secondary">주문상태</div>
-            <div class="col-8"><span class="badge bg-info">결제완료</span></div>
+            <div class="col-8"><span class="badge bg-info"><%=order.getOrderStatus()%></span></div>
         </div>
     </div>
     <!-- 상품 목록 -->
@@ -59,23 +86,36 @@ body { background: #f8f9fa; }
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>나이키 에어맥스 270</td>
-                    <td>1</td>
-                    <td>159,000원</td>
-                    <td>159,000원</td>
-                </tr>
-                <tr>
-                    <td>아디다스 반팔티</td>
-                    <td>2</td>
-                    <td>29,000원</td>
-                    <td>58,000원</td>
-                </tr>
+                <% if (order.getItems() != null && !order.getItems().isEmpty()) { %>
+                    <% for(OrderListDto.OrderItem item : order.getItems()) { %>
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="<%=item.getProductImage()%>" alt="<%=item.getProductName()%>" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
+                                <%=item.getProductName()%>
+                                <% if(item.getSize() != null && !item.getSize().isEmpty()) { %>
+                                    <small class="text-muted">(사이즈: <%=item.getSize()%>)</small>
+                                <% } %>
+                                <% if(item.getColor() != null && !item.getColor().isEmpty()) { %>
+                                    <small class="text-muted">(색상: <%=item.getColor()%>)</small>
+                                <% } %>
+                            </div>
+                        </td>
+                        <td><%=item.getCnt()%></td>
+                        <td><%=nf.format(item.getPrice())%>원</td>
+                        <td><%=nf.format(item.getPrice() * item.getCnt())%>원</td>
+                    </tr>
+                    <% } %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="4" class="text-center">주문 상품 정보가 없습니다.</td>
+                    </tr>
+                <% } %>
             </tbody>
             <tfoot>
                 <tr>
                     <th colspan="3" class="text-end">총 결제금액</th>
-                    <th class="text-danger">217,000원</th>
+                    <th class="text-danger"><%=nf.format(order.getTotalPrice())%>원</th>
                 </tr>
             </tfoot>
         </table>
@@ -85,19 +125,19 @@ body { background: #f8f9fa; }
         <div class="section-title">배송 정보</div>
         <div class="row mb-2">
             <div class="col-4 text-secondary">수령인</div>
-            <div class="col-8">홍길동</div>
+            <div class="col-8">회원번호: <%=order.getMemberNum()%></div>
         </div>
         <div class="row mb-2">
             <div class="col-4 text-secondary">연락처</div>
-            <div class="col-8">010-1234-5678</div>
+            <div class="col-8"><%=payment.getHp()%></div>
         </div>
         <div class="row mb-2">
             <div class="col-4 text-secondary">주소</div>
-            <div class="col-8">서울특별시 강남구 테헤란로 123, 4층</div>
+            <div class="col-8"><%=payment.getAddr()%></div>
         </div>
         <div class="row mb-2">
             <div class="col-4 text-secondary">배송메시지</div>
-            <div class="col-8">부재시 경비실에 맡겨주세요.</div>
+            <div class="col-8"><%=payment.getDelivery_msg()%></div>
         </div>
     </div>
     <!-- 결제 정보 -->
@@ -109,12 +149,12 @@ body { background: #f8f9fa; }
         </div>
         <div class="row mb-2">
             <div class="col-4 text-secondary">결제상태</div>
-            <div class="col-8"><span class="badge bg-success">결제완료</span></div>
+            <div class="col-8"><span class="badge bg-success"><%=payment.getStatus()%></span></div>
         </div>
     </div>
     <!-- 하단 버튼 -->
     <div class="mt-4 text-end">
-        <a href="#" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> 목록으로</a>
+        <a href="#" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> 목록삭제</a>
     </div>
 </div>
 </body>

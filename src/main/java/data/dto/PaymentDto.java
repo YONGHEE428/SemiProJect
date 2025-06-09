@@ -12,6 +12,7 @@ public class PaymentDto {
     private String delivery_msg;
     private String status;         // 결제상태
     private Timestamp paymentday;   // 결제일시
+    private String hp;             // 연락처
     
     // Getters and Setters
     public String getIdx() {
@@ -56,17 +57,22 @@ public class PaymentDto {
     public void setPaymentday(Timestamp paymentday) {
         this.paymentday = paymentday;
     }
-	public String getAddr() {
-		return addr;
-	}
-	public void setAddr(String addr) {
-		this.addr = addr;
-	}
-	public String getDelivery_msg() {
-		return delivery_msg;
-	}
-	public void setDelivery_msg(String delivery_msg) {
-		this.delivery_msg = delivery_msg;
-	}
-
+    public String getAddr() {
+        return addr;
+    }
+    public void setAddr(String addr) {
+        this.addr = addr;
+    }
+    public String getDelivery_msg() {
+        return delivery_msg;
+    }
+    public void setDelivery_msg(String delivery_msg) {
+        this.delivery_msg = delivery_msg;
+    }
+    public String getHp() {
+        return hp;
+    }
+    public void setHp(String hp) {
+        this.hp = hp;
+    }
 }
