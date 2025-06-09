@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import data.dto.CartListDto;
+
 import db.copy.DBConnect;
 
 public class CartListDao {
@@ -269,6 +270,61 @@ public class CartListDao {
 			e.printStackTrace();
 		}
 		return list;
+	}
+
+	// 장바구니 번호로 상품 목록 가져오기
+	public List<CartListDto> getCartItemsByNums(String cartNums) {
+		List<CartListDto> list = new ArrayList<>();
+		Connection conn = db.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		String sql = "SELECT c.*, p.price, p.product_name, p.main_image_url " +
+					"FROM cartlist c " +
+					"JOIN product p ON c.product_id = p.product_id " +
+					"WHERE c.idx IN (" + cartNums + ")";
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				CartListDto dto = new CartListDto();
+				dto.setIdx(rs.getString("idx"));
+				dto.setProduct_id(rs.getInt("product_id"));
+				dto.setMember_id(rs.getString("member_id"));
+				dto.setCnt(rs.getString("cnt"));
+				dto.setBuyok(rs.getInt("buyok"));
+				dto.setProduct_name(rs.getString("product_name"));
+				dto.setPrice(rs.getInt("price"));
+				dto.setMain_image_url(rs.getString("main_image_url"));
+				list.add(dto);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			db.dbClose(rs, pstmt, conn);
+		}
+		return list;
+	}
+
+	// buyok 값 업데이트
+	public void updateBuyOk(int idx, int buyok) {
+		Connection conn = db.getConnection();
+		PreparedStatement pstmt = null;
+		
+		String sql = "update cartlist set buyok=? where idx=?";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, buyok);
+			pstmt.setInt(2, idx);
+			pstmt.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			db.dbClose(pstmt, conn);
+		}
 	}
 
 }

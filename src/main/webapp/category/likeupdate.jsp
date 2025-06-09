@@ -11,8 +11,12 @@
 	String action=request.getParameter("action");
 		
 	int memberId=mdao.getMemberNumById((String)session.getAttribute("myid"));
+<<<<<<< HEAD
 	System.out.println("세션 아이디: " + memberId);
 	System.out.println("물품아이디 " + productIdStr);		
+=======
+		
+>>>>>>> 830485a8a1c565deb43d322a757950f94926ed23
 	String optionIdStr=request.getParameter("optionId");
 	
 	if(productIdStr!=null && action!=null){

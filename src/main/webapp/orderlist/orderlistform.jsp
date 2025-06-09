@@ -24,17 +24,23 @@ body {
     background: #fff;
     border: 1px solid #444;
     padding: 30px 25px;
-    
 }
-.order-title-bar {
-    background: #f5f5f5;
-    border: 1px solid #aaa;
-    border-radius: 4px;
-    padding: 10px 20px;
-    font-weight: bold;
-    font-size: 1.15rem;
-    margin-bottom: 22px;
-    display: inline-block;
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+}
+.order-header h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+}
+.order-header .order-count {
+    color: #666;
+    font-size: 14px;
 }
 .order-search-row {
     display: flex;
@@ -63,9 +69,6 @@ body {
     min-width: 66px;
     border-radius: 4px;
     font-size: 0.97rem;
-}
-.order-list-section {
-    margin-top: 14px;
 }
 .order-box {
     border: 2px solid #bbb;
@@ -160,39 +163,59 @@ body {
 .order-actions-col .btn:hover {
     background: #e7e7e7;
 }
-@media (max-width: 700px) {
-    .order-wrapper { padding: 12px 2px; }
-    .order-content-row { flex-direction: column; gap: 8px; }
-    .order-actions-col { flex-direction: row; gap: 7px; }
+.empty-order {
+    text-align: center;
+    padding: 50px 0;
+    color: #666;
 }
-	/* 상단바 */
+.empty-order i {
+    font-size: 48px;
+    margin-bottom: 20px;
+    color: #ddd;
+}
+.empty-order p {
+    font-size: 16px;
+    margin: 10px 0;
+}
+.empty-order .continue-shopping {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #000;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+.empty-order .continue-shopping:hover {
+    background: #333;
+}
+/* 상단바 */
 .mypage-content{
-    	height:60px;
-    	line-height:60px;
-    	top:150px;
-    	position:fixed;
-		width:100%;
-		min-height: 5px;
-		font-weight: bold;
-		text-align: center;
-		background-color: white;
-		transition: top 0.3s ease;
-		
-	}
-	.content-title > ul{
-	display: flex;
-	justify-content: center;
-	gap : 170px;
-	}
-	.content-title > ul > li >a{
-		color:gray;
-		text-decoration: none;
-	}
-	.content-title > ul > li > a:hover{
-		color:black;
-		border-bottom: 3px solid black;
-	}
-
+    height:60px;
+    line-height:60px;
+    top:150px;
+    position:fixed;
+    width:100%;
+    min-height: 5px;
+    font-weight: bold;
+    text-align: center;
+    background-color: white;
+    transition: top 0.3s ease;
+}
+.content-title > ul{
+    display: flex;
+    justify-content: center;
+    gap : 170px;
+}
+.content-title > ul > li >a{
+    color:gray;
+    text-decoration: none;
+}
+.content-title > ul > li > a:hover{
+    color:black;
+    border-bottom: 3px solid black;
+}
 </style>
 </head>
 <%
@@ -200,8 +223,10 @@ String memberId = (String)session.getAttribute("myid");
 String name = (String) session.getAttribute("name");
 
 if (memberId == null) {
-    response.sendRedirect("../login/loginform.jsp");
-    return;
+   String orderListPageUrl = request.getContextPath() + "/index.jsp?main=orderlist/orderlistform.jsp";
+   response.sendRedirect(request.getContextPath() + "/index.jsp?main=login/loginform.jsp&redirect="
+   + java.net.URLEncoder.encode(orderListPageUrl, "UTF-8"));
+   return;
 }
 
 MemberDao memberDao = new MemberDao();
@@ -214,16 +239,18 @@ String keyword = request.getParameter("keyword");
 if (keyword == null) keyword = "";
 %>
 <body>
-<div class="mypage-content">
-        <nav class="content-title">
-        		<ul>
-        			<li><a href="index.jsp?main=category/catewish.jsp" class="Mywish" >위시리스트</a></li>
-        			<li><a href="index.jsp?main=cart/cartform.jsp" class="MyCart">장바구니</a></li>
-        			<li><a href="index.jsp?main=orderlist/orderlistform.jsp" class="MybuyList" style="color: black; border-bottom: 3px solid black;">구매내역</a></li>
-        		</ul>
-       </nav>
+    <!-- 상단바 -->
+    <div class="mypage-content">
+        <div class="content-title">
+            <ul>
+                <li><a onclick="location.href='index.jsp?main=cart/cartform.jsp'">장바구니</a></li>
+                <li><a onclick="location.href='index.jsp?main=orderlist/orderlistform.jsp'" style="color: black; border-bottom: 3px solid black;">구매내역</a></li>
+                <li><a onclick="location.href='index.jsp?main=category/catewish.jsp'">위시리스트</a></li>            
+            </ul>
+        </div>
     </div>
-    <div class="container mt-5" style="margin-top: 5rem !important; margin-left:30rem !important;">
+
+    <div class="container mt-5" style="margin-top: 5rem !important;">
       <div class="mb-3 text-secondary">
          홈 &gt; 마이페이지 &gt; <b>구매내역 (<%=name%>&nbsp;님)
          </b>
@@ -233,80 +260,84 @@ if (keyword == null) keyword = "";
       </h2>
    </div>
     
-<div class="order-wrapper">
-    <!-- 상단 타이틀 -->
-    <div class="order-title-bar"><%=name%>님의 주문목록</div>
-    <!-- 검색창/버튼 row -->
-    <form class="order-search-row" method="get">
-        <input type="text" name="keyword" placeholder="주문 상품 검색창" value="<%=keyword%>">
-        <button type="submit" class="btn btn-outline-secondary">검색</button>
-        <a href="orderlistform.jsp" class="btn btn-outline-secondary">전체조회</a>
-    </form>
-    <!-- 기간 버튼 row -->
-    <div class="order-period-row">
-        <button class="btn btn-outline-secondary btn-sm">1개월</button>
-        <button class="btn btn-outline-secondary btn-sm">3개월</button>
-        <button class="btn btn-outline-secondary btn-sm">6개월</button>
-        <button class="btn btn-outline-secondary btn-sm">1년</button>
-    </div>
-    <!-- 주문목록 반복영역 -->
-    <div class="order-list-section">
-    <%
-    boolean hasResult = false;
-    for (OrderListDto order : orderList) {
-        boolean matchFound = false;
-        // 검색어 있을 때 필터링 (상품명 기준)
-        for (OrderListDto.OrderItem item : order.getItems()) {
-            String productName = item.getProductName();
-            if (productName != null && productName.contains(keyword)) {
-                matchFound = true;
-                break;
-            }
-        }
-        if (!keyword.isEmpty() && !matchFound) continue;
-        hasResult = true;
-    %>
-        <div class="order-box">
-            <div class="order-header-bar">
-                <span class="order-status-label">
-                    배송완료 / <%= order.getOrderDate() %> 도착
-                </span>
-                <button class="order-delete-btn" onclick="alert('삭제 기능은 개발중!')">주문내역 삭제</button>
-            </div>
-            <!-- 주문상품 반복 출력 -->
-            <%
+    <div class="order-wrapper">
+        <div class="order-header">
+            <h2><%=name%>님의 주문목록</h2>
+            <span class="order-count"><%=orderList.size()%>개의 주문</span>
+        </div>
+        
+        <form class="order-search-row" method="get">
+            <input type="text" name="keyword" placeholder="주문 상품 검색창" value="<%=keyword%>">
+            <button type="submit" class="btn btn-outline-secondary">검색</button>
+            <a onclick="" class="btn btn-outline-secondary">전체보기</a>
+        </form>
+        
+        <div class="order-period-row">
+            <button class="btn btn-outline-secondary btn-sm">1개월</button>
+            <button class="btn btn-outline-secondary btn-sm">3개월</button>
+            <button class="btn btn-outline-secondary btn-sm">6개월</button>
+            <button class="btn btn-outline-secondary btn-sm">1년</button>
+        </div>
+        
+        <div class="order-list-section">
+        <%
+        boolean hasResult = false;
+        for (OrderListDto order : orderList) {
+            boolean matchFound = false;
             for (OrderListDto.OrderItem item : order.getItems()) {
-            %>
-            <div class="order-content-row">
-                <div class="order-thumb-box">
-                    <img src="<%= item.getProductImage() != null ? item.getProductImage() : "https://via.placeholder.com/90x90.png?text=이미지" %>"
-                         alt="상품이미지" style="width: 80px; height: 80px; object-fit: cover;">
+                String productName = item.getProductName();
+                if (productName != null && productName.contains(keyword)) {
+                    matchFound = true;
+                    break;
+                }
+            }
+            if (!keyword.isEmpty() && !matchFound) continue;
+            hasResult = true;
+        %>
+            <div class="order-box">
+                <div class="order-header-bar">
+                    <span class="order-status-label">
+                        <%= order.getOrderStatus() %> / <%= order.getOrderDate() %>
+                    </span>
+                    <button class="order-delete-btn" onclick="if(confirm('정말로 이 주문을 삭제하시겠습니까?')) { location.href='deleteorder.jsp?order_code=<%=order.getOrderCode()%>' }">주문내역 삭제</button>
                 </div>
-                <div class="order-prod-info">
-                    <div class="order-prod-title"><%= item.getProductName() %> </div>
-                    <div class="order-prod-desc"><%= item.getColor() %> / <%= item.getSize() %><div>
-                    <div class="order-prod-price-row">
-                        <span class="order-prod-price">
-                            <%= NumberFormat.getInstance().format(item.getPrice()) %>원
-                        </span>
-                        <button class="cart-btn" onclick="alert('장바구니 담기 개발중!')">장바구니에 담기</button>
+                <%
+                for (OrderListDto.OrderItem item : order.getItems()) {
+                    if (keyword.isEmpty() || item.getProductName().contains(keyword)) {
+                %>
+                <div class="order-content-row">
+                    <div class="order-thumb-box">
+                        <img src="<%= item.getProductImage() != null ? item.getProductImage() : "https://via.placeholder.com/90x90.png?text=이미지" %>"
+                             alt="상품이미지" style="width: 80px; height: 80px; object-fit: cover;">
+                    </div>
+                    <div class="order-prod-info">
+                        <div class="order-prod-title"><%= item.getProductName() %></div>
+                        <div class="order-prod-desc"><%= item.getColor() %> / <%= item.getSize() %></div>
+                        <div class="order-prod-price-row">
+                            <span class="order-prod-price">
+                                <%= NumberFormat.getInstance().format(item.getPrice()) %>원
+                            </span>
+                            <button class="cart-btn" onclick="alert('장바구니 담기 개발중!')">장바구니에 담기</button>
+                        </div>
+                    </div>
+                    <div class="order-actions-col">
+                        <button class="btn btn-outline-secondary btn-sm">주문상세</button>
+                        <button class="btn btn-outline-secondary btn-sm">리뷰작성</button>
+                        <button class="btn btn-outline-secondary btn-sm">교환/반품</button>
                     </div>
                 </div>
-                <div class="order-actions-col">
-                    <button class="btn btn-outline-secondary btn-sm">주문상세</button>
-                    <button class="btn btn-outline-secondary btn-sm">리뷰작성</button>
-                    <button class="btn btn-outline-secondary btn-sm">교환/반품</button>
-                </div>
+                <% } } %>
             </div>
-            <% } %>
+        <% } 
+        if (!hasResult) { %>
+            <div class="empty-order">
+                <i class="bi bi-box"></i>
+                <p>주문 내역이 없습니다.</p>
+                <p>새로운 상품을 구매해보세요.</p>
+                <a href="../../index.jsp?main=product/productlist.jsp" class="continue-shopping">쇼핑 계속하기</a>
+            </div>
+        <% } %>
         </div>
-    <% } // for orderList
-    if (!hasResult) { %>
-        <div class="alert alert-warning">주문 내역이 없습니다.</div>
-    <% } %>
     </div>
-</div>
-</div>
-</div>
 </body>
 </html>

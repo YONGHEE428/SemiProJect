@@ -5,8 +5,8 @@
 
 <%
     // 1. 파라미터 받기
-    String product_id = request.getParameter("product_id");
-    String option_id = request.getParameter("option_id");
+    int product_id = Integer.parseInt(request.getParameter("product_id"));
+    int option_id =Integer.parseInt(request.getParameter("option_id"));
     String size = request.getParameter("size");
     String color = request.getParameter("color");
     String cnt = request.getParameter("cnt");

@@ -3,15 +3,20 @@
 <%@ page import="data.dto.ProductDto" %>
 <%@ page import="data.dto.ProductOptionDto" %>
 <%@ page import="java.util.*" %>
+<%@ page import="java.math.BigDecimal" %>
+<%@ page import="java.text.DecimalFormat" %>
+
 
 <%
+
     String idParam = request.getParameter("product_id");
+
     int productId = 0;
     if (idParam != null && !idParam.trim().isEmpty()) {
         productId = Integer.parseInt(idParam);
     } else {
         out.println("<h3 style='color:red;'>잘못된 접근입니다. 상품 ID가 없습니다.</h3>");
-        return; // 더 이상 아래 코드를 실행하지 않음
+        return;
     }
 
     ProductDao dao = new ProductDao();
@@ -25,7 +30,18 @@
         sizeSet.add(opt.getSize());
         colorSet.add(opt.getColor());
     }
+    
+    BigDecimal price = product.getPrice(); 
+    BigDecimal discountRate = new BigDecimal("0.8");
+    BigDecimal discountedPrice = price.multiply(discountRate);
+
+    int originalPrice = price.intValue();
+    int discountPrice = discountedPrice.intValue();
+
+    DecimalFormat df = new DecimalFormat("#,###");
+    boolean isFreeShipping = originalPrice >= 100000;
 %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -306,7 +322,7 @@
     <div class="product-tab sticky" id="tabMenu">
       <div class="tab-menu">
         <a href="#desc" class="tab-item active" onclick="selectTab(this)">상품 설명</a>
-        <a href="#reviews" class="tab-item" onclick="selectTab(this)">리뷰 [7]</a>
+        <a href="#reviews" class="tab-item" onclick="selectTab(this)">리뷰</a>
         <a href="#qna" class="tab-item" onclick="selectTab(this)">문의 [0]</a>
       </div>
     </div>
@@ -314,15 +330,20 @@
    <!-- 상품 설명 -->
 <section id="desc"><h2>상품 설명</h2><%= product.getDescription() %></section>
    <section id="reviews"><h2>리뷰</h2></section>
+   <!-- 리뷰 작성 버튼 -->
+<button onclick="openReviewModal()">리뷰 작성</button>
     <section id="qna"><h2>문의</h2></section>
   </div>
 
   <!-- Right Panel: Info -->
   <div class="right-panel">
-    <div><span class="tags">무료배송</span><span class="tags">무료포장</span></div>
+  
+<% if (isFreeShipping) { %>
+  <div><span class="tags">무료배송</span></div>
+<% } %>
     
     <div class="d-flex align-items-center gap-4 mt-2">
-     <div class="product-title"><%= product.getProductName() %></div>
+     <div class="product-title"><%= product.getProductName() %>&nbsp;&nbsp;&nbsp;</div>
       <div class="item-icons">
        <i class="bi bi-heart"></i>&nbsp;<%= product.getLikeCount() %>&nbsp;&nbsp;
 <i class="bi bi-eye"></i>&nbsp;<%= product.getViewCount() %>
@@ -331,17 +352,21 @@
 
     <div class="mt-3">
       <span class="stars">⭐</span> 
-      <span class="review-link text-primary" onclick="goToReviews()" style="cursor:pointer;">3개의 리뷰</span>
+      <span class="review-link text-primary" onclick="goToReviews()" style="cursor:pointer;">리뷰</span>
     </div>
 
-  <!-- 상품 가격 -->
-<div class="price mt-2" style="font-size: 20px; font-weight: bold;"><%= product.getPrice().toString() %>원</div>
-    <button class="btn btn-info mt-2" onclick="location.href='../login/loginform.jsp'">↓ 쿠폰받기</button>
+<!-- 상품 가격 -->
+<div class="price mt-2" style="font-size: 20px; font-weight: bold;">
+  <%= df.format(originalPrice) %>원
+</div>
 
-    <div class="price-info mt-2">
-      <div><strong>첫 구매가:</strong> 20% <span>71,200원</span></div>
-      <div>나의 구매 가능 가격 ▼</div>
-    </div>
+<!-- 첫 구매가 -->
+<div class="price-info mt-2">
+  <div>나의 구매 가능 가격 ▼</div>
+  <div><strong>첫 구매가:</strong> 20% <span><%= df.format(discountPrice) %>원</span></div>
+</div>
+
+
 
     <div class="mt-2">배송정보: <span class="highlight">3일 이내 출고</span></div>
     <div>배송비: <span class="highlight">3,000원</span> (10만원 이상 무료배송, 제주/도서산간 3,000원 추가)</div>
@@ -371,28 +396,30 @@
       </div>
     </div>
     <script>
-let quantity = 1;
-const pricePerUnit = 89000;
+    let quantity = 1;
+    const pricePerUnit = <%= originalPrice %>;
 
-function changeQty(delta) {
-  if (delta === -1 && quantity > 1) {
-    quantity--;
-  } else if (delta === 1) {
-    if (quantity >= 5) {
-      showLimitModal();
-      return;
+    function changeQty(delta) {
+      if (delta === -1 && quantity > 1) {
+        quantity--;
+      } else if (delta === 1) {
+        if (quantity >= 5) {
+          showLimitModal();
+          return;
+        }
+        quantity++;
+      }
+      updateTotalPrice();
     }
-    quantity++;
-  }
-  updateTotalPrice();
-}
 
-function updateTotalPrice() {
-  const total = pricePerUnit * quantity;
-  document.getElementById("qty").textContent = quantity;
-  document.getElementById("Price").textContent = total.toLocaleString() + "원";
-  document.getElementById("minus").disabled = quantity === 1;
-}
+    function updateTotalPrice() {
+      const total = pricePerUnit * quantity;
+      document.getElementById("qty").textContent = quantity;
+      document.getElementById("Price").textContent = total.toLocaleString() + "원";
+      document.getElementById("minus").disabled = quantity === 1;
+    }
+
+    document.addEventListener("DOMContentLoaded", updateTotalPrice);
 
 function showLimitModal() {
   document.getElementById("limitModal").style.display = "flex";
@@ -413,7 +440,7 @@ document.addEventListener("DOMContentLoaded", updateTotalPrice);
   </div>
 </div>
 
-    <div class="mt-2"><strong>총 가격:</strong> <span id="Price">89,000원</span></div>
+    <div class="mt-2"><strong>총 가격:</strong> <span id="Price"></span></div>
 
     <div class="action-buttons">
   <%
@@ -446,7 +473,7 @@ function updateOptionId() {
     const optionId = document.getElementById("optionId");
 
     if (size && color) {
-        optionId.value = `opt-${size}-${color}`; // 조합 방식 (임시 예시)
+        optionId.value = opt-${size}-${color}; // 조합 방식 (임시 예시)
     } else {
         optionId.value = "";
     }
@@ -478,7 +505,7 @@ document.getElementById("addToCartBtn").addEventListener("click", function () {
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
         },
-        body: `product_id=${productId}&option_id=${optionId}&size=${size}&color=${color}&cnt=${quantity}`
+        body: product_id=${productId}&option_id=${optionId}&size=${size}&color=${color}&cnt=${quantity}
     })
     .then(response => {
         if (response.redirected || response.ok) {
@@ -500,10 +527,11 @@ function closeModal() {
     document.getElementById("cartModal").style.display = "none";
 }
 function goToCart() {
-    window.location.href = "cart.jsp";
+    window.location.href = "../index.jsp?main=cart/cartform.jsp";
 }
 function continueShopping() {
     closeModal();
+    window.location.href = "../index.jsp?main=category/category.jsp";
 }
 </script>
       <button class="btn btn-primary" onclick="location.href='../payment/payment.jsp'">바로구매</button>
@@ -592,7 +620,7 @@ function continueShopping() {
     });
 
     document.querySelectorAll(".tab-item").forEach(el => {
-      el.classList.toggle("active", el.getAttribute("href") === `#${current}`);
+      el.classList.toggle("active", el.getAttribute("href") === #${current});
     });
   });
 

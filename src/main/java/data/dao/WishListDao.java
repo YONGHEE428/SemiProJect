@@ -42,6 +42,7 @@ public class WishListDao {
 		return result;
 	}
 	
+
 	public List<WishListDto> getWishList(int memberId) {
 	    Connection conn = db.getConnection();
 	    PreparedStatement pstmt = null;
@@ -104,4 +105,6 @@ public class WishListDao {
 		}
 		return result;
 	}
+	
 }
+
