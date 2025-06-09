@@ -7,7 +7,6 @@
 <%@page import="java.math.BigDecimal"%>
 
 <%@page import="java.util.ArrayList"%>
-<%-- <%@page import="data.dao.ProductDao"%> --%>
 <%@page import="java.util.List"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
@@ -177,7 +176,7 @@
 	        else{
 	        	const action =isFilled?"unlike":"like";
 	        	 $.ajax({
-	        	        url: "likeAction.jsp",
+	        	        url: "category/likeupdate.jsp",
 	        	        type: "POST",
 	        	        data: { productId: productId, action: action },
 	        	        success: function () {

@@ -1,3 +1,6 @@
+<%@page import="data.dao.MemberDao"%>
+<%@page import="data.dto.WishListDto"%>
+<%@page import="data.dao.WishListDao"%>
 <%@page import="data.dto.ProductDto"%>
 <%@page import="data.dao.ProductDao"%>
 <%@page import="java.util.Base64"%>
@@ -147,14 +150,36 @@
 
 <script type="text/javascript">
 <%
+	WishListDao wdao=new WishListDao();
+	MemberDao mdao=new MemberDao();
 	String id=(String)session.getAttribute("myid");
+	if(id!=null&&!id.isEmpty()){
+		int memberId=mdao.getMemberNumById(id);
+		System.out.println(memberId);
+		List<WishListDto> wishProductIds=wdao.getWishList(memberId);
+		List<Integer> productIds = new ArrayList<>();
+		
+		 for (WishListDto dto : wishProductIds) {
+		        productIds.add(dto.getProductId()); // getProductId() 메서드는 실제 DTO에 맞게 변경
+		    }
+		    request.setAttribute("productIds", productIds);
+	}
+		
+		
 	ProductDao pdao=new ProductDao();
 	String categoryName=(String)session.getAttribute("categoryName");
 	int productId=(Integer)session.getAttribute("productId");
 	List<ProductDto> list=pdao.getProductsWithOptionsByCategory(categoryName);
+	
 %>
 $(function () {
     // 하트 클릭 (동적 요소 대응)
+     var productIds = <%= new com.google.gson.Gson().toJson(request.getAttribute("productIds")) %>;
+     console.log('Product IDs:', productIds);
+     
+     // 각 상품에 대해 하트 아이콘 상태를 확인하여 채웁니다.
+    
+     
     $(document).on("click", ".heart", function () {
     	const heartIcon=$(this);
         const isFilled = heartIcon.hasClass("bi-suit-heart-fill");
@@ -192,7 +217,7 @@ $(function () {
                     }
                 },
                 error: function () {
-                    alert("좋아요 처리 중 오류가 발생했습니다."+optionId);
+                    alert("좋아요 처리 중 오류가 발생했습니다."+productId);
                 }
             });
         }
@@ -239,6 +264,14 @@ $(function () {
                         "</div>" +
                         "</div>" +
                         "</div>";
+                        if (productIds.includes(item.productId)) {
+                            const heartIcon = el.querySelector(".heart");
+                            if (heartIcon) {
+                                heartIcon.classList.remove("bi-suit-heart");
+                                heartIcon.classList.add("bi-suit-heart-fill");
+                                heartIcon.style.color = "red";  // 빨간색으로 하트 색상 변경
+                            }
+                        }
                     container.appendChild(el);
                 });
             },
@@ -291,6 +324,14 @@ $(function () {
                             "</div>" +
                             "</div>" +
                             "</div>";
+                            if (productIds.includes(item.productId)) {
+                                const heartIcon = el.querySelector(".heart");
+                                if (heartIcon) {
+                                    heartIcon.classList.remove("bi-suit-heart");
+                                    heartIcon.classList.add("bi-suit-heart-fill");
+                                    heartIcon.style.color = "red";  // 빨간색으로 하트 색상 변경
+                                }
+                            }
                         // 새로 생성한 상품 카드를 상품 목록에 추가
                         container.appendChild(el);
                     });
