@@ -104,4 +104,5 @@ public class WishListDao {
 		}
 		return result;
 	}
+	
 }

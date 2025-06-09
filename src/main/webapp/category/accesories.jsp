@@ -193,7 +193,7 @@
 	        else{
 	        	const action =isFilled?"unlike":"like";
 	        	 $.ajax({
-	        	        url: "likeAction.jsp",
+	        	        url: "category/likeupdate.jsp",
 	        	        type: "POST",
 	        	        data: { productId: productId, action: action },
 	        	        success: function () {
