@@ -24,15 +24,14 @@
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
   <script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
     <style>
-		.alldiv {
-			background-color: #f4f4f4;
-		}
+
         /* Product grid */
         .product-card {
              border: 1px solid #ddd;
 			    margin: 10px;
 			    border-radius: 8px;
 			    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			    border:none;
         }
         
         .product-card:hover {
@@ -44,12 +43,15 @@
         }
         
         .product-image {
-            height: 100%;
+            height: 280px;  /* 원하는 높이 설정 (예: 200px) */
+   			object-fit: cover;
             width: 100%;
         }
         
         .product-info {
             padding: 10px 0;
+            margin-left: 10px;
+            margin-right: 10px;
         }
         
         .product-title {
@@ -158,7 +160,7 @@
     		 transition: background-color 0.2s, color 0.2s;
 		}
 		.dropdown-menu a:hover{
-			background-color: #c9a797;
+			background-color: #2c3e50;
 			border-radius: 20px;
 		}
    
@@ -173,6 +175,7 @@
 	String categoryName=(String)session.getAttribute("categoryName");
 	int productId=(Integer)session.getAttribute("productId");
 	List<ProductDto> list=pdao.getProductsWithOptionsByCategory(categoryName);
+	
 	
 	%> 
   $(function () {
@@ -220,6 +223,10 @@
 	        	    });
     		}
 	    });
+	 // 가격에 천 단위 콤마 추가
+	    function formatPrice(price) {
+	        return price.toLocaleString();  
+	    }
 	    // 무한스크롤
 	let page = 2;  // 처음 16개 아이템을 이미 로드했으므로, 다음 페이지는 2부터 시작
 let isLoading = false;  // 중복 요청을 방지하기 위한 플래그
@@ -249,10 +256,10 @@ function loadInitialItems() {
                     "<div class='product-info'>" +
                     "<div class='product-company'>" + item.category + "</div>" +
                     "<div class='product-name'>" + item.productName + "</div>" +
-                    "<div class='product-price'>" + item.price + "원</div>" + // 가격 그대로 출력
+                    "<div class='product-price'>" + formatPrice(item.price) + "원</div>" + // 가격 그대로 출력
                     "<div class='item-heart'>" +
                     "<i class='bi bi-suit-heart heart' style='cursor: pointer; color: black;'>" + 
-                    (item.likeCount == null ? 0 : item.likeCount) + "</i>" +  // 좋아요 수
+                    (item.likeCount == null ? 0 : item.likeCount) + "</i>&nbsp;" +  // 좋아요 수
                     "<i class='bi bi-eye' style='font-size: 16px;'></i>&nbsp; " + item.viewCount +  // 조회수
                     "</div>" +
                     "</div>" +
@@ -302,7 +309,7 @@ function loadMoreItems() {
                         "<div class='product-info'>" +
                         "<div class='product-company'>" + item.category + "</div>" +
                         "<div class='product-name'>" + item.productName + "</div>" +
-                        "<div class='product-price'>" + item.price + "원</div>" + // 가격 그대로 출력
+                        "<div class='product-price'>" + formatPrice(item.price) + "원</div>" + // 가격 그대로 출력
                         "<div class='item-heart'>" +
                         "<i class='bi bi-suit-heart heart' style='cursor: pointer; color: black;'>" + 
                         (item.likeCount == null ? 0 : item.likeCount) + "</i>" +  // 좋아요 수
@@ -373,8 +380,8 @@ window.onscroll = function() {
 <div id="selectedCategory" style="text-align:center; font-size: 24px; font-weight: bold; margin-top: 20px;"></div>
 
    		 <ul>
-   		  <li class="dropdown" style="background-color: #c9a797; border-radius: 20px;">
-            <a href="index.jsp?main=category/category.jsp" class="category-link">ALL</a>
+   		  <li class="dropdown" style="background-color:#2c3e50; border-radius: 20px;">
+            <a href="index.jsp?main=category/category.jsp" class="category-link" style="color: white;">ALL</a>
         </li>
     <li class="divider"></li>  
   <li class="nav-item dropdown">
@@ -416,13 +423,13 @@ window.onscroll = function() {
         </div>
     </div> 
 	
-   <div>
+   <div class="alldiv">
    <!-- controller.jsp -->
    	<jsp:include page="controller.jsp"/>
    </div>
 	
     <div id="loadingMessage" style="display:none; text-align:center; padding:10px; font-weight:bold;">로딩중...</div>
- 	<div id="observerTarget"></div>
+ 	<div id="observerTarget" style="width: 100%; height: 10px;" ></div>
     
    </div> 
 

@@ -1,4 +1,31 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="data.dao.ProductDao" %>
+<%@ page import="data.dto.ProductDto" %>
+<%@ page import="data.dto.ProductOptionDto" %>
+<%@ page import="java.util.*" %>
+
+<%
+    String idParam = request.getParameter("id");
+    int productId = 0;
+    if (idParam != null && !idParam.trim().isEmpty()) {
+        productId = Integer.parseInt(idParam);
+    } else {
+        out.println("<h3 style='color:red;'>잘못된 접근입니다. 상품 ID가 없습니다.</h3>");
+        return; // 더 이상 아래 코드를 실행하지 않음
+    }
+
+    ProductDao dao = new ProductDao();
+    ProductDto product = dao.getProductById(productId);
+    List<ProductOptionDto> options = dao.getProductOptionsByProductId(productId);
+    dao.updateReadCount(productId);
+
+    Set<String> sizeSet = new LinkedHashSet<>();
+    Set<String> colorSet = new LinkedHashSet<>();
+    for (ProductOptionDto opt : options) {
+        sizeSet.add(opt.getSize());
+        colorSet.add(opt.getColor());
+    }
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -258,49 +285,23 @@
 }
   </style>
 </head>
-<%@ page import="java.sql.*" %>
-<%
-  request.setCharacterEncoding("UTF-8");
 
-  int productId = Integer.parseInt(request.getParameter("product_id"));
-
-  // DB 연결
-  Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/yourdb", "root", "password");
-
-  // 상품 정보
-  PreparedStatement ps = conn.prepareStatement("SELECT * FROM product WHERE product_id = ?");
-  ps.setInt(1, productId);
-  ResultSet rs = ps.executeQuery();
-
-  String productName = "", imageUrl = "", description = "";
-  int price = 0;
-
-  if (rs.next()) {
-    productName = rs.getString("product_name");
-    imageUrl = rs.getString("main_image_url");
-    description = rs.getString("description");
-    price = rs.getInt("price");
-  }
-  rs.close();
-  ps.close();
-
-  // 옵션 정보
-  PreparedStatement optionPs = conn.prepareStatement("SELECT * FROM product_option WHERE product_id = ?");
-  optionPs.setInt(1, productId);
-  ResultSet optionRs = optionPs.executeQuery();
-%>
 <body>
+<!-- 숨겨진 필드 추가 -->
+<input type="hidden" id="productId" value="<%= product.getProductId() %>">
+<input type="hidden" id="optionId">
 
 <!-- Product Layout -->
 <div class="product-page">
 
   <!-- Left Panel: Image + Tabs -->
   <div class="left-panel">
-    <div class="img-container">
-      <button id="prevBtn" class="slide-btn" onclick="changeImage(-1)">‹</button>
-      <button id="nextBtn" class="slide-btn" onclick="changeImage(1)">›</button>
-      <img id="productImage" src="<%= request.getContextPath() %>/image/top/f81.jpg" class="zoom-img" alt="제품 이미지" />
-    </div>
+   <!-- 이미지 영역 -->
+<div class="img-container">
+  <button id="prevBtn" class="slide-btn" onclick="changeImage(-1)">‹</button>
+  <button id="nextBtn" class="slide-btn" onclick="changeImage(1)">›</button>
+ <img id="productImage" src="<%= product.getMainImageUrl() %>" class="zoom-img" />
+</div>
 
     <div class="product-tab sticky" id="tabMenu">
       <div class="tab-menu">
@@ -310,8 +311,9 @@
       </div>
     </div>
 
-    <section id="desc"><h2>상품 설명</h2><%@ include file="../shop/product.jsp" %></section>
-    <section id="reviews"><h2>리뷰</h2><%@ include file="../shop/reviewList.jsp" %></section>
+   <!-- 상품 설명 -->
+<section id="desc"><h2>상품 설명</h2><%= product.getDescription() %></section>
+   <section id="reviews"><h2>리뷰</h2></section>
     <section id="qna"><h2>문의</h2></section>
   </div>
 
@@ -320,9 +322,10 @@
     <div><span class="tags">무료배송</span><span class="tags">무료포장</span></div>
     
     <div class="d-flex align-items-center gap-4 mt-2">
-      <div class="product-title">Eoa ribbon blouse&nbsp;&nbsp;</div>
+     <div class="product-title"><%= product.getProductName() %></div>
       <div class="item-icons">
-        <i class="bi bi-heart"></i>&nbsp;98&nbsp;&nbsp;<i class="bi bi-eye"></i>&nbsp;72
+       <i class="bi bi-heart"></i>&nbsp;<%= product.getLikeCount() %>&nbsp;&nbsp;
+<i class="bi bi-eye"></i>&nbsp;<%= product.getViewCount() %>
       </div>
     </div>
 
@@ -331,7 +334,8 @@
       <span class="review-link text-primary" onclick="goToReviews()" style="cursor:pointer;">3개의 리뷰</span>
     </div>
 
-    <div class="price mt-2" style="font-size: 20px; font-weight: bold;">89,000원</div>
+  <!-- 상품 가격 -->
+<div class="price mt-2" style="font-size: 20px; font-weight: bold;"><%= product.getPrice().toString() %>원</div>
     <button class="btn btn-info mt-2" onclick="location.href='../login/loginform.jsp'">↓ 쿠폰받기</button>
 
     <div class="price-info mt-2">
@@ -343,20 +347,20 @@
     <div>배송비: <span class="highlight">3,000원</span> (10만원 이상 무료배송, 제주/도서산간 3,000원 추가)</div>
 
     <label for="size" class="mt-3 d-block">사이즈</label>
-    <select id="size" class="form-control" required>
-      <option value="">- [필수] Option -</option>
-      <option value="XS">XS</option>
-      <option value="S">S</option>
-      <option value="M">M</option>
-      <option value="L">L</option>
-    </select>
+<select id="size" class="form-control" required>
+  <option value="">- [필수] Option -</option>
+  <% for (String size : sizeSet) { %>
+    <option value="<%= size %>"><%= size %></option>
+  <% } %>
+</select>
 
     <label for="color" class="mt-2 d-block">색상</label>
-    <select id="color" class="form-control" required>
-      <option value="">- [필수] Color -</option>
-      <option value="red">red</option>
-      <option value="white">white</option>
-    </select>
+<select id="color" class="form-control" required>
+  <option value="">- [필수] Color -</option>
+  <% for (String color : colorSet) { %>
+    <option value="<%= color %>"><%= color %></option>
+  <% } %>
+</select>
 
     <div class="mt-3">
       <label><strong>수량</strong></label>
@@ -414,14 +418,8 @@ document.addEventListener("DOMContentLoaded", updateTotalPrice);
     <div class="action-buttons">
   <%
     boolean isLoggedIn = session.getAttribute("userId") != null;
-    String productId = request.getParameter("product_id"); // 또는 DB에서 가져온 상품 ID
 %>
 
-<input type="hidden" id="productId" value="<%= productId %>">
-<input type="hidden" id="optionId" value=""> <!-- size+color 조합으로 세팅 -->
-
-
-<div class="mt-2"><strong>총 가격:</strong><br>  <span id="Price">89,000원</span></div>
 
 <div class="action-buttons">
   <button id="addToCartBtn" class="btn btn-outline-primary">장바구니</button>

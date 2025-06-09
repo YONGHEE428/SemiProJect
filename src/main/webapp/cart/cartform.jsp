@@ -21,94 +21,81 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <title>장바구니</title>
 <style>
-.cart-item {
-   border-radius: 15px;
-   border: 1px solid #eee;
-   margin-bottom: 20px;
-   padding: 20px;
-   background: #fff;
-   display: flex;
-   align-items: center;
+.cart-btn, .btn-outline-secondary {
+  background: #fff !important;
+  color: #232323 !important;
+  border: 1.5px solid #232323 !important;
+  border-radius: 7px;
+  box-shadow: none !important;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 13px 32px;
+  font-size: 1.05rem;
+  outline: none;
+  transition: background 0.22s, color 0.22s, border-color 0.22s;
 }
-
-.cart-img {
-   width: 100px; /* height: auto; 추가하면 비율 유지 */
+.cart-btn:hover, .btn-outline-secondary:hover {
+  background: #000 !important;
+  color: #fff !important;
+  border-color: #000 !important;
 }
-
-.cart-summary {
-   background: #fafafa;
-   border-radius: 10px;
-   padding: 20px;
-   margin-top: 30px;
-}
-
-.btn-outline-secondary, .cart-btn {
-   background: #c9a797 !important;
-   color: #fff !important;
-   border-color: #c9a797 !important;
-}
-
-.btn-outline-secondary:hover, .cart-btn:hover {
-   background: #a3715a !important;
-   color: #fff !important;
-   border-color: #a3715a !important;
-}
-
-.cart-btn {
-   padding: 10px 30px;
-   border-radius: 5px;
-}
-
-.btn-outline-secondary.btn-sm {
-   padding: .25rem .5rem !important;
-   font-size: .875rem !important;
-   border-radius: .2rem !important;
-}
-
 .btn-link {
-   color: #c9a797 !important;
+  color: #232323 !important;
+  font-size: 22px;
+  transition: color 0.2s;
 }
-
 .btn-link:hover {
-   color: #a3715a !important;
+  color: #000 !important;
+  text-decoration: underline;
 }
-
+.form-check-input:checked {
+  background-color: #111 !important;
+  border-color: #111 !important;
+}
 .quantity-input {
-   width: 60px;
-   text-align: center;
+  background: #fff;
+  border: 1.5px solid #232323;
+  border-radius: 5px;
+  color: #232323;
+  font-weight: 600;
+  text-align: center;
+  outline: none;
 }
-
-	/* 상단바 */
-  .mypage-content{
-    	height:60px;
-    	line-height:60px;
-    	top:150px;
-    	position:fixed;
-		width:100%;
-		min-height: 5px;
-		font-weight: bold;
-		text-align: center;
-		background-color: white;
-		transition: top 0.3s ease;
-		margin-bottom: 20px;
-		
-	}
-	.content-title > ul{
-	display: flex;
-	justify-content: center;
-	gap : 170px;
-	}
-	.content-title > ul > li >a{
-		color:gray;
-		text-decoration: none;
-	}
-	.content-title > ul > li > a:hover{
-		color:black;
-		border-bottom: 3px solid black;
-	}
-
- /* 수량 입력 필드 스타일 */
+.cart-summary {
+  background: #fff;
+  border: 1.5px solid #232323;
+  border-radius: 11px;
+  padding: 22px 24px;
+  margin-top: 36px;
+  font-size: 1.07rem;
+  color: #111;
+}
+.cart-item {
+  border-radius: 14px;
+  border: 1.5px solid #e6e6e6;
+  margin-bottom: 22px;
+  padding: 22px 24px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+}
+.cart-img {
+  width: 90px; height: 90px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1.5px solid #eee;
+}
+.badge.bg-light {
+  background: #fff !important;
+  color: #232323 !important;
+  font-weight: 500;
+  border-radius: 7px;
+  padding: 7px 14px;
+  border: 1px solid #e6e6e6;
+}
 </style>
+
 <script type="text/javascript">
    $(function() {
 
@@ -198,146 +185,94 @@
                });
             });
 
-      // 단일 삭제 버튼
+   // 단일 삭제 버튼
       $(".delete-item-btn").click(function() {
-         if (!confirm("정말 삭제하시겠습니까?"))
-            return;
+          if (!confirm("정말 삭제하시겠습니까?")) return;
 
-         let item = $(this).closest(".cart-item");
-         let idx = item.data("idx");
-
-         $.ajax({
-            url : "cart/cartdelete.jsp",
-            type : "POST",
-            data : {
-               idx : idx
-            },
-            success : function() {
-               item.remove();
-               $("#allCheck").prop("checked", false);
-               updateSummary();
-            }
-         });
+          let item = $(this).closest(".cart-item");
+          let idx = item.data("idx");
+          // 항상 idxs로 보내기 (배열!)
+          $.ajax({
+              url: "cart/cartdelete_selected.jsp",
+              type: "POST",
+              traditional: true,
+              data: { idxs: [idx] }, // 단일도 배열!
+              success: function() {
+                  item.remove();
+                  $("#allCheck").prop("checked", false);
+                  updateSummary();
+              }
+          });
       });
 
       // ✅ 선택삭제 버튼 클릭 시
       $("#deleteSelectedBtn").click(function() {
-         if (!$(".item-check:checked").length) {
-            alert("삭제할 항목을 선택해주세요.");
-            return;
-         }
-        if (!confirm("선택한 상품을 삭제하시겠습니까?"))
-            return;
+          let checked = $(".item-check:checked");
+          if (!checked.length) {
+              alert("삭제할 항목을 선택해주세요.");
+              return;
+          }
+          if (!confirm("선택한 상품을 삭제하시겠습니까?")) return;
 
-         let selectedIdxs = [];
-
-         $(".item-check:checked").each(function() {
-            let idx = $(this).closest(".cart-item").data("idx");
-            selectedIdxs.push(idx);
-         });
-         // Ajax 요청으로 선택된 항목 삭제
-         $.ajax({
-            url : "cart/cartdelete_selected.jsp", // 👉 선택삭제용 JSP
-            type : "POST",
-            traditional : true, // 배열 전송
-            data : {
-               idxs : selectedIdxs
-            },
-            success : function() {
-               // 삭제된 항목 화면에서 제거
-               $(".item-check:checked").each(function() {
-                  $(this).closest(".cart-item").remove();
-               });
-               $("#allCheck").prop("checked", false);
-               updateSummary();
-            },
-            error : function() {
-               alert("선택삭제 실패");
-            }
-         });
+          let selectedIdxs = [];
+          checked.each(function() {
+              let idx = $(this).closest(".cart-item").data("idx");
+              selectedIdxs.push(idx);
+          });
+          $.ajax({
+              url: "cart/cartdelete_selected.jsp", // 단일/선택 동일 JSP!
+              type: "POST",
+              traditional: true,
+              data: { idxs: selectedIdxs }, // 여러개 배열!
+              success: function() {
+                  checked.each(function() {
+                      $(this).closest(".cart-item").remove();
+                  });
+                  $("#allCheck").prop("checked", false);
+                  updateSummary();
+              },
+              error: function() {
+                  alert("선택삭제 실패");
+              }
+          });
       });
-      // 선택상품 주문하기 버튼
+   // 선택상품 주문하기
       $("#orderSelectedBtn").click(function() {
-         let selectedIdxs = [];
+          let checkedIdxs = [];
+          $(".item-check:checked").each(function() {
+              checkedIdxs.push($(this).val());
+          });
 
-         $(".item-check:checked").each(function() {
-            selectedIdxs.push($(this).val());
-         });
+          if (checkedIdxs.length === 0) {
+              alert("주문할 상품을 선택해주세요.");
+              return;
+          }
 
-         if (selectedIdxs.length === 0) {
-
-            return;
-         }
-
-         $.ajax({
-            url : "cart/orderselected.jsp",
-            type : "POST",
-            traditional : true, // 배열 전송을 위한 옵션
-            data : {
-               idxs : selectedIdxs
-            },
-            success : function(response) {
-               //결제 화면 링크
-               window.location.href = "https://example.com/mock-payment";
-            },
-            error : function() {
-               alert("주문 처리 중 오류가 발생했습니다.");
-            }
-         });
+          // 👉 GET 방식으로 결제페이지로 이동 (파라미터에 idxs 전달)
+          location.href = "payment/payment.jsp?idxs=" + checkedIdxs.join(",");
       });
-      //전체상품 주문하기 버튼
+
+      // 전체상품 주문하기
       $("#orderAllBtn").click(function() {
-         let allIdxs = [];
+          let allIdxs = [];
+          $(".item-check").each(function() {
+              allIdxs.push($(this).val());
+          });
 
-         $(".item-check").each(function() {
-            allIdxs.push($(this).val());
-         });
-
-         if (allIdxs.length === 0) {
-            alert("장바구니에 상품이 없습니다.");
-            return;
-         }
-
-         $.ajax({
-            url : "orderall.jsp",
-            type : "POST",
-            traditional : true,
-            data : {
-               idxs : allIdxs
-            },
-            success : function(response) {
-               // 실제 결제 페이지로 이동 
-               window.location.href = "https://example.com/mock-payment";
-            },
-            error : function() {
-               alert("전체 주문 처리 중 오류가 발생했습니다.");
-            }
-         });
+          if (allIdxs.length === 0) {
+              alert("장바구니에 상품이 없습니다.");
+              return;
+          }
+          location.href = "payment/payment.jsp?idxs=" + allIdxs.join(",");
       });
-      $("#orderSelectedBtn").click(function() {
-         let checkedIdxs = [];
-         $(".item-check:checked").each(function() {
-            checkedIdxs.push($(this).val());
-         });
 
-         if (checkedIdxs.length === 0) {
-            alert("주문할 상품을 선택해주세요.");
-            return;
-         }
-
-         // 👉 주문서 페이지로 GET 방식으로 이동
-         location.href = "orderform.jsp?idxs=" + checkedIdxs.join(",");
-      });
+      
 
       // 초기 실행
       updateSummary();
    });
 </script>
-
-
 </head>
-
-
 <%
 String memberId = (String) session.getAttribute("myid"); //id받아오기
 if (memberId == null) {
@@ -413,16 +348,13 @@ String name = (String) session.getAttribute("name");
          data-option-id="<%=item.getOption_id()%>">
          <input type="checkbox" class="form-check-input me-3 item-check"
             value="<%=item.getIdx()%>"> 
-         <!-- <img src="<%=request.getContextPath()%>/product_images/<%=item.getMain_image_url()%>"
-            onerror="this.src='https://via.placeholder.com/100x120.png?text=No+Image'"
-            class="cart-img me-4" alt="<%=item.getProduct_name()%>"> -->
-
+       <img src="<%=item.getMain_image_url()%>" 
+        class="cart-img me-5" alt="<%=item.getProduct_name()%>" style="width: 100px; height: 100px;">
          <div class="flex-grow-1">
             <div class="fw-bold"><%=item.getProduct_name()%></div>
             <div class="text-secondary" style="font-size: 14px;"><%=item.getColor()%>
                /
-               <%=item.getSize()%></div>
-            <%-- <div class="text-danger" style="font-size: 13px;">특가! 12시간 00분 남음</div> --%>
+               <%=item.getSize()%></div>         
             <div class="mt-2">
                <span class="badge bg-light text-dark">옵션: <%=item.getColor()%>
                   / <%=item.getSize()%></span>
@@ -439,7 +371,7 @@ String name = (String) session.getAttribute("name");
                type="button">-</button>
             <input type="text"
                class="form-control form-control-sm mx-1 quantity-input"
-               value="<%=cnt%>" readonly>
+               value="<%=cnt%>" style="width: 100px;" readonly>
             <button class="btn btn-outline-secondary btn-sm quantity-plus"
                type="button">+</button>
 

@@ -77,6 +77,7 @@
 	.pause(500)
 	.type('<i class="bi bi-check-circle-fill"></i>', { instant: true })
 	.go();
+  
   </script>
   
 </body>
