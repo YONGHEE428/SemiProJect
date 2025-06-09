@@ -87,9 +87,6 @@
    </div>
 
 
-   <form action="../login/loginaction.jsp" method="post">
-
-
 
    <form action="<%=root%>/login/loginaction.jsp" method="post">
     <span class="login-span"><p>아이디</p></span>
