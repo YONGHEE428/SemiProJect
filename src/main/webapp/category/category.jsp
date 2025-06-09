@@ -224,7 +224,7 @@ $(function () {
                     el.innerHTML =
                         "<div class='product-card' data-product-id='"+item.productId +"'>" +
                         "<div class='item'>" +
-                        "<a href='/Semiproject/shop/sangpumpage.jsp'>" +
+                        "<a href='/SemiProject/index.jsp?main=shop/sangpumpage.jsp'>" +
                         "<img src='" + item.mainImageUrl + "' alt='' class='product-image'>" +  // 상품 이미지
                         "</a>" +
                         "</div>" +
@@ -346,27 +346,27 @@ $(function () {
             </li>
             <li class="divider"></li>
             <li class="nav-item dropdown">
-                <a class="category-link" href="index.jsp?main=category/top.jsp" role="button" >TOP</a>
+            <a class="category-link" href="index.jsp?main=category/top.jsp&category1=티셔츠&category2=아우터" role="button">TOP</a>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">티셔츠</a></li>
-                    <li><a class="dropdown-item" href="#">아우터</a></li>
+                    <li><a class="dropdown-item" href="index.jsp?main=category/top.jsp&category1=티셔츠">티셔츠</a></li>
+                    <li><a class="dropdown-item" href="index.jsp?main=category/top.jsp&category1=아우터">아우터</a></li>
                 </ul>
             </li>
             <li class="divider"></li>
             <li class="dropdown">
-                <a href="index.jsp?main=category/bottom.jsp" class="category-link">BOTTOM</a>
+                <a href="index.jsp?main=category/bottom.jsp&category1=팬츠&category2=치마" class="category-link">BOTTOM</a>
                 <ul class="dropdown-menu">
-                    <li><a href="#">팬츠</a></li>
-                    <li><a href="#">치마</a></li>
+                    <li><a href="index.jsp?main=category/bottom.jsp&category1=팬츠">팬츠</a></li>
+                    <li><a href="index.jsp?main=category/bottom.jsp&category1=치마">치마</a></li>
                 </ul>
             </li>
             <li class="divider"></li>
             <li class="dropdown">
-                <a href="index.jsp?main=category/accesories.jsp" class="category-link">ACCESORIES</a>
+                <a href="index.jsp?main=category/accesories.jsp&category1=악세서리" class="category-link">ACCESORIES</a>
             </li>
             <li class="divider"></li>
             <li class="dropdown">
-                <a href="index.jsp?main=category/shoes.jsp" class="category-link">SHOES</a>
+                <a href="index.jsp?main=category/shoes.jsp&category1=신발" class="category-link">SHOES</a>
             </li>
         </ul>
     </div>

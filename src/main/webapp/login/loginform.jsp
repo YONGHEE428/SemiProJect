@@ -89,7 +89,6 @@
 
 
    <form action="<%=root%>/login/loginaction.jsp" method="post">
-
     <span class="login-span"><p>아이디</p></span>
      <input type="text" name="id" class="form-control field" placeholder="" required="required" value="<%=myid%>" >
     <span class="login-span"><p>비밀번호</p></span>

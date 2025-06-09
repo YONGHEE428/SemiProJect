@@ -182,7 +182,7 @@
                                     <td><%= option.getStockQuantity() %></td>
                                     <td class="actions">
                                         <%-- ======== 수정 페이지 URL (실제 환경에 맞게 수정) ======== --%>
-                                        <a href="<%= request.getContextPath() %>/admin/editProductForm.jsp?productId=<%= product.getProductId() %>&optionId=<%= option.getOptionId() %>" class="edit-btn">수정</a>
+                                        <a href="<%= request.getContextPath() %>/sangpumRegist/productModify.jsp?productId=<%= product.getProductId() %>&optionId=<%= option.getOptionId() %>" class="edit-btn">수정</a>
                                         <button onclick="confirmDelete('<%= product.getProductId() %>', '<%= option.getOptionId() %>', '<%= product.getProductName() %>', '<%= option.getColor() %>', '<%= option.getSize() %>')" class="delete-btn">삭제</button>
                                     </td>
                                 </tr>
@@ -203,7 +203,7 @@
                                 <td>-</td> <%-- 사이즈 --%>
                                 <td>-</td> <%-- 수량 --%>
                                 <td class="actions">
-                                    <a href="<%= request.getContextPath() %>/admin/editProductForm.jsp?productId=<%= product.getProductId() %>" class="edit-btn">수정</a>
+                                    <a href="<%= request.getContextPath() %>/sangpumRegist/productModify.jsp?productId=<%= product.getProductId() %>" class="edit-btn">수정</a>
                                     <button onclick="confirmDelete('<%= product.getProductId() %>', null, '<%= product.getProductName() %>', null, null)" class="delete-btn">삭제</button>
                                 </td>
                             </tr>

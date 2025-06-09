@@ -65,16 +65,25 @@ public class ProductDao {
             productDto.setProductId(generatedProductId); // DTO에 최종 ID 설정
 
             // 기존 옵션 삭제 후 새로 삽입 (상품 ID가 있는 경우에만)
-            if (productDto.getProductId() > 0) {
-                String deleteOptionsSql = "DELETE FROM product_option WHERE product_id = ?";
-                try (PreparedStatement pstmtDelete = conn.prepareStatement(deleteOptionsSql)) {
-                    pstmtDelete.setInt(1, productDto.getProductId());
-                    pstmtDelete.executeUpdate();
-                }
-            }
+            // 상품 수정 시 기존 옵션을 삭제하는 방식은 FOREIGN KEY 제약 조건 위반 가능성 있음
+            // 이 부분은 향후 옵션 업데이트 로직으로 변경 필요
+            // if (productDto.getProductId() > 0) {
+            //     String deleteOptionsSql = "DELETE FROM product_option WHERE product_id = ?";
+            //     try (PreparedStatement pstmtDelete = conn.prepareStatement(deleteOptionsSql)) {
+            //         pstmtDelete.setInt(1, productDto.getProductId());
+            //         pstmtDelete.executeUpdate();
+            //     }
+            // }
 
             if (optionList != null && !optionList.isEmpty()) {
-                String sqlOption = "INSERT INTO product_option (product_id, color, size, stock_quantity) VALUES (?, ?, ?, ?)";
+                // 기존: String sqlOption = "INSERT INTO product_option (product_id, color, size, stock_quantity) VALUES (?, ?, ?, ?)";
+                // 변경: ON DUPLICATE KEY UPDATE를 사용하여 중복 시 업데이트, 없으면 삽입
+                String sqlOption = "INSERT INTO product_option (product_id, color, size, stock_quantity) " +
+                                   "VALUES (?, ?, ?, ?) " +
+                                   "ON DUPLICATE KEY UPDATE stock_quantity = VALUES(stock_quantity), color = VALUES(color), size = VALUES(size)";
+                // Note: color와 size는 ON DUPLICATE KEY UPDATE 절에 포함되지 않아도 됩니다. (unique key의 일부이므로 변경되지 않음)
+                // 그러나 명시적으로 포함해도 문제 없습니다. 주된 목적은 stock_quantity 업데이트.
+
                 pstmtOption = conn.prepareStatement(sqlOption);
 
                 for (ProductOptionDto option : optionList) {
@@ -417,7 +426,7 @@ public class ProductDao {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		 
 	}
 	
 	// 페이징 처리된 상품 목록을 가져오는 메서드 (JSON 생성용)
@@ -436,6 +445,47 @@ public class ProductDao {
 	        pstmt = conn.prepareStatement(sql);
 	        pstmt.setInt(1, offset);
 	        pstmt.setInt(2, pageSize);
+	        rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            ProductDto dto = new ProductDto();
+	            dto.setProductId(rs.getInt("product_id"));
+	            dto.setProductName(rs.getString("product_name"));
+	            dto.setPrice(rs.getBigDecimal("price"));
+	            dto.setMainImageUrl(rs.getString("main_image_url"));
+	            dto.setCategory(rs.getString("category"));
+	            dto.setLikeCout(rs.getString("like_count"));
+	            dto.setViewCount(rs.getString("view_count"));
+	            productList.add(dto);
+	        }
+	    } catch (SQLException e) {
+	        System.err.println("페이징 상품 조회 오류: " + e.getMessage());
+	        e.printStackTrace();
+	    } finally {
+	        db.dbClose(rs, pstmt, conn);
+	    }
+
+	    return productList;
+	}
+
+	public List<ProductDto> getProductsByCategory(String category1, String catgory2, int page, int pageSize) {
+	    List<ProductDto> productList = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+
+	    int offset = (page - 1) * pageSize;
+
+	    String sql = "SELECT product_id, product_name, price, main_image_url, category, like_count, view_count FROM product WHERE category IN (?, ?) ORDER BY product_id DESC LIMIT ?, ?";
+
+	    try {
+	        conn = db.getConnection();
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, category1);
+	        pstmt.setString(2, catgory2);
+	        pstmt.setInt(3, offset);
+	        pstmt.setInt(4, pageSize);
+	       
 	        rs = pstmt.executeQuery();
 
 	        while (rs.next()) {
