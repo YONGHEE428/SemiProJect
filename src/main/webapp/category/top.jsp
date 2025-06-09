@@ -25,144 +25,128 @@
   <script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
     <style>
 
-        /* Product grid */
-        .product-card {
-             border: 1px solid #ddd;
-			    margin: 10px;
-			    border-radius: 8px;
-			    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .product-card:hover {
-            transform: translateY(-5px);
-            cursor: pointer;
-      		filter: brightness(70%);
-      		transition: 0.3s ease;
-      		 border: none; 
-        }
-        
-        .product-image {
-            height: 280px;  /* 원하는 높이 설정 (예: 200px) */
-   			object-fit: cover;
-            width: 100%;
-        }
-        
-        .product-info {
-            padding: 10px 0;
-            margin-left: 10px;
-        }
-        
-        .product-title {
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-            padding:5px;
-        }
-        .product-company {
-		    font-size: 12px;
-		    color: #777;
-		}
-		
-		.product-name {
-		    font-size: 14px;
-		    font-weight: bold;
-		    margin: 5px 0;
-		}
-        .product-price {
-            font-weight: bold;
-            color: #333;
-        }
-        
-        /* User menu */
-        .user-menu .btn {
-            margin: 0 5px;
-            font-size: 0.9rem;
-        }
-        
-   
-        .main-category ul {
-            display: flex;
-            justify-content: center;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-        
-        .main-category li {
-         position: relative;
-            padding: 15px 30px;
-        }
-        
-        .main-category a {
-            text-decoration: none;
-            color: black;
-            font-size: 20px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .main-category a:hover
-         {
-            color: #fff;
-        }
+         /* Product grid */
+    .product-card {
+        margin: 10px;
+        border-radius: 8px;
+        border:none;
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+        cursor: pointer;
+        filter: brightness(70%);
+        transition: 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border: none;
+    }
+    .product-image {
+        height: 280px;  /* 원하는 높이 설정 (예: 200px) */
+        object-fit: cover;
+        width: 100%;
+    }
+    .product-info {
+        padding: 10px 0;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+    .product-company {
+        font-size: 12px;
+        color: #777;
+    }
+    .product-name {
+        font-size: 14px;
+        font-weight: bold;
+        margin: 5px 0;
+        white-space: nowrap;           /* 줄바꿈 방지 */
+        overflow: hidden;              /* 넘친 텍스트 숨김 */
+        text-overflow: ellipsis;       /* 말줄임 (...) 처리 */
+    }
+    .product-price {
+        font-weight: bold;
+        color: #333;
+    }
 
-        .main-category .divider {
-            width: 1px;
-            margin: 15px 0;
-            color: #fff;
-        }
-        .category-link {   			 
-    			color: white;
-    			text-shadow: 1px 1px 1px gray;
-    			text-decoration: none;
-		}
-		
-		.dropdown {
- 		   position: relative;
-		}
-		.dropdown-menu {
-  			 display: none;
-    		 opacity: 0;
-    		 visibility: hidden;
-    		 transition: opacity 0.3s ease;
-    		 position: absolute;
-    		 top: 100%;
-    		 left: 50%; 
-		 	 transform: translateX(-50%);  /* 레이어 가운데 수평 정렬 */
-		 	
-    		 background-color: white;
-    		 padding: 10px 20px;
-    		 display: flex;
-    	  	 flex-direction:column; /* 세로정렬 */
-    		 gap: 10px;		/* 아이템간 간격 */
-    		 z-index: 999;
-    		 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-		}
-		.dropdown-menu li {
-    		list-style: none;
-    		text-align: center;
-		}
-/* 호버 시 드롭다운 메뉴 보이기 */
-		.dropdown:hover > .dropdown-menu {
-  			  display: flex;
-   			  opacity: 1;
-    		  visibility: visible;
-		}
-		.dropdown-menu a {
-   			 text-decoration: none;
-    		 font-size: 20px;
-    		 font-weight: bold;
-    		 color: black;
-    		 padding: 10px 20px;
-    		 display: block;
-    		 transition: background-color 0.2s, color 0.2s;
-		}
-		.dropdown-menu a:hover{
-			background-color: #2c3e50;
-			border-radius: 20px;
-		}
-   
+    /* User menu */
+    .user-menu .btn {
+        margin: 0 5px;
+        font-size: 0.9rem;
+    }
 
+    .main-category ul {
+        display: flex;
+        justify-content: center;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    .main-category li {
+        position: relative;
+        padding: 15px 30px;
+    }
+    .main-category a {
+        text-decoration: none;
+        color: black;
+        font-size: 20px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .main-category a:hover {
+        color: #fff;
+    }
+    .main-category .divider {
+        width: 1px;
+        margin: 15px 0;
+        color: #fff;
+    }
+    .category-link {
+        color: white;
+        text-shadow: 1px 1px 1px gray;
+        text-decoration: none;
+    }
+    .dropdown {
+        position: relative;
+    }
+    .dropdown-menu {
+        display: none;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease;
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);  /* 레이어 가운데 수평 정렬 */
+        background-color: white;
+        padding: 10px 20px;
+        display: flex;
+        flex-direction:column; /* 세로정렬 */
+        gap: 10px;		/* 아이템간 간격 */
+        z-index: 999;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    .dropdown-menu li {
+        list-style: none;
+        text-align: center;
+    }
+    /* 호버 시 드롭다운 메뉴 보이기 */
+    .dropdown:hover > .dropdown-menu {
+        display: flex;
+        opacity: 1;
+        visibility: visible;
+    }
+    .dropdown-menu a {
+        text-decoration: none;
+        font-size: 20px;
+        font-weight: bold;
+        color: black;
+        padding: 10px 20px;
+        display: block;
+        transition: background-color 0.2s, color 0.2s;
+    }
+    .dropdown-menu a:hover{
+        background-color: #2c3e50;
+        border-radius: 20px;
+    }
     </style>
    
   <script type="text/javascript">
@@ -174,7 +158,8 @@
 	int productId=(Integer)session.getAttribute("productId");
 	List<ProductDto> list=pdao.getProductsWithOptionsByCategory(categoryName);
 	
-	
+	String category1 = request.getParameter("category1");
+	String category2 = request.getParameter("category2");
 	%> 
   $(function () {
 	    // 하트 클릭 (동적 요소 대응)
@@ -232,7 +217,7 @@ function loadInitialItems() {
     $.ajax({
         type: "GET",
         dataType: "json",
-        url: "/SemiProject/data/items.jsp?page=1",  // 페이지 1에서 16개 로드
+        url: "/SemiProject/data/optionitems.jsp?page=1&category1=" + "<%=category1%>" + "&category2=" + "<%=category2%>",
         success: function(data) {
             // 데이터가 없으면 로딩 종료
             if (data.length === 0) {
@@ -247,7 +232,7 @@ function loadInitialItems() {
                 el.innerHTML =
                     "<div class='product-card' data-product-id='" + item.productId + "'>" +
                     "<div class='item'>" +
-                    "<a href='/Semiproject/shop/sangpumpage.jsp'>" +
+                    "<a href='/SemiProject/index.jsp?main=shop/sangpumpage.jsp'>" +
                     "<img src='" + item.mainImageUrl + "' alt='' class='product-image'>" +  // 상품 이미지
                     "</a>" +
                     "</div>" +
@@ -283,7 +268,7 @@ function loadMoreItems() {
     $.ajax({
         type: "GET",
         dataType: "json",
-        url: "/SemiProject/data/items.jsp?page=" + page,  // page는 서버에서 다음 데이터를 요청하는 파라미터
+        url: "/SemiProject/data/optionitems.jsp?page="+page+"&category1=" + "<%=category1%>" + "&category2=" + "<%=category2%>",  // page는 서버에서 다음 데이터를 요청하는 파라미터
         success: function(data) {
             setTimeout(() => {
                 // 데이터가 없으면 로딩 종료
@@ -383,33 +368,33 @@ window.onscroll = function() {
         </li>
     <li class="divider"></li>  
   <li class="nav-item dropdown" style="background-color:#2c3e50; border-radius: 20px;">
-  <a class="category-link" href="index.jsp?main=category/top.jsp" role="button" style="color: white;">TOP</a>
+  <a class="category-link" href="index.jsp?main=category/top.jsp&category1=티셔츠&category2=아우터" role="button" style="color: white;">TOP</a>
   <!-- TOP에서 드랍다운 -->
   		<ul class="dropdown-menu">
-    		<li><a class="dropdown-item" href="#">티셔츠</a></li>
-    		<li><a class="dropdown-item" href="#">아우터</a></li>
+    		<li><a class="dropdown-item" href="index.jsp?main=category/top.jsp&category1=티셔츠">티셔츠</a></li>
+    		<li><a class="dropdown-item" href="index.jsp?main=category/top.jsp&category1=아우터">아우터</a></li>
     		
   		</ul>
  </li>
 
         <li class="divider"></li>
         <li class="dropdown">
-            <a href="index.jsp?main=category/bottom.jsp" class="category-link">BOTTOM</a>
+            <a href="index.jsp?main=category/bottom.jsp&category1=팬츠&category2=치마" class="category-link">BOTTOM</a>
             <ul class="dropdown-menu">
-                <li><a href="#">팬츠</a></li>
-                <li><a href="#">치마</a></li>
+                <li><a href="index.jsp?main=category/bottom.jsp&category1=팬츠">팬츠</a></li>
+                <li><a href="index.jsp?main=category/bottom.jsp&category1=치마">치마</a></li>
                 
             </ul>
         </li>
         <li class="divider"></li>
         <li class="dropdown">
-            <a href="index.jsp?main=category/accesories.jsp" class="category-link">ACCESORIES</a>
+            <a href="index.jsp?main=category/accesories.jsp&category1=악세서리" class="category-link">ACCESORIES</a>
            
         </li>
        
         <li class="divider"></li>
         <li class="dropdown">
-            <a href="index.jsp?main=category/shoes.jsp" class="category-link">SHOES</a>
+            <a href="index.jsp?main=category/shoes.jsp&category1=신발" class="category-link">SHOES</a>
         </li>
     </ul>
 </div>

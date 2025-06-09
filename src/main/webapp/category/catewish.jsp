@@ -1,3 +1,10 @@
+<%@page import="data.dto.WishListDto"%>
+<%@page import="java.text.DecimalFormat"%>
+<%@page import="java.math.BigDecimal"%>
+<%@page import="data.dto.ProductDto"%>
+<%@page import="java.util.List"%>
+<%@page import="data.dao.WishListDao"%>
+<%@page import="data.dao.MemberDao"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
@@ -16,29 +23,29 @@
     body {
         background-color: #f8f9fa;
     }
-    
+
     .wishlist-header {
         background-color: white;
         padding: 20px 0;
         margin-bottom: 30px;
         border-bottom: 1px solid #e5e5e5;
     }
-    
+
     .wishlist-title {
         font-size: 24px;
         font-weight: bold;
         color: #333;
         margin: 0;
         padding: 0 20px;
-        background-color: 
+        background-color:
     }
-    
+
     .breadcrumb {
         font-size: 14px;
         color: #666;
         margin: 10px 20px 0;
     }
-    
+
     .product-container {
         background-color: white;
         border-radius: 8px;
@@ -47,48 +54,58 @@
         padding: 20px;
     }
      .product-type {
-        display: grid;
-        grid-template-columns: 120px 2fr 1fr 1fr 150px;
-        padding: 15px;
-        background-color: #f8f9fa;
-        border-bottom: 1px solid #dee2e6;
-        font-weight: bold;
-        color: #495057;
-        margin-bottom: 10px;
-        font-size: 14px;
-        border-radius: 4px;
+     	    display: flex; /* Flexbox로 가로로 정렬 */
+	    justify-content: space-between; /* 항목들 간 간격을 균등하게 배분 */
+	    align-items: center; /* 세로로 가운데 정렬 */
+	    padding: 15px;
+	    background-color: #f8f9fa;
+	    border-bottom: 1px solid #dee2e6;
+	    font-weight: bold;
+	    color: #495057;
+	    margin-bottom: 10px;
+	    font-size: 14px;
+	    border-radius: 4px;
+	}
+     .product-type-item {
+	  	text-align: center;
+		
+	}
+   .product-type-item:first-child {
+        flex: 0 0 150px; /* 120px에서 200px로 변경 */
     }
-      .product-type-item {
+
+    /* 헤더의 '기본정보' 항목: flex 비율 유지 */
+    .product-type-item:nth-child(2) {
+        flex: 3 1 60%;
         text-align: center;
-        padding: 0 10px;
     }
-    .product-type-item:first-child {
-        flex: 0 0 120px;
-    }
-    
+
+    /* 헤더의 '선택' 항목: 고정 너비 150px 유지 */
     .product-type-item:last-child {
         flex: 0 0 150px;
+        text-align: center;
     }
+
     #product-list {
         border: 1px solid #dee2e6;
         border-radius: 4px;
     }
-    .product-row {
-        display: grid;
-        grid-template-columns: 120px 2fr 1fr 1fr 150px;
-        align-items: center;
-        padding: 15px;
-        border-bottom: 1px solid #eee;
-        transition: all 0.3s ease;
-    }
-    
-      .product-image {
-        width: 100px;
-        height: 100px;
-        object-fit: cover;
-        border-radius: 4px;
-    }
-    
+	 .product-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    transition: all 0.3s ease;
+}
+
+     .product-image {
+	    width: 150px; /* 이미지 너비를 더 크게 */
+	    height: 150px; /* 이미지 높이를 더 크게 */
+	    object-fit: cover;
+	    border-radius: 4px;
+	}
+
   .product-info {
         text-align: left;
         padding: 0 20px;
@@ -101,19 +118,19 @@
         font-size: 14px;
         margin-bottom: 5px;
     }
-    
+
      .product-name {
         font-size: 16px;
         font-weight: 500;
         margin-bottom: 5px;
     }
-    
+
     .product-price {
         font-size: 16px;
         font-weight: bold;
         color: #333;
     }
-    
+
     .product-size,
     .product-color {
         text-align: center;
@@ -121,36 +138,36 @@
         align-items: center;
         justify-content: center;
     }
-    
+
     .product-actions {
         display: flex;
         gap: 10px;
     }
-    
+
     .heart {
         font-size: 20px;
         cursor: pointer;
         transition: all 0.2s ease;
     }
-    
+
     .heart:hover {
         transform: scale(1.1);
     }
-    
+
     .heart.bi-suit-heart-fill {
         color: #dc3545;
     }
-    
+
     .empty-wishlist {
         text-align: center;
         padding: 50px 20px;
         color: #666;
     }
-    
+
     .toast-container {
         z-index: 1050;
     }
-    
+
     	/* 상단바 */
     .mypage-content{
     	height:60px;
@@ -163,7 +180,7 @@
 		text-align: center;
 		background-color: white;
 		transition: top 0.3s ease;
-		
+
 	}
 	.content-title > ul{
 	display: flex;
@@ -178,6 +195,29 @@
 		color:black;
 		border-bottom: 3px solid black;
 	}
+
+    /* 상품 줄의 각 항목에 대한 정렬 규칙 추가 */
+    .product-row > .product-type-item:first-child {
+    flex: 0 0 150px; /* 이미지 크기 고정 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+    .product-row > .product-info.product-type-item {
+        flex: 3 1 60%; /* 헤더의 두 번째 항목과 동일 */
+        text-align: left; /* 텍스트는 왼쪽 정렬 유지 */
+    }
+
+    /* 선택(버튼) 영역 정렬 */
+.product-row > .product-type-item:last-child {
+    flex: 0 0 150px; /* 선택 항목 고정 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 </style>
 </head>
 <body>
@@ -187,7 +227,12 @@
 	String referer = request.getHeader("referer");
 	String name = (String)session.getAttribute("name");
 	boolean fromMypage = (referer != null && referer.contains("mypage.jsp")); // 또는 마이페이지의 실제 URL 경로
-
+	
+	MemberDao mdao=new MemberDao();
+	int memberId=mdao.getMemberNumById((String)session.getAttribute("myid"));
+	WishListDao wdao=new WishListDao();
+	
+	List<WishListDto> list=wdao.getWishList(memberId);
 %>
 <div class="mypage-content">
         <div class="content-title">
@@ -218,42 +263,55 @@
         <div class="product-type">
             <div class="product-type-item">이미지</div>
             <div class="product-type-item">기본정보</div>
-            <div class="product-type-item">사이즈</div>
-            <div class="product-type-item">컬러</div>
             <div class="product-type-item">선택</div>
         </div>
         <div id="product-list">
             <!-- 상품 행 템플릿 -->
-            <% for(int i = 0; i < 5; i++) { %>
-            <div class="product-row">
-                <div class="product-type-item">
-                    <img src="SemiImg/footerLogo.png" alt="Product Image" class="product-image">
-                </div>
-                <div class="product-info product-type-item" style="text-align: center;">
-                    <div class="product-company"><b>아우터</b></div>
-                    <div class="product-name">상품명</div>
-                    <div class="product-price">99,000원</div>
-                </div>
-                <div class="product-type-item">
-                    <span>S, M, L</span>
-                </div>
-                <div class="product-type-item">
-                    <span>블랙, 화이트</span>
-                </div>
-                <div class="product-type-item">
-                    <button class="btn btn-sm btn-outline-dark" style="font-size: 11px; margin-bottom: 15px;">장바구니 추가</button>
-                    <button class="btn btn-sm btn-outline-danger" style="font-size: 11px;">위시리스트에서 제거</button>
-                </div>
-            </div>
-            <%}
+            <%  
+            	if(list.size()==0){%>
+            		 <!-- 빈 위시리스트 메시지 -->
+			        <div class="empty-wishlist" style="display: none;">
+			            <i class="bi bi-heart" style="font-size: 48px; margin-bottom: 20px;"></i>
+			            <h4>위시리스트가 비어있습니다</h4>
+			            <p>마음에 드는 상품을 하트 아이콘을 눌러 추가해보세요!</p>
+			        </div>
+            	<%}else{
+            	for(int i = 0; i < list.size(); i++) {
+            		WishListDto wdto=list.get(i);
+            		ProductDto pdto=wdto.getProduct();
+            	%>
+            		 <div class="product-row">
+            		 
+					    <div class="product-type-item">
+					        <img src="<%=pdto.getMainImageUrl() %>" alt="Product Image" class="product-image">
+					    </div>
+					    <div class="product-info product-type-item" style="text-align: center;">
+					    	
+					        <div class="product-company"><b><%=pdto.getCategory() %></b></div>
+					        <div class="product-name"><%=pdto.getProductName() %></div>
+					        <div class="product-price">
+					        <%
+							    BigDecimal price = pdto.getPrice();
+							    DecimalFormat df = new DecimalFormat("#,###");
+							    String formattedPrice = df.format(price.setScale(0, BigDecimal.ROUND_DOWN)); // 천 단위 콤마 추가 및 소수점 이하 내림 처리
+							%>
+					        <%=formattedPrice %>원
+					        </div>
+					    </div>
+					    <div class="product-type-item">
+					   
+					        <button class="btn btn-sm btn-outline-danger" style="font-size: 11px;"
+					         onclick="funcdel(<%=wdto.getNum() %>)">
+					        위시리스트에서 제거
+					        </button>
+					        
+					    </div>
+					</div>
+            		
+            	<%}
             %>
-        
-        <!-- 빈 위시리스트 메시지 -->
-        <div class="empty-wishlist" style="display: none;">
-            <i class="bi bi-heart" style="font-size: 48px; margin-bottom: 20px;"></i>
-            <h4>위시리스트가 비어있습니다</h4>
-            <p>마음에 드는 상품을 하트 아이콘을 눌러 추가해보세요!</p>
-        </div>
+            <%}
+            %>        
     </div>
 </div>
 </div>
@@ -280,7 +338,11 @@ $(function () {
     
     // 초기 체크
     checkEmptyWishlist();
+    
+  
+   
 });
+
 
 window.addEventListener("scroll", function () {
     const mypage = document.querySelector(".mypage-content");
@@ -292,6 +354,24 @@ window.addEventListener("scroll", function () {
       mypage.style.top = "150px";
     }
   });
+function funcdel(num){
+	  
+	  if(confirm("위시리스트에서 삭제하시겠습니까?")){
+		  $.ajax({
+			  url:'category/deletewish.jsp',
+			  type:'POST',
+			  data:{
+				  num:num
+			  },
+			  success:function(response){
+				  alert("삭제되었습니다");
+				  location.reload();
+			  },error:function(xhr,status,error){
+				  alert("오류 발생했다");
+			  }
+		  });
+	  }
+}
 </script>
 </body>
 </html>

@@ -49,7 +49,7 @@ function loadMoreItems() {
 	          const el = document.createElement("li");
 	          el.innerHTML =
 	            "<div class='item'>" +
-	              "<a href='/Semiproject/shop/sangpumpage.jsp'>" +
+	              "<a href='/SemiProject/index.jsp?main=shop/sangpumpage.jsp'>" +
 	                "<img src='" + item.mainImageUrl + "' alt=''>" +  // 이미지 경로
 	              "</a>" +
 	            "</div>" +
@@ -280,14 +280,14 @@ function loadMoreItems() {
   	<% for (ProductDto dto : list) { %>
 <li>
     <div class="item">
-        <a href="<%=request.getContextPath()%>/shop/sangpumpage.jsp?product_id=<%=dto.getProductId()%>">
+        <a href="<%=request.getContextPath()%>/index.jsp?main=shop/sangpumpage.jsp?product_id=<%=dto.getProductId()%>">
             <img alt="" src="<%=dto.getMainImageUrl()%>">
         </a>
     </div>
     <div class="item-coment">
         <div class="item-category"><%=dto.getCategory()%></div>
         <div class="item-name"><%=dto.getProductName()%></div>
-        <div class="item-price"><%=dto.getPrice()%>원</div>
+        <div class="item-price"><%=String.format("%,d", dto.getPrice().intValue())%>원</div>
         <div class="item-heart">
             <i class="bi bi-heart"></i>&nbsp; <%=dto.getLikeCount()%> &nbsp;
             <i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp; <%=dto.getViewCount()%>

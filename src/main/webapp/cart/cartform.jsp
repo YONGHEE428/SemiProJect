@@ -218,6 +218,33 @@ body {
   padding: 7px 14px;
   border: 1px solid #e6e6e6;
 }
+   	/* 상단바 */
+    .mypage-content{
+    	height:60px;
+    	line-height:60px;
+    	top:150px;
+    	position:fixed;
+		width:100%;
+		min-height: 5px;
+		font-weight: bold;
+		text-align: center;
+		background-color: white;
+		transition: top 0.3s ease;
+		
+	}
+.content-title > ul{
+	display: flex;
+	justify-content: center;
+	gap : 170px;
+	}
+	.content-title > ul > li >a{
+		color:gray;
+		text-decoration: none;
+	}
+	.content-title > ul > li > a:hover{
+		color:black;
+		border-bottom: 3px solid black;
+	}
 </style>
 
 <script type="text/javascript">

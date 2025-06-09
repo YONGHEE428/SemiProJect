@@ -9,14 +9,6 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <style>
-/* HTML, BODY 기본 스타일 초기화 및 전체 높이/너비 설정 */
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%; /* 뷰포트 전체 높이 사용 */
-    width: 100%;  /* 뷰포트 전체 너비 사용 */
-}
-
 /* 기존 스타일은 그대로 유지 */
 body {
     font-family: sans-serif;
@@ -36,7 +28,6 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0 auto;
 }
 
 h1 {
@@ -426,6 +417,7 @@ h1 {
                 data: { productId: productId },
                 dataType: "json",
                 success: function(response) {
+                    console.log("AJAX Response:", response);
                     if (response && response.productId) { // productId가 유효한 경우만 처리
                         // 1. 이미지 미리보기 업데이트
                         if (response.mainImageUrl) {
@@ -438,15 +430,24 @@ h1 {
                         $("#productPrice").val(response.price || ""); // BigDecimal이 문자열로 잘 들어감
                         if (response.category) {
                             $("#selectedCategory").val(response.category);
+                            console.log("Category set to hidden input:", $("#selectedCategory").val());
                             // 선택된 카테고리 시각적으로 표시
                             $("#categoryContainer .category-option").removeClass("selected");
-                            $(`.category-option[data-value='${response.category}']`).addClass("selected");
+                            // 변경: 각 카테고리 옵션을 반복하여 선택
+                            $("#categoryContainer .category-option").each(function() {
+                                if ($(this).data("value") === response.category) {
+                                    $(this).addClass("selected");
+                                    console.log("Category selected by iteration:", $(this).data("value"));
+                                    return false; // 루프 중단
+                                }
+                            });
                         }
 
                         // 3. 상품 상세 정보 채우기
                         $("#productDetailTextarea").val(response.description || "");
 
                         // 4. 상품 옵션 채우기 (동적으로 추가)
+                        console.log("Processing options:", response.options);
                         $("#productOptionsContainer").empty(); // 기존에 HTML에 있던 기본 항목 제거
                         optionItemIndex = 0; // 인덱스 초기화
                         if (response.options && response.options.length > 0) {
@@ -503,9 +504,6 @@ h1 {
                         if (response && response.mainImageUrl) {
                             $("#imagePreview").attr("src", response.mainImageUrl).show();
                             $("#imagePreviewContainer .image-placeholder").hide();
-                        } else {
-                             $("#imagePreview").attr("src", "#").hide();
-                             $("#imagePreviewContainer .image-placeholder").show();
                         }
                     },
                     error: function() {
@@ -548,31 +546,40 @@ h1 {
 
       // 옵션 항목을 추가하는 함수
       function addOptionItem(optionData = {}) {
+        console.log("addOptionItem called with:", optionData, "Current optionItemIndex:", optionItemIndex);
         const colorVal = optionData.color || '';
         const sizeVal = optionData.size || '';
         const quantityVal = optionData.stockQuantity !== undefined ? optionData.stockQuantity : 0;
+        console.log("Extracted values - Color: " + colorVal + ", Size: " + sizeVal + ", Quantity: " + quantityVal);
 
-        const optionItemHtml = `
-            <div class="product-option-item" data-item-index="${optionItemIndex}">
-                <div class="option-item-header">
-                    <h3>옵션 #${optionItemIndex + 1}</h3>
-                    <button type="button" class="btn-remove-option-item">항목 삭제</button>
-                </div>
-                <div class="form-group">
-                    <label for="option_color_${optionItemIndex}">색상 정보:</label>
-                    <input type="text" name="options_color[]" id="option_color_${optionItemIndex}" placeholder="예: 빨강" value="${colorVal}">
-                </div>
-                <div class="form-group">
-                    <label for="option_size_${optionItemIndex}">사이즈 정보:</label>
-                    <input type="text" name="options_size[]" id="option_size_${optionItemIndex}" placeholder="예: M" value="${sizeVal}">
-                </div>
-                <div class="form-group">
-                    <label for="option_quantity_${optionItemIndex}">상품 수량:</label>
-                    <input type="number" name="options_quantity[]" id="option_quantity_${optionItemIndex}" placeholder="예: 10" value="${quantityVal}" min="0">
-                </div>
-            </div>
-        `;
+        let optionItemHtml = '';
+        optionItemHtml += '<div class="product-option-item" data-item-index="' + optionItemIndex + '">';
+        optionItemHtml += '    <div class="option-item-header">';
+        optionItemHtml += '        <h3>옵션 #' + (optionItemIndex + 1) + '</h3>';
+        optionItemHtml += '        <button type="button" class="btn-remove-option-item">항목 삭제</button>';
+        optionItemHtml += '    </div>';
+        optionItemHtml += '    <div class="form-group">';
+        optionItemHtml += '        <label for="option_color_' + optionItemIndex + '">색상 정보:</label>';
+        optionItemHtml += '        <input type="text" name="options_color[]" id="option_color_' + optionItemIndex + '" placeholder="예: 빨강" value="' + colorVal + '">';
+        optionItemHtml += '    </div>';
+        optionItemHtml += '    <div class="form-group">';
+        optionItemHtml += '        <label for="option_size_' + optionItemIndex + '">사이즈 정보:</label>';
+        optionItemHtml += '        <input type="text" name="options_size[]" id="option_size_' + optionItemIndex + '" placeholder="예: M" value="' + sizeVal + '">';
+        optionItemHtml += '    </div>';
+        optionItemHtml += '    <div class="form-group">';
+        optionItemHtml += '        <label for="option_quantity_' + optionItemIndex + '">상품 수량:</label>';
+        optionItemHtml += '        <input type="number" name="options_quantity[]" id="option_quantity_' + optionItemIndex + '" placeholder="예: 10" value="' + quantityVal + '" min="0">';
+        optionItemHtml += '    </div>';
+        optionItemHtml += '</div>';
+
         $("#productOptionsContainer").append(optionItemHtml);
+
+        // 새롭게 추가된 요소의 값 설정
+        const currentOptionElement = $('div[data-item-index="' + optionItemIndex + '"]');
+        console.log("Color input value after append and set:", currentOptionElement.find('input[name="options_color[]"]').val());
+        console.log("Size input value after append and set:", currentOptionElement.find('input[name="options_size[]"]').val());
+        console.log("Quantity input value after append and set:", currentOptionElement.find('input[name="options_quantity[]"]').val());
+        
         optionItemIndex++; // 인덱스 증가
         renumberOptionItemHeadings(); // 새 항목 추가 후 즉시 번호 재정렬
       }

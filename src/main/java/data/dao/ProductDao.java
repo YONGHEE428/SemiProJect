@@ -65,16 +65,25 @@ public class ProductDao {
             productDto.setProductId(generatedProductId); // DTO에 최종 ID 설정
 
             // 기존 옵션 삭제 후 새로 삽입 (상품 ID가 있는 경우에만)
-            if (productDto.getProductId() > 0) {
-                String deleteOptionsSql = "DELETE FROM product_option WHERE product_id = ?";
-                try (PreparedStatement pstmtDelete = conn.prepareStatement(deleteOptionsSql)) {
-                    pstmtDelete.setInt(1, productDto.getProductId());
-                    pstmtDelete.executeUpdate();
-                }
-            }
+            // 상품 수정 시 기존 옵션을 삭제하는 방식은 FOREIGN KEY 제약 조건 위반 가능성 있음
+            // 이 부분은 향후 옵션 업데이트 로직으로 변경 필요
+            // if (productDto.getProductId() > 0) {
+            //     String deleteOptionsSql = "DELETE FROM product_option WHERE product_id = ?";
+            //     try (PreparedStatement pstmtDelete = conn.prepareStatement(deleteOptionsSql)) {
+            //         pstmtDelete.setInt(1, productDto.getProductId());
+            //         pstmtDelete.executeUpdate();
+            //     }
+            // }
 
             if (optionList != null && !optionList.isEmpty()) {
-                String sqlOption = "INSERT INTO product_option (product_id, color, size, stock_quantity) VALUES (?, ?, ?, ?)";
+                // 기존: String sqlOption = "INSERT INTO product_option (product_id, color, size, stock_quantity) VALUES (?, ?, ?, ?)";
+                // 변경: ON DUPLICATE KEY UPDATE를 사용하여 중복 시 업데이트, 없으면 삽입
+                String sqlOption = "INSERT INTO product_option (product_id, color, size, stock_quantity) " +
+                                   "VALUES (?, ?, ?, ?) " +
+                                   "ON DUPLICATE KEY UPDATE stock_quantity = VALUES(stock_quantity), color = VALUES(color), size = VALUES(size)";
+                // Note: color와 size는 ON DUPLICATE KEY UPDATE 절에 포함되지 않아도 됩니다. (unique key의 일부이므로 변경되지 않음)
+                // 그러나 명시적으로 포함해도 문제 없습니다. 주된 목적은 stock_quantity 업데이트.
+
                 pstmtOption = conn.prepareStatement(sqlOption);
 
                 for (ProductOptionDto option : optionList) {
@@ -417,7 +426,7 @@ public class ProductDao {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		 
 	}
 	
 	// 페이징 처리된 상품 목록을 가져오는 메서드 (JSON 생성용)
@@ -458,82 +467,46 @@ public class ProductDao {
 
 	    return productList;
 	}
-	//페이징,옵션 같이 가져오는 메서드
-	public List<ProductDto> getProductsWithOptionsByCategoryWithPaging(String categoryName, int page, int pageSize) {
-	    Map<Integer, ProductDto> productMap = new LinkedHashMap<>();
+
+	public List<ProductDto> getProductsByCategory(String category1, String catgory2, int page, int pageSize) {
+	    List<ProductDto> productList = new ArrayList<>();
 	    Connection conn = null;
 	    PreparedStatement pstmt = null;
 	    ResultSet rs = null;
 
 	    int offset = (page - 1) * pageSize;
 
-	    StringBuilder sql = new StringBuilder(
-	        "SELECT p.product_id, p.product_name, p.price, p.category, p.main_image_url, p.description, p.registered_at, p.updated_at, " +
-	        "p.like_count, p.view_count, " + // like_count와 view_count 추가
-	        "po.option_id, po.color, po.size, po.stock_quantity " +
-	        "FROM product p " +
-	        "LEFT JOIN product_option po ON p.product_id = po.product_id "
-	    );
-
-	    boolean hasCategory = categoryName != null && !categoryName.trim().isEmpty() && !"전체".equalsIgnoreCase(categoryName);
-	    if (hasCategory) {
-	        sql.append("WHERE p.category = ? ");
-	    }
-
-	    sql.append("ORDER BY p.product_id DESC LIMIT ? OFFSET ?");
+	    String sql = "SELECT product_id, product_name, price, main_image_url, category, like_count, view_count FROM product WHERE category IN (?, ?) ORDER BY product_id DESC LIMIT ?, ?";
 
 	    try {
 	        conn = db.getConnection();
-	        pstmt = conn.prepareStatement(sql.toString());
-
-	        int idx = 1;
-	        if (hasCategory) {
-	            pstmt.setString(idx++, categoryName);
-	        }
-	        pstmt.setInt(idx++, pageSize);
-	        pstmt.setInt(idx, offset);
-
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, category1);
+	        pstmt.setString(2, catgory2);
+	        pstmt.setInt(3, offset);
+	        pstmt.setInt(4, pageSize);
+	       
 	        rs = pstmt.executeQuery();
 
 	        while (rs.next()) {
-	            int productId = rs.getInt("product_id");
-	            ProductDto product = productMap.get(productId);
-	            if (product == null) {
-	                product = new ProductDto();
-	                product.setProductId(productId);
-	                product.setProductName(rs.getString("product_name"));
-	                product.setPrice(rs.getBigDecimal("price"));
-	                product.setCategory(rs.getString("category"));
-	                product.setMainImageUrl(rs.getString("main_image_url"));
-	                product.setDescription(rs.getString("description"));
-	                product.setRegisteredAt(rs.getTimestamp("registered_at"));
-	                product.setUpdatedAt(rs.getTimestamp("updated_at"));
-	                product.setLikeCout(rs.getString("like_count")); // like_count 설정
-	                product.setViewCount(rs.getString("view_count")); // view_count 설정
-	                product.setOptions(new ArrayList<>());
-	                productMap.put(productId, product);
-	            }
-
-	            if (rs.getObject("option_id") != null) {
-	                ProductOptionDto option = new ProductOptionDto();
-	                option.setOptionId(rs.getInt("option_id"));
-	                option.setProductId(productId);
-	                option.setColor(rs.getString("color"));
-	                option.setSize(rs.getString("size"));  
-	                option.setStockQuantity(rs.getInt("stock_quantity"));
-	                product.getOptions().add(option);
-	            }
+	            ProductDto dto = new ProductDto();
+	            dto.setProductId(rs.getInt("product_id"));
+	            dto.setProductName(rs.getString("product_name"));
+	            dto.setPrice(rs.getBigDecimal("price"));
+	            dto.setMainImageUrl(rs.getString("main_image_url"));
+	            dto.setCategory(rs.getString("category"));
+	            dto.setLikeCout(rs.getString("like_count"));
+	            dto.setViewCount(rs.getString("view_count"));
+	            productList.add(dto);
 	        }
-
 	    } catch (SQLException e) {
-	        System.err.println("페이징 상품+옵션 조회 오류: " + e.getMessage());
+	        System.err.println("페이징 상품 조회 오류: " + e.getMessage());
 	        e.printStackTrace();
 	    } finally {
 	        db.dbClose(rs, pstmt, conn);
 	    }
 
-	    return new ArrayList<>(productMap.values());
+	    return productList;
 	}
-
 
 }

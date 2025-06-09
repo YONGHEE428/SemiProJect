@@ -174,7 +174,8 @@
 	int productId=(Integer)session.getAttribute("productId");
 	List<ProductDto> list=pdao.getProductsWithOptionsByCategory(categoryName);
 	
-	
+	String category1 = request.getParameter("category1");
+	String category2 = request.getParameter("category2");
 	%> 
   $(function () {
 	    // 하트 클릭 (동적 요소 대응)
@@ -232,7 +233,7 @@ function loadInitialItems() {
     $.ajax({
         type: "GET",
         dataType: "json",
-        url: "/SemiProject/data/items.jsp?page=1",  // 페이지 1에서 16개 로드
+        url: "/SemiProject/data/optionitems.jsp?page=1&category1=" + "<%=category1%>" + "&category2=" + "<%=category2%>",
         success: function(data) {
             // 데이터가 없으면 로딩 종료
             if (data.length === 0) {
@@ -247,7 +248,7 @@ function loadInitialItems() {
                 el.innerHTML =
                     "<div class='product-card' data-product-id='" + item.productId + "'>" +
                     "<div class='item'>" +
-                    "<a href='/Semiproject/shop/sangpumpage.jsp'>" +
+                    "<a href='/SemiProject/index.jsp?main=shop/sangpumpage.jsp'>" +
                     "<img src='" + item.mainImageUrl + "' alt='' class='product-image'>" +  // 상품 이미지
                     "</a>" +
                     "</div>" +
@@ -283,7 +284,7 @@ function loadMoreItems() {
     $.ajax({
         type: "GET",
         dataType: "json",
-        url: "/SemiProject/data/items.jsp?page=" + page,  // page는 서버에서 다음 데이터를 요청하는 파라미터
+        url: "/SemiProject/data/optionitems.jsp?page="+page+"&category1=" + "<%=category1%>" + "&category2=" + "<%=category2%>",  // page는 서버에서 다음 데이터를 요청하는 파라미터
         success: function(data) {
             setTimeout(() => {
                 // 데이터가 없으면 로딩 종료
@@ -383,33 +384,33 @@ window.onscroll = function() {
         </li>
     <li class="divider"></li>  
   <li class="nav-item dropdown" >
-  <a class="category-link" href="index.jsp?main=category/top.jsp" role="button" >TOP</a>
+  <a class="category-link" href="index.jsp?main=category/top.jsp&category1=티셔츠&category2=아우터" role="button" >TOP</a>
   <!-- TOP에서 드랍다운 -->
   		<ul class="dropdown-menu">
-    		<li><a class="dropdown-item" href="#">티셔츠</a></li>
-    		<li><a class="dropdown-item" href="#">아우터</a></li>
+    		<li><a class="dropdown-item" href="index.jsp?main=category/top.jsp&category1=티셔츠">티셔츠</a></li>
+    		<li><a class="dropdown-item" href="index.jsp?main=category/top.jsp&category1=아우터">아우터</a></li>
     		
   		</ul>
  </li>
 
         <li class="divider"></li>
         <li class="dropdown" >
-            <a href="index.jsp?main=category/bottom.jsp" class="category-link"  >BOTTOM</a>
+            <a href="index.jsp?main=category/bottom.jsp&category1=팬츠&category2=치마" class="category-link"  >BOTTOM</a>
             <ul class="dropdown-menu">
-                <li><a href="#">팬츠</a></li>
-                <li><a href="#">치마</a></li>
+                <li><a href="index.jsp?main=category/bottom.jsp&category1=팬츠">팬츠</a></li>
+                <li><a href="index.jsp?main=category/bottom.jsp&category1=치마">치마</a></li>
                 
             </ul>
         </li>
         <li class="divider"></li>
         <li class="dropdown" >
-            <a href="index.jsp?main=category/accesories.jsp" class="category-link" >ACCESORIES</a>
+            <a href="index.jsp?main=category/accesories.jsp&category1=악세서리" class="category-link" >ACCESORIES</a>
            
         </li>
        
         <li class="divider"></li>
         <li class="dropdown" style="background-color:#2c3e50; border-radius: 20px;">
-            <a href="index.jsp?main=category/shoes.jsp" class="category-link" style="color: white;">SHOES</a>
+            <a href="index.jsp?main=category/shoes.jsp&category1=신발" class="category-link" style="color: white;">SHOES</a>
         </li>
     </ul>
 </div>
