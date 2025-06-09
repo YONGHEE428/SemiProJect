@@ -616,6 +616,7 @@ keyframes spin {to { transform:rotate(360deg);
         $(function(){
             // 결제 수단 선택
             $(".payment-method-btn").click(function() {
+            	
                 $(".payment-method-btn").removeClass("active");
                 $(this).addClass("active");
                 var selectedPay = $(this).text().trim();
@@ -655,8 +656,7 @@ keyframes spin {to { transform:rotate(360deg);
             $("#sameinfo").click(function(){
                 if($(this).is(":checked")){
                     $("#name").val("<%=name%>");
-                    $("#hp").val("<%=stk.nextToken()%>"+"<%=stk.nextToken()%>"+"<%=stk.nextToken()%>
-		");
+                    $("#hp").val("<%=stk.nextToken()%>"+"<%=stk.nextToken()%>"+"<%=stk.nextToken()%>");
 						} else {
 							$("#name").val("");
 							$("#hp").val("");
