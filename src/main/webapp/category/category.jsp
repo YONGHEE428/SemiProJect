@@ -172,7 +172,6 @@ $(function () {
                 url: "category/likeupdate.jsp",
                 type: "POST",
                 data: { productId: productId,
-                        optionId:optionId,
                         action: action},
                 success: function () {
                     if (isFilled) {
@@ -209,7 +208,7 @@ $(function () {
         $.ajax({
             type: "GET",
             dataType: "json",
-            url: "/SemiProject/data/optionitems.jsp?page=1",  // 페이지 1에서 16개 로드
+            url: "/SemiProject/data/items.jsp?page=1",  // 페이지 1에서 16개 로드
             success: function(data) {
             	 console.log(data); 
                 // 데이터가 없으면 로딩 종료
@@ -223,7 +222,7 @@ $(function () {
                     const el = document.createElement("div");
                     el.classList.add("col-3");  // 상품 카드 스타일을 위한 클래스 추가
                     el.innerHTML =
-                        "<div class='product-card' data-product-id='"+item.productId +"' data-option-id='"+productOptionId+"'>" +
+                        "<div class='product-card' data-product-id='"+item.productId +"'>" +
                         "<div class='item'>" +
                         "<a href='/Semiproject/shop/sangpumpage.jsp'>" +
                         "<img src='" + item.mainImageUrl + "' alt='' class='product-image'>" +  // 상품 이미지
@@ -259,7 +258,7 @@ $(function () {
         $.ajax({
             type: "GET",
             dataType: "json",
-            url: "/SemiProject/data/optionitems.jsp?page=" + page,  // page는 서버에서 다음 데이터를 요청하는 파라미터
+            url: "/SemiProject/data/items.jsp?page=" + page,  // page는 서버에서 다음 데이터를 요청하는 파라미터
             success: function(data) {
                 setTimeout(() => {
                     // 데이터가 없으면 로딩 종료
@@ -275,7 +274,7 @@ $(function () {
                         const el = document.createElement("div");
                         el.classList.add("col-3");  // 상품 카드 스타일을 위한 클래스 추가
                         el.innerHTML =
-                            "<div class='product-card' data-product-id='" + item.productId + "' data-option-id='"+productOptionId+"'>" +
+                            "<div class='product-card' data-product-id='" + item.productId + "'>" +
                             "<div class='item'>" +
                             "<a href='/Semiproject/shop/sangpumpage.jsp'>" +
                             "<img src='" + item.mainImageUrl + "' alt='' class='product-image'>" +  // 상품 이미지

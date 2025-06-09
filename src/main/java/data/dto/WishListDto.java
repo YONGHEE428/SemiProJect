@@ -2,19 +2,20 @@ package data.dto;
 
 public class WishListDto {
 	private String num;
-	private String memberId;
+	private int memberId;
 	private int productId;
-	private int optionId;
+	private ProductDto product;
+	
 	public String getNum() {
 		return num;
 	}
 	public void setNum(String num) {
 		this.num = num;
 	}
-	public String getMemberId() {
+	public int getMemberId() {
 		return memberId;
 	}
-	public void setMemberId(String memberId) {
+	public void setMemberId(int memberId) {
 		this.memberId = memberId;
 	}
 	public int getProductId() {
@@ -23,10 +24,12 @@ public class WishListDto {
 	public void setProductId(int productId) {
 		this.productId = productId;
 	}
-	public int getOptionId() {
-		return optionId;
+	public ProductDto getProduct() {
+		return product;
 	}
-	public void setOptionId(int optionId) {
-		this.optionId = optionId;
+	public void setProduct(ProductDto product) {
+		this.product = product;
 	}
+	
+	
 }
