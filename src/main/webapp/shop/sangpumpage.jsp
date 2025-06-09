@@ -258,6 +258,37 @@
 }
   </style>
 </head>
+<%@ page import="java.sql.*" %>
+<%
+  request.setCharacterEncoding("UTF-8");
+
+  int productId = Integer.parseInt(request.getParameter("product_id"));
+
+  // DB 연결
+  Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/yourdb", "root", "password");
+
+  // 상품 정보
+  PreparedStatement ps = conn.prepareStatement("SELECT * FROM product WHERE product_id = ?");
+  ps.setInt(1, productId);
+  ResultSet rs = ps.executeQuery();
+
+  String productName = "", imageUrl = "", description = "";
+  int price = 0;
+
+  if (rs.next()) {
+    productName = rs.getString("product_name");
+    imageUrl = rs.getString("main_image_url");
+    description = rs.getString("description");
+    price = rs.getInt("price");
+  }
+  rs.close();
+  ps.close();
+
+  // 옵션 정보
+  PreparedStatement optionPs = conn.prepareStatement("SELECT * FROM product_option WHERE product_id = ?");
+  optionPs.setInt(1, productId);
+  ResultSet optionRs = optionPs.executeQuery();
+%>
 <body>
 
 <!-- Product Layout -->
