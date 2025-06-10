@@ -326,7 +326,7 @@ $(function () {
                             "<div class='product-name' title='"+item.productName+"'>" + item.productName + "</div>" +
                             "<div class='product-price'>" + formatPrice(item.price) + "원</div>" + // 가격 그대로 출력
                             "<div class='item-heart'>" +
-                            "<i class='bi bi-heart heart' style='cursor: pointer; color: black;'>" +
+                            "<i class='bi bi-heart heart' style='cursor: pointer; color: black; font-style: normal; font-size: 15px;'>&nbsp;" +
                             (item.likeCount == null ? 0 : item.likeCount) + "</i>&nbsp;" +  // 좋아요 수
                             "<i class='bi bi-eye' style='font-size: 16px;'></i>&nbsp; " + item.viewCount +  // 조회수
                             "</div>" +

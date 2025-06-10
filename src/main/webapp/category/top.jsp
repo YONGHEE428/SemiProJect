@@ -1,7 +1,4 @@
 
-<%@page import="data.dto.WishListDto"%>
-<%@page import="data.dao.MemberDao"%>
-<%@page import="data.dao.WishListDao"%>
 <%@page import="data.dto.ProductDto"%>
 <%@page import="data.dao.ProductDao"%>
 <%@page import="java.util.Base64"%>
@@ -152,21 +149,9 @@
     </style>
    
   <script type="text/javascript">
-  <%
-	WishListDao wdao=new WishListDao();
-	MemberDao mdao=new MemberDao();
+   <%
 	String id=(String)session.getAttribute("myid");
-	if(id!=null&&!id.isEmpty()){
-		int memberId=mdao.getMemberNumById(id);
-		List<WishListDto> wishProductIds=wdao.getWishList(memberId);
-		List<Integer> productIds = new ArrayList<>();
-		
-		 for (WishListDto dto : wishProductIds) {
-		        productIds.add(dto.getProductId()); // getProductId() 메서드는 실제 DTO에 맞게 변경
-		    }
-		    request.setAttribute("productIds", productIds);
-	}
-		
+   
 	ProductDao pdao=new ProductDao();
 	String categoryName=(String)session.getAttribute("categoryName");
 	int productId=(Integer)session.getAttribute("productId");
@@ -174,11 +159,8 @@
 	
 	String category1 = request.getParameter("category1");
 	String category2 = request.getParameter("category2");
-	
 	%> 
   $(function () {
-	  var productIds = <%= new com.google.gson.Gson().toJson(request.getAttribute("productIds")) %>;
-	     console.log('Product IDs:', productIds);
 	    // 하트 클릭 (동적 요소 대응)
 	    $(document).on("click", ".heart", function () {
 	    	const heartIcon=$(this);
@@ -278,14 +260,6 @@ function loadInitialItems() {
                     "</div>" +
                     "</div>" +
                     "</div>";
-                    if (productIds.includes(item.productId)) {
-                        const heartIcon = el.querySelector(".heart");
-                        if (heartIcon) {
-                            heartIcon.classList.remove("bi-suit-heart");
-                            heartIcon.classList.add("bi-suit-heart-fill");
-                            heartIcon.style.color = "red";  // 빨간색으로 하트 색상 변경
-                        }
-                    }
                 container.appendChild(el);
             });
 
@@ -316,10 +290,16 @@ function loadMoreItems() {
                     return;
                 }
 
-                // 새 상품 추가
+                // 상품 목록에 처음 16개 아이템 추가
                 const container = document.getElementById("product-list");
                 data.forEach(item => {
                     const el = document.createElement("div");
+                    
+                    // 하트 관련 클래스와 색상 설정
+    	  	          const isWished = item.wish === true;
+    	  	          const heartClass = isWished ? "bi-heart-fill" : "bi-heart";
+    	  	          const heartColor = isWished ? "red" : "black";
+      	          
                     el.classList.add("col-3");  // 상품 카드 스타일을 위한 클래스 추가
                     el.innerHTML =
                         "<div class='product-card' data-product-id='" + item.productId + "'>" +
@@ -333,21 +313,15 @@ function loadMoreItems() {
                         "<div class='product-name'>" + item.productName + "</div>" +
                         "<div class='product-price'>" + formatPrice(item.price) + "원</div>" + // 가격 그대로 출력
                         "<div class='item-heart'>" +
-                        "<i class='bi bi-heart heart' style='cursor: pointer; color: black;'>" + 
-                        (item.likeCount == null ? 0 : item.likeCount) + "</i>&nbsp;" +  // 좋아요 수
+                        "<i class='bi " + heartClass + " heart' " +
+    	                  "style='cursor: pointer; color: " + heartColor + "; font-style:normal; font-size:15px;'" +
+    	                  "data-product-id='" + item.productId + "'>&nbsp;" +
+    	                  (item.likeCount == null ? 0 : item.likeCount) +
+    	                "</i>&nbsp; " +
                         "<i class='bi bi-eye' style='font-size: 16px;'></i>&nbsp; " + item.viewCount +  // 조회수
                         "</div>" +
                         "</div>" +
                         "</div>";
-                        if (productIds.includes(item.productId)) {
-                            const heartIcon = el.querySelector(".heart");
-                            if (heartIcon) {
-                                heartIcon.classList.remove("bi-suit-heart");
-                                heartIcon.classList.add("bi-suit-heart-fill");
-                                heartIcon.style.color = "red";  // 빨간색으로 하트 색상 변경
-                            }
-                        }
-                    // 새로 생성한 상품 카드를 상품 목록에 추가
                     container.appendChild(el);
                 });
 

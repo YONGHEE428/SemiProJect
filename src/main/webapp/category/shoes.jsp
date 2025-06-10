@@ -274,7 +274,7 @@ function loadInitialItems() {
               el.innerHTML =
                   "<div class='product-card' data-product-id='" + item.productId + "'>" +
                   "<div class='item'>" +
-                  "<a href='/SemiProject/index.jsp?main=shop/sangpumpage.jsp'>" +
+                  "<a href='/SemiProject/index.jsp?main=shop/sangpumpage.jsp&product_id="+item.productId+"'>" +
                   "<img src='" + item.mainImageUrl + "' alt='' class='product-image'>" +  // 상품 이미지
                   "</a>" +
                   "</div>" +
@@ -323,39 +323,37 @@ function loadMoreItems() {
 
                 // 새 상품 추가
                 const container = document.getElementById("product-list");
-                data.forEach(item => {
-                    const el = document.createElement("div");
-                    el.classList.add("col-3");  // 상품 카드 스타일을 위한 클래스 추가
-                    el.innerHTML =
-                        "<div class='product-card' data-product-id='" + item.productId + "'>" +
-                        "<div class='item'>" +
-                        "<a href='/SemiProject/index.jsp?main=shop/sangpumpage.jsp&product_id="+item.productId+"'>" +
-                        "<img src='" + item.mainImageUrl + "' alt='' class='product-image'>" +  // 상품 이미지
-                        "</a>" +
-                        "</div>" +
-                        "<div class='product-info'>" +
-                        "<div class='product-company'>" + item.category + "</div>" +
-                        "<div class='product-name'>" + item.productName + "</div>" +
-                        "<div class='product-price'>" + formatPrice(item.price) + "원</div>" + // 가격 그대로 출력
-                        "<div class='item-heart'>" +
-                        "<i class='bi bi-suit-heart heart' style='cursor: pointer; color: black;'>" + 
-                        (item.likeCount == null ? 0 : item.likeCount) + "</i>&nbsp;" +  // 좋아요 수
-                        "<i class='bi bi-eye' style='font-size: 16px;'></i>&nbsp; " + item.viewCount +  // 조회수
-                        "</div>" +
-                        "</div>" +
-                        "</div>";
-                        if (productIds.includes(item.productId)) {
-                            const heartIcon = el.querySelector(".heart");
-                            if (heartIcon) {
-                                heartIcon.classList.remove("bi-suit-heart");
-                                heartIcon.classList.add("bi-suit-heart-fill");
-                                heartIcon.style.color = "red";  // 빨간색으로 하트 색상 변경
-                            }
-                        }
-
-                    // 새로 생성한 상품 카드를 상품 목록에 추가
-                    container.appendChild(el);
-                });
+            data.forEach(item => {
+                const el = document.createElement("div");
+                // 하트 관련 클래스와 색상 설정
+	  	          const isWished = item.wish === true;
+	  	          const heartClass = isWished ? "bi-heart-fill" : "bi-heart";
+	  	          const heartColor = isWished ? "red" : "black";
+	          
+              el.classList.add("col-3");  // 상품 카드 스타일을 위한 클래스 추가
+              el.innerHTML =
+                  "<div class='product-card' data-product-id='" + item.productId + "'>" +
+                  "<div class='item'>" +
+                  "<a href='/SemiProject/index.jsp?main=shop/sangpumpage.jsp&product_id="+item.productId+"'>" +
+                  "<img src='" + item.mainImageUrl + "' alt='' class='product-image'>" +  // 상품 이미지
+                  "</a>" +
+                  "</div>" +
+                  "<div class='product-info'>" +
+                  "<div class='product-company'>" + item.category + "</div>" +
+                  "<div class='product-name'>" + item.productName + "</div>" +
+                  "<div class='product-price'>" + formatPrice(item.price) + "원</div>" + // 가격 그대로 출력
+                  "<div class='item-heart'>" +
+                  "<i class='bi " + heartClass + " heart' " +
+	                  "style='cursor: pointer; color: " + heartColor + "; font-style:normal; font-size:15px;'" +
+	                  "data-product-id='" + item.productId + "'>&nbsp;" +
+	                  (item.likeCount == null ? 0 : item.likeCount) +
+	                "</i>&nbsp; " +
+                  "<i class='bi bi-eye' style='font-size: 16px;'></i>&nbsp; " + item.viewCount +  // 조회수
+                  "</div>" +
+                  "</div>" +
+                  "</div>";
+              container.appendChild(el);
+          });
 
                 // 페이지 번호 증가
                 page++;
