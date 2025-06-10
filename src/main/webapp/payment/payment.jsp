@@ -399,10 +399,22 @@ body {
 	}
 
 	// 배송비 계산 (8만원 이상 무료, 미만 3000원)
-	int deliveryFee = totalProductPrice >= 80000 ? 0 : 3000;
+	int deliveryFee = totalProductPrice >= 80000 ? 0 : 10;
 	int totalPrice = totalProductPrice + deliveryFee;
 	
-	 
+	  //member_num
+   String memberNumStr = (String) session.getAttribute("num"); // String으로 가져오기
+	Integer member_num = null;
+	
+	if (memberNumStr != null && !memberNumStr.isEmpty()) {
+	    try {
+	        member_num = Integer.parseInt(memberNumStr); // Integer로 변환
+	    } catch (NumberFormatException e) {
+	        System.err.println("세션 'num' 값이 유효한 숫자가 아닙니다: " + memberNumStr);
+	    }
+	}
+
+   
 	%>
 
 	<!-- 헤더 -->
@@ -564,10 +576,10 @@ body {
 					<div class="col-12">
 						<label class="form-label fw-bold">배송 전 메시지</label> <select
 							class="form-select mb-3">
-							<option class="msg" id="message1">부재 시 경비실에 맡겨주세요.</option>
-							<option class="msg" id="message2">문 앞에 놔두고 가세요.</option>
-							<option class="msg" id="message3">배송 전 연락주세요.</option>
-							<option class="msg" id="message4">직접 입력</option>
+							<option class="msg" id="message1" value="부재 시 경비실에 맡겨주세요.">부재 시 경비실에 맡겨주세요.</option>
+							<option class="msg" id="message2" value="문 앞에 놔두고 가세요.">문 앞에 놔두고 가세요.</option>
+							<option class="msg" id="message3" value="배송 전 연락주세요.">배송 전 연락주세요.</option>
+							<option class="msg" id="message4" value="직접 입력">직접 입력</option>
 						</select>
 
 						<div class="form-floating" id="mymessage" style="display: none;">
@@ -630,8 +642,6 @@ body {
 	</div>
 
 	<script>
-	
-	
         $(function(){
             // 결제 수단 선택
             $(".payment-method-btn").click(function() {
@@ -680,23 +690,44 @@ body {
 						} else {
 							$("#name").val("");
 							$("#hp").val("");
+		                    $("#email").val("");
 						}
 					});
 		});
 
-		
+        function generateOrderNumber() {
+        		const pad = (n) => String(n).padStart(2, '0');
+        	    const now = new Date();
 
+        	    const year = String(now.getFullYear()).slice(-2);
+        	    const month = pad(now.getMonth() + 1);
+        	    const day = pad(now.getDate());
+        	    const hour = pad(now.getHours());
+        	    const minute = pad(now.getMinutes());
+        	    const second = pad(now.getSeconds());
+        	    const random = String(Math.floor(Math.random() * 1000)).padStart(3, '0');
+        	    const orderNum = "ORDER" + year + month + day + hour + minute + second + random;
+        	    console.log("최종 생성된 merchant_uid:", orderNum);
+
+        	    return orderNum;
+        }
+	
 		// 결제 요청
 		function payrequest() {
+		    const newMerchantUid = generateOrderNumber();
+		    console.log("생성된 merchant_uid:", newMerchantUid); 
 			const selectedPay = $("#selectedPay").val();
 			if (!selectedPay) {
 				alert("결제 수단을 선택해주세요.");
 				return;
 			}
-
+		 // 주문번호 생성
+			
+		    const memberNum = "<%= member_num %>"; // JSP에서 가져온 member_num을 JavaScript로 넘겨줍니다.
+		    console.log("1b. memberNum 확인: TYPE -", typeof memberNum, ", VALUE -", memberNum); // String, "2" 뜨는지 다시 확인
 			switch (selectedPay) {
 			case "카드결제":
-				cardPay();
+				cardPay(newMerchantUid, memberNum);
 				break;
 			case "네이버페이":
 				naverPay();
@@ -713,36 +744,28 @@ body {
 			default:
 				alert("지원하지 않는 결제 수단입니다.");
 			}
+			
 		}
-		// 주문번호 생성
-		function generateOrderNumber() {
-			const today = new Date();
-			const year = today.getFullYear().toString().slice(-2);
-			const month = String(today.getMonth() + 1).padStart(2, '0');
-			const day = String(today.getDate()).padStart(2, '0');
-			const hour = String(today.getHours()).padStart(2, '0');
-			const minute = String(today.getMinutes()).padStart(2, '0');
-			const second = String(today.getSeconds()).padStart(2, '0');
-			const random = Math.floor(Math.random() * 1000).toString()
-					.padStart(3, '0');
-
-			return `ORDER${year}${month}${day}${hour}${minute}${second}${random}`;
-		}
+		
 		// 카드결제
-		function cardPay() {
+		function cardPay(newMerchantUid, memberNum) {
+		    console.log("memberNum:", memberNum); // 이 메시지가 뜨는지 확인
+
 			/* 콘솔 */
 			console.log({
 			    pg: "kicc",
 			    pay_method: "card",
-			    merchant_uid: generateOrderNumber(),
+			    merchant_uid: newMerchantUid,
 			    name: '결제테스트',
 			    amount: <%= totalPrice %>, 
-			    buyer_email: '<%=email%>',
-			    buyer_name: '<%= name %>',
-			    buyer_tel: '<%= hp %>',
+			    buyer_email: $("#email").val(),
+			    buyer_name: $("#name").val(),
+			    buyer_tel: $("#hp").val(),
 			    buyer_addr: $("#userAddress").val()+$("#userDtlAddress").val(),
-			    buyer_postcode: $("#userPostCode").val(),
+			    buyer_postcode: $("#userPostCode").val()
+				
 			});
+			/*  */
 			
 			var IMP = window.IMP;
 			IMP.init('imp23623506');
@@ -750,17 +773,22 @@ body {
 			IMP.request_pay({
 				pg: "kicc",
 				pay_method: "card",
-				merchant_uid: generateOrderNumber(),
+				merchant_uid: newMerchantUid,
 				name: '결제테스트',
 				amount: <%=totalPrice%>,  // 실제 계산된 금액으로 변경
-				buyer_email: '<%=email%>',
-				buyer_name: '<%=name%>',
-				buyer_tel: '<%=hp%>',
+				buyer_email: $("#email").val(),
+			    buyer_name: $("#name").val(),
+			    buyer_tel: $("#hp").val(),
 				buyer_addr: $("#userAddress").val()+$("#userDtlAddress").val(),
 				buyer_postcode: $("#userPostCode").val(),
+
 			}, function(rsp) {
 				
 				if (rsp.success) {
+					//배송메세지 처리
+					  const deliveryMessage = $(".form-select").val() === "직접 입력" ?
+                              $("#mymessage textarea").val() :
+                              $(".form-select").val(); // option value를 사용하도록 수정
 					// 결제 성공 시 buyok 값 업데이트
 					$.ajax({
 						url: "updateBuyOk.jsp",
@@ -768,14 +796,28 @@ body {
 						data: {
 							"idxs": "<%=request.getParameter("idxs")%>",  // 선택상품 주문의 경우
 							"all": "<%=request.getParameter("all")%>",  // 전체상품 주문의 경우
-							"member_id": "<%=session.getAttribute("myid")%>"  // 전체상품 주문 시 필요
+							"member_Id": "<%=session.getAttribute("myid")%>",  // 전체상품 주문 시 필요
+							 // payment 테이블 저장을 위한 정보
+		                    "imp_uid": rsp.imp_uid,          // 아임포트 결제 고유 번호
+		                    "merchant_uid": rsp.merchant_uid,  // 상점 주문 번호
+		                    "totalPrice": rsp.paid_amount,     // 아임포트에서 실제 결제된 금액
+		                    "addr": rsp.buyer_addr,          // 구매자 주소
+		                    "delivery_msg": deliveryMessage, // 배송 메시지
+		                    "hp": rsp.buyer_tel,              // 구매자 연락처
+		                    "member_num":memberNum
 						},
 						success: function(response) {
-							alert('결제가 완료되었습니다.');
-							location.href = '../orderlist/orderlistform.jsp';
+							 if (response.trim() === "success") {
+			                        alert('결제가 완료되었습니다. 주문 목록으로 이동합니다.');
+			                        location.href = '../index.jsp?main=orderlist/orderlistform.jsp';
+			                    } else {
+			                        // 서버에서 에러 응답을 보냈을 경우
+			                        alert('결제는 완료되었으나 서버 처리 중 문제가 발생했습니다: ' + response);
+			                    }
 						},
 						error: function() {
-							alert('결제는 완료되었으나 상태 업데이트에 실패했습니다.');
+							 console.error("AJAX Error:", status, error);
+			                    alert('결제는 완료되었으나 주문 처리 중 오류가 발생했습니다. 고객센터에 문의하세요.');
 						}
 					});
 				} else {
@@ -786,14 +828,24 @@ body {
 
 		function naverPay() {
 			alert("공사 중입니다.");
-			
 		}
-
+		function kakaoPay(){
+			alert("공사 중입니다.");
+		}
+		function bankTransfer(){
+			alert("공사 중입니다.");
+		}
+		function tossPay(){
+			alert("공사 중입니다.");
+		}
 		function logout() {
 			alert("로그아웃 하셨습니다.");
 			location.href = "../login/logoutform.jsp";
 		}
 
+		 console.log("Name:", "<%=name%>");
+		    console.log("Email:", "<%=email%>");
+		    console.log("<%=member_num%>");
 	</script>
 </body>
 </html>

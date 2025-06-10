@@ -35,7 +35,7 @@ public class PaymentDao {
                 dto.setIdx(rs.getString("idx"));
                 dto.setImp_uid(rs.getString("imp_uid"));
                 dto.setMerchant_uid(rs.getString("merchant_uid"));
-                dto.setMember_num(rs.getString("member_num"));
+                dto.setMember_num(rs.getInt("member_num"));
                 dto.setAmount(rs.getInt("amount"));
                 dto.setAddr(rs.getString("addr"));
                 dto.setDelivery_msg(rs.getString("delivery_msg"));
@@ -63,7 +63,7 @@ public class PaymentDao {
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, dto.getImp_uid());
             pstmt.setString(2, dto.getMerchant_uid());
-            pstmt.setString(3, dto.getMember_num());
+            pstmt.setInt(3, dto.getMember_num());
             pstmt.setInt(4, dto.getAmount());
             pstmt.setString(5, dto.getAddr());
             pstmt.setString(6, dto.getDelivery_msg());
@@ -98,7 +98,7 @@ public class PaymentDao {
                 dto.setIdx(rs.getString("idx"));
                 dto.setImp_uid(rs.getString("imp_uid"));
                 dto.setMerchant_uid(rs.getString("merchant_uid"));
-                dto.setMember_num(rs.getString("member_num"));
+                dto.setMember_num(rs.getInt("member_num"));
                 dto.setAmount(rs.getInt("amount"));
                 dto.setAddr(rs.getString("addr"));
                 dto.setDelivery_msg(rs.getString("delivery_msg"));
@@ -157,7 +157,7 @@ public class PaymentDao {
                 dto.setIdx(rs.getString("idx"));
                 dto.setImp_uid(rs.getString("imp_uid"));
                 dto.setMerchant_uid(rs.getString("merchant_uid"));
-                dto.setMember_num(rs.getString("member_num"));
+                dto.setMember_num(rs.getInt("member_num"));
                 dto.setAmount(rs.getInt("amount"));
                 dto.setAddr(rs.getString("addr"));
                 dto.setDelivery_msg(rs.getString("delivery_msg"));

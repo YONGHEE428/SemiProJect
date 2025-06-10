@@ -12,7 +12,7 @@ public class PaymentService {
     private static final String API_SECRET = "your-api-secret";
     private PaymentDao dao = new PaymentDao();
 
-    public boolean processPayment(String memberNum, String impUid, String merchantUid, int expectedAmount) {
+    public boolean processPayment(int memberNum, String impUid, String merchantUid, int expectedAmount) {
         IamportClient client = new IamportClient(API_KEY, API_SECRET);
         try {
             IamportResponse<Payment> response = client.paymentByImpUid(impUid);
