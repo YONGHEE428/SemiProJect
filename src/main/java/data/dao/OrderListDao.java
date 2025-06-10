@@ -18,7 +18,7 @@ public class OrderListDao {
 
         String sqlOrders = "SELECT * FROM orders WHERE member_num = ? ORDER BY order_id DESC";
         String sqlItems =
-            "SELECT s.*, p.product_name, p.main_image, o.color, o.size " +
+            "SELECT s.*, p.product_name, p.main_image_url, o.color, o.size " +
             "FROM order_sangpum s " +
             "JOIN product p ON s.product_id = p.product_id " +
             "JOIN product_option o ON s.option_id = o.option_id " +
@@ -53,7 +53,7 @@ public class OrderListDao {
                         item.setCnt(rsItems.getInt("cnt"));
                         item.setPrice(rsItems.getInt("price"));
                         item.setProductName(rsItems.getString("product_name"));
-                        item.setProductImage(rsItems.getString("main_image")); // 상품 이미지
+                        item.setProductImage(rsItems.getString("main_image_url")); // 상품 이미지
                         item.setColor(rsItems.getString("color"));             // 색상
                         item.setSize(rsItems.getString("size"));               // 사이즈
                         items.add(item);
@@ -192,7 +192,7 @@ public class OrderListDao {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
 
-        String sql = "SELECT s.*, p.product_name, p.main_image, o.color, o.size " +
+        String sql = "SELECT s.*, p.product_name, p.main_image_url, o.color, o.size " +
                     "FROM order_sangpum s " +
                     "JOIN product p ON s.product_id = p.product_id " +
                     "JOIN product_option o ON s.option_id = o.option_id " +
@@ -210,7 +210,7 @@ public class OrderListDao {
                 item.setCnt(rs.getInt("cnt"));
                 item.setPrice(rs.getInt("price"));
                 item.setProductName(rs.getString("product_name"));
-                item.setProductImage(rs.getString("main_image"));
+                item.setProductImage(rs.getString("main_image_url"));
                 item.setColor(rs.getString("color"));
                 item.setSize(rs.getString("size"));
 
