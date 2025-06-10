@@ -59,7 +59,7 @@ public class PaymentVerifyServlet extends HttpServlet {
                 return;
             }
 
-            String memberNum = (String) session.getAttribute("member_num");
+            Integer memberNum = (Integer) session.getAttribute("member_num");
             if (memberNum == null) {
                 writeJson(response, false, "로그인이 필요한 서비스입니다.");
                 return;
