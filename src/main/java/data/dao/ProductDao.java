@@ -122,7 +122,7 @@ public class ProductDao {
 
         try {
             conn = db.getConnection();
-            String sql = "SELECT product_id, product_name, price, main_image_url, description, category, registered_at, updated_at FROM product WHERE product_id = ?";
+            String sql = "select * from product where product_id =?";
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, productId);
             rs = pstmt.executeQuery();
@@ -136,6 +136,8 @@ public class ProductDao {
                 productDto.setDescription(rs.getString("description"));
                 productDto.setCategory(rs.getString("category"));
                 productDto.setRegisteredAt(rs.getTimestamp("registered_at"));
+                productDto.setLikeCout(rs.getString("like_count"));
+                productDto.setViewCount(rs.getString("view_count"));
                 productDto.setUpdatedAt(rs.getTimestamp("updated_at"));
             }
         } catch (SQLException e) {

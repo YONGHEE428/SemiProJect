@@ -301,7 +301,7 @@
 					    <div class="product-type-item">
 					   
 					        <button class="btn btn-sm btn-outline-danger" style="font-size: 11px;"
-					         onclick="funcdel(<%=wdto.getNum() %>)">
+					         onclick="funcdel(<%=wdto.getProductId()%>)">
 					        위시리스트에서 제거
 					        </button>
 					        
@@ -354,24 +354,31 @@ window.addEventListener("scroll", function () {
       mypage.style.top = "150px";
     }
   });
+
+
+const memberId = <%= memberId %>;
+
 function funcdel(num){
-	  
-	  if(confirm("위시리스트에서 삭제하시겠습니까?")){
-		  $.ajax({
-			  url:'category/deletewish.jsp',
-			  type:'POST',
-			  data:{
-				  num:num
-			  },
-			  success:function(response){
-				  alert("삭제되었습니다");
-				  location.reload();
-			  },error:function(xhr,status,error){
-				  alert("오류 발생했다");
-			  }
-		  });
-	  }
+  if(confirm("위시리스트에서 삭제하시겠습니까?")){
+    $.ajax({
+      url:'category/deletewish.jsp',
+      type:'POST',
+      data:{
+        productId: num,
+        memberId: memberId
+      },
+      success:function(response){
+        alert("삭제되었습니다");
+        location.reload();
+      },
+      error:function(xhr, status, error){
+        alert("오류 발생했다");
+      }
+    });
+  }
 }
+
+
 </script>
 </body>
 </html>

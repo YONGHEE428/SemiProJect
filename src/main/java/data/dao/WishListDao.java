@@ -83,20 +83,20 @@ public class WishListDao {
 	    }
 	    return list;
 	}
-	public boolean deleteWishList(int num) {
+	public boolean deleteWishList(int memberId,int productId) {
 		Connection conn=db.getConnection();
 		PreparedStatement pstmt=null;
 		boolean result=false;
 		
-		String sql="delete from wishlist where num=?";
+		String sql="DELETE FROM wishlist WHERE member_id = ? AND product_id = ?";
 		try {
 			pstmt=conn.prepareStatement(sql);
-			pstmt.setInt(1, num);
+			pstmt.setInt(1, memberId);
+			 pstmt.setInt(2, productId);
 			int rowsAffected=pstmt.executeUpdate();
 			if(rowsAffected>0) {
 				result=true;
 			}
-			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -104,6 +104,33 @@ public class WishListDao {
 			db.dbClose(pstmt, conn);
 		}
 		return result;
+	}
+	
+	//위시르스트에 포함되어있는지 체크
+	public boolean checkWish(int memberId, int productId) {
+		Connection cn = db.getConnection();
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		boolean check = false;
+		
+		String sql = "select * from wishlist where member_id = ? and product_id = ?";
+		
+		try {
+			pst = cn.prepareStatement(sql);
+			pst.setInt(1, memberId);
+			pst.setInt(2, productId);
+			
+			rs = pst.executeQuery();
+			if(rs.next()) {
+				check = true;
+			}
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}finally{
+			db.dbClose(rs, pst, cn);
+		}
+		return check;
 	}
 	
 }
