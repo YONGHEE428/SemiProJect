@@ -77,11 +77,11 @@
 		display: flex;
 		gap:170px;
 	}
-	.content-title>ul>a{
+	.content-title>ul>li>a{
 		text-decoration: none;
 		color: gray;
 	}
-	.content-title>ul>a:hover{
+	.content-title>ul>li>a:hover{
 		color:black;
 		border-bottom: 3px solid black;
 	}
@@ -139,9 +139,9 @@
      <div class="mypage-content">
         <nav class="content-title">
         		<ul>
-        			<a href="index.jsp?main=category/catewish.jsp" class="Mywish">위시리스트</a>
-        			<a href="index.jsp?main=cart/cartform.jsp" class="MyCart">장바구니</a>
-        			<a href="index.jsp?main=orderlist/orderlistform.jsp" class="MybuyList">구매내역</a>
+        			<li><a href="index.jsp?main=category/catewish.jsp" class="Mywish">위시리스트</a></li>
+        			<li><a href="index.jsp?main=cart/cartform.jsp" class="MyCart">장바구니</a></li>
+        			<li><a href="index.jsp?main=orderlist/orderlistform.jsp" class="MybuyList">구매내역</a></li>
         		</ul>
        </nav>
     </div>

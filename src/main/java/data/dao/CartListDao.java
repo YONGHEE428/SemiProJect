@@ -11,6 +11,29 @@ public class CartListDao {
 
 	DBConnect db = new DBConnect();
 
+	//0. 장바구니 추가
+	public void InsertCartList(CartListDto dto) {
+		Connection cn = db.getConnection();
+		PreparedStatement pst = null;
+		
+		String sql = "insert into cartlist values (null, ?, ?, ?, ?, now(), 0)";
+		
+		try {
+			pst=cn.prepareStatement(sql);
+			pst.setInt(1, dto.getProduct_id());
+			pst.setInt(2,dto.getOption_id());
+			pst.setString(3, dto.getMember_id());
+			pst.setString(4, dto.getCnt());
+			pst.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			db.dbClose(pst, cn);
+			
+		}
+	}
+	
+	
 	// 1. 장바구니 목록 조회 (회원 이름 포함)
 	public List<CartListDto> getCartListByMember(String member_id) {
 		List<CartListDto> list = new ArrayList<>();
