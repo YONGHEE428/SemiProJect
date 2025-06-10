@@ -339,8 +339,6 @@ $(function () {
     // 초기 체크
     checkEmptyWishlist();
     
-  
-   
 });
 
 

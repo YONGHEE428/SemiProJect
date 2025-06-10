@@ -1,4 +1,7 @@
 
+<%@page import="data.dto.WishListDto"%>
+<%@page import="data.dao.MemberDao"%>
+<%@page import="data.dao.WishListDao"%>
 <%@page import="data.dto.ProductDto"%>
 <%@page import="data.dao.ProductDao"%>
 <%@page import="java.util.Base64"%>
@@ -167,8 +170,20 @@
    
   <script type="text/javascript">
    <%
+	WishListDao wdao=new WishListDao();
+	MemberDao mdao=new MemberDao();
 	String id=(String)session.getAttribute("myid");
-   
+	if(id!=null&&!id.isEmpty()){
+		int memberId=mdao.getMemberNumById(id);
+		List<WishListDto> wishProductIds=wdao.getWishList(memberId);
+		List<Integer> productIds = new ArrayList<>();
+		
+		 for (WishListDto dto : wishProductIds) {
+		        productIds.add(dto.getProductId()); // getProductId() 메서드는 실제 DTO에 맞게 변경
+		    }
+		    request.setAttribute("productIds", productIds);
+	}
+		
 	ProductDao pdao=new ProductDao();
 	String categoryName=(String)session.getAttribute("categoryName");
 	int productId=(Integer)session.getAttribute("productId");
@@ -249,6 +264,7 @@ function loadInitialItems() {
             const container = document.getElementById("product-list");
             data.forEach(item => {
                 const el = document.createElement("div");
+
                 // 하트 관련 클래스와 색상 설정
 	  	          const isWished = item.wish === true;
 	  	          const heartClass = isWished ? "bi-heart-fill" : "bi-heart";
@@ -278,7 +294,6 @@ function loadInitialItems() {
                   "</div>";
               container.appendChild(el);
           });
-
 
         },
         error: function(xhr, status, error) {
@@ -314,7 +329,7 @@ function loadMoreItems() {
                     el.innerHTML =
                         "<div class='product-card' data-product-id='" + item.productId + "'>" +
                         "<div class='item'>" +
-                        "<a href='/Semiproject/shop/sangpumpage.jsp'>" +
+                        "<a href='/SemiProject/index.jsp?main=shop/sangpumpage.jsp&product_id="+item.productId+"'>" +
                         "<img src='" + item.mainImageUrl + "' alt='' class='product-image'>" +  // 상품 이미지
                         "</a>" +
                         "</div>" +
@@ -329,6 +344,15 @@ function loadMoreItems() {
                         "</div>" +
                         "</div>" +
                         "</div>";
+                        
+                        if (productIds.includes(item.productId)) {
+                            const heartIcon = el.querySelector(".heart");
+                            if (heartIcon) {
+                                heartIcon.classList.remove("bi-suit-heart");
+                                heartIcon.classList.add("bi-suit-heart-fill");
+                                heartIcon.style.color = "red";  // 빨간색으로 하트 색상 변경
+                            }
+                        }
 
                     // 새로 생성한 상품 카드를 상품 목록에 추가
                     container.appendChild(el);

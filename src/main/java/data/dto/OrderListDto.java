@@ -10,7 +10,16 @@ public class OrderListDto {
     private Timestamp orderDate;     // 주문일시 (orders.order_date)
     private String orderStatus;      // 주문상태
     private int totalPrice;          // 총 가격
-    private List<OrderItem> items;   // 주문된 상품들 리스트
+    private List<OrderItem> items;   // 주문된 상품들 리스트   
+    private String memberName;
+
+    public String getMemberName() {
+        return memberName;
+    }
+    public void setMemberName(String memberName) {
+        this.memberName = memberName;
+    }
+
     
     // Getters and Setters
     public int getOrderId() {

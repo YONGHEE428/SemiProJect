@@ -18,7 +18,7 @@ public class OrderListDao {
 
         String sqlOrders = "SELECT * FROM orders WHERE member_num = ? ORDER BY order_id DESC";
         String sqlItems =
-            "SELECT s.*, p.product_name, p.main_image, o.color, o.size " +
+            "SELECT s.*, p.product_name, p.main_image_url, o.color, o.size " +
             "FROM order_sangpum s " +
             "JOIN product p ON s.product_id = p.product_id " +
             "JOIN product_option o ON s.option_id = o.option_id " +
@@ -35,6 +35,7 @@ public class OrderListDao {
                 int orderId = rsOrders.getInt("order_id");
 
                 order.setOrderId(orderId);
+                order.setOrderCode(rsOrders.getString("order_code"));
                 order.setMemberNum(String.valueOf(memberNum));
                 order.setOrderDate(rsOrders.getTimestamp("order_date"));
                 order.setOrderStatus(rsOrders.getString("order_status"));
@@ -53,7 +54,7 @@ public class OrderListDao {
                         item.setCnt(rsItems.getInt("cnt"));
                         item.setPrice(rsItems.getInt("price"));
                         item.setProductName(rsItems.getString("product_name"));
-                        item.setProductImage(rsItems.getString("main_image")); // 상품 이미지
+                        item.setProductImage(rsItems.getString("main_image_url")); // 상품 이미지
                         item.setColor(rsItems.getString("color"));             // 색상
                         item.setSize(rsItems.getString("size"));               // 사이즈
                         items.add(item);
@@ -159,7 +160,10 @@ public class OrderListDao {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
 
-        String sql = "SELECT * FROM orders WHERE order_code=?";
+        // 👉 주문상세에 회원 이름까지 join
+        String sql = "SELECT o.*, m.name AS member_name FROM orders o "
+                   + "JOIN member m ON o.member_num = m.num "
+                   + "WHERE o.order_code=?";
 
         try {
             pstmt = conn.prepareStatement(sql);
@@ -168,12 +172,12 @@ public class OrderListDao {
 
             if(rs.next()) {
                 dto.setOrderId(rs.getInt("order_id"));
+                dto.setOrderCode(rs.getString("order_code"));
                 dto.setMemberNum(rs.getString("member_num"));
                 dto.setOrderDate(rs.getTimestamp("order_date"));
                 dto.setOrderStatus(rs.getString("order_status"));
                 dto.setTotalPrice(rs.getInt("total_price"));
-
-                // 주문 상품 목록 가져오기
+                dto.setMemberName(rs.getString("member_name")); // **회원이름 추가!**
                 dto.setItems(getOrderItems(orderCode));
             }
         } catch (SQLException e) {
@@ -181,9 +185,9 @@ public class OrderListDao {
         } finally {
             db.dbClose(rs, pstmt, conn);
         }
-
         return dto;
     }
+
 
     // 주문 상품 목록 가져오기
     private List<OrderItem> getOrderItems(String orderCode) {
@@ -192,7 +196,7 @@ public class OrderListDao {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
 
-        String sql = "SELECT s.*, p.product_name, p.main_image, o.color, o.size " +
+        String sql = "SELECT s.*, p.product_name, p.main_image_url, o.color, o.size " +
                     "FROM order_sangpum s " +
                     "JOIN product p ON s.product_id = p.product_id " +
                     "JOIN product_option o ON s.option_id = o.option_id " +
@@ -210,7 +214,7 @@ public class OrderListDao {
                 item.setCnt(rs.getInt("cnt"));
                 item.setPrice(rs.getInt("price"));
                 item.setProductName(rs.getString("product_name"));
-                item.setProductImage(rs.getString("main_image"));
+                item.setProductImage(rs.getString("main_image_url"));
                 item.setColor(rs.getString("color"));
                 item.setSize(rs.getString("size"));
 

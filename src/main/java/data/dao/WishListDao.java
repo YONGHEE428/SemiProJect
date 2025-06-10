@@ -83,7 +83,9 @@ public class WishListDao {
 	    }
 	    return list;
 	}
+
 	public boolean deleteWishList(int memberId,int productId) {
+
 		Connection conn=db.getConnection();
 		PreparedStatement pstmt=null;
 		boolean result=false;
@@ -133,5 +135,6 @@ public class WishListDao {
 		return check;
 	}
 	
+
 }
 
