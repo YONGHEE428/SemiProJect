@@ -193,13 +193,11 @@
 	String category2 = request.getParameter("category2");
 	
 	%> 
-  $(function () {
-	  var productIds = <%= new com.google.gson.Gson().toJson(request.getAttribute("productIds")) %>;
-	     console.log('Product IDs:', productIds);
+	$(function () {
 	    // 하트 클릭 (동적 요소 대응)
 	    $(document).on("click", ".heart", function () {
 	    	const heartIcon=$(this);
-	        const isFilled = heartIcon.hasClass("bi-suit-heart-fill");
+	        const isFilled = heartIcon.hasClass("bi-heart-fill");
 	        const count = parseInt(heartIcon.text());
 	        const productId = heartIcon.closest(".product-card").data("product-id");
 			
@@ -217,16 +215,21 @@
 	        	        success: function () {
 	        	            if (isFilled) {
 	        	                heartIcon
-	        	                    .removeClass("bi-suit-heart-fill")
-	        	                    .addClass("bi-suit-heart")
+	        	                    .removeClass("bi-heart-fill")
+	        	                    .addClass("bi-heart")
 	        	                    .css("color", "black")
-	        	                    .text(count - 1);
+	        	                    .html("&nbsp;" + (count - 1));
+	        	                
+	        	                document.querySelector("#liveToast .toast-body").innerText = "위시리스트에서 삭제되었습니다!";
+	        	                const toast = bootstrap.Toast.getOrCreateInstance(document.getElementById('liveToast'));
+	        	                toast.show();
+	        	                
 	        	            } else {
 	        	                heartIcon
-	        	                    .removeClass("bi-suit-heart")
-	        	                    .addClass("bi-suit-heart-fill")
+	        	                    .removeClass("bi-heart")
+	        	                    .addClass("bi-heart-fill")
 	        	                    .css("color", "red")
-	        	                    .text(count + 1);
+	        	                    .html("&nbsp;" + (count + 1));
 
 	        	                document.querySelector("#liveToast .toast-body").innerText = "위시리스트에 추가되었습니다!";
 	        	                const toast = bootstrap.Toast.getOrCreateInstance(document.getElementById('liveToast'));
@@ -258,40 +261,39 @@ function loadInitialItems() {
                 return;
             }
 
-            // 상품 목록에 처음 16개 아이템 추가
+         // 상품 목록에 처음 16개 아이템 추가
             const container = document.getElementById("product-list");
             data.forEach(item => {
                 const el = document.createElement("div");
-                el.classList.add("col-3");  // 상품 카드 스타일을 위한 클래스 추가
-                el.innerHTML =
-                    "<div class='product-card' data-product-id='" + item.productId + "'>" +
-                    "<div class='item'>" +
-                    "<a href='/SemiProject/index.jsp?main=shop/sangpumpage.jsp&product_id="+item.productId+"'>" +
-                    "<img src='" + item.mainImageUrl + "' alt='' class='product-image'>" +  // 상품 이미지
-                    "</a>" +
-                    "</div>" +
-                    "<div class='product-info'>" +
-                    "<div class='product-company'>" + item.category + "</div>" +
-                    "<div class='product-name'>" + item.productName + "</div>" +
-                    "<div class='product-price'>" + formatPrice(item.price) + "원</div>" + // 가격 그대로 출력
-                    "<div class='item-heart'>" +
-                    "<i class='bi bi-suit-heart heart' style='cursor: pointer; color: black;'>" + 
-                    (item.likeCount == null ? 0 : item.likeCount) + "</i>&nbsp;" +  // 좋아요 수
-                    "<i class='bi bi-eye' style='font-size: 16px;'></i>&nbsp; " + item.viewCount +  // 조회수
-                    "</div>" +
-                    "</div>" +
-                    "</div>";
-                    if (productIds.includes(item.productId)) {
-                        const heartIcon = el.querySelector(".heart");
-                        if (heartIcon) {
-                            heartIcon.classList.remove("bi-suit-heart");
-                            heartIcon.classList.add("bi-suit-heart-fill");
-                            heartIcon.style.color = "red";  // 빨간색으로 하트 색상 변경
-                        }
-                    }
-                container.appendChild(el);
-            });
-
+                // 하트 관련 클래스와 색상 설정
+	  	          const isWished = item.wish === true;
+	  	          const heartClass = isWished ? "bi-heart-fill" : "bi-heart";
+	  	          const heartColor = isWished ? "red" : "black";
+	          
+              el.classList.add("col-3");  // 상품 카드 스타일을 위한 클래스 추가
+              el.innerHTML =
+                  "<div class='product-card' data-product-id='" + item.productId + "'>" +
+                  "<div class='item'>" +
+                  "<a href='/SemiProject/index.jsp?main=shop/sangpumpage.jsp'>" +
+                  "<img src='" + item.mainImageUrl + "' alt='' class='product-image'>" +  // 상품 이미지
+                  "</a>" +
+                  "</div>" +
+                  "<div class='product-info'>" +
+                  "<div class='product-company'>" + item.category + "</div>" +
+                  "<div class='product-name'>" + item.productName + "</div>" +
+                  "<div class='product-price'>" + formatPrice(item.price) + "원</div>" + // 가격 그대로 출력
+                  "<div class='item-heart'>" +
+                  "<i class='bi " + heartClass + " heart' " +
+	                  "style='cursor: pointer; color: " + heartColor + "; font-style:normal; font-size:15px;'" +
+	                  "data-product-id='" + item.productId + "'>&nbsp;" +
+	                  (item.likeCount == null ? 0 : item.likeCount) +
+	                "</i>&nbsp; " +
+                  "<i class='bi bi-eye' style='font-size: 16px;'></i>&nbsp; " + item.viewCount +  // 조회수
+                  "</div>" +
+                  "</div>" +
+                  "</div>";
+              container.appendChild(el);
+          });
 
         },
         error: function(xhr, status, error) {

@@ -1,4 +1,7 @@
 
+<%@page import="data.dao.WishListDao"%>
+<%@page import="data.dao.MemberDao"%>
+<%@page import="java.lang.reflect.Member"%>
 <%@page import="data.dto.ProductDto"%>
 <%@page import="data.dao.ProductDao"%>
 <%@page import="java.util.List"%>
@@ -24,56 +27,69 @@ $(function() {
   
 //로그인 아이디 변수 할당 (예시: 세션에서 가져오기)
   const id = "<%= session.getAttribute("myid") != null ? session.getAttribute("myid") : "" %>";
-
+  
+  
   $(function() {
-    // 하트 클릭 이벤트
-    $(document).on("click", ".heart", function () {
-      const heartIcon = $(this);
-      const isFilled = heartIcon.hasClass("bi-heart-fill");
-      const count = parseInt(heartIcon.text());
-      const productId = heartIcon.data("product-id");  // 또는 data 속성 맞게 변경
+	  $(document).on("click", ".heart", function () {
+	    const heartIcon = $(this);
+	    const isFilled = heartIcon.hasClass("bi-heart-fill");
+	    const count = parseInt(heartIcon.text());
+	    const productId = heartIcon.data("product-id");
 
-      if (id === "") {
-        alert("로그인 후 이용해주세요.");
-        location.href = "index.jsp?main=login/loginform.jsp";
-        return;
-      }
+	    if (id === "") {
+	      alert("로그인 후 이용해주세요.");
+	      location.href = "index.jsp?main=login/loginform.jsp";
+	      return;
+	    }
 
-      const action = isFilled ? "unlike" : "like";
+	    const action = isFilled ? "unlike" : "like";
 
-      $.ajax({
-        url: "category/likeupdate.jsp",
-        type: "POST",
-        data: {
-          productId: productId,
-          action: action 
-        },
-        success: function () {
-          if (isFilled) {
-            heartIcon
-              .removeClass("bi-heart-fill")
-              .addClass("bi-heart")
-              .css("color", "gray")
-              .html("&nbsp;" + (count - 1));
-          } else {
-            heartIcon
-              .removeClass("bi-heart")
-              .addClass("bi-heart-fill")
-              .css("color", "red")
-              .html("&nbsp;" + (count + 1));
+	    $.ajax({
+	      url: "category/likeupdate.jsp",   // 항상 여기로 보냄
+	      type: "POST",
+	      data: {
+	        productId: productId,
+	        action: action                // like 또는 unlike 같이 넘겨줌
+	      },
+	      success: function(response) {
+	    	  let res = typeof response === "string" ? JSON.parse(response) : response;
 
-            // Toast 알림 보여주기
-            document.querySelector("#liveToast .toast-body").innerText = "위시리스트에 추가되었습니다!";
-            const toast = bootstrap.Toast.getOrCreateInstance(document.getElementById('liveToast'));
-            toast.show();
-          }
-        },
-        error: function () {
-          alert("좋아요 처리 중 오류가 발생했습니다.");
-        }
-      });
-    });
-  });
+	    	  if (res.success) {
+	    	    if (action === "unlike") {
+	    	      heartIcon
+	    	        .removeClass("bi-heart-fill")
+	    	        .addClass("bi-heart")
+	    	        .css("color", "gray")
+	    	        .html("&nbsp;" + (count - 1));
+
+	    	      // 삭제 알림 토스트
+	    	      document.querySelector("#liveToast .toast-body").innerText = "위시리스트에서 삭제되었습니다!";
+	    	      const toast = bootstrap.Toast.getOrCreateInstance(document.getElementById('liveToast'));
+	    	      toast.show();
+
+	    	    } else {  // like일 때
+	    	      heartIcon
+	    	        .removeClass("bi-heart")
+	    	        .addClass("bi-heart-fill")
+	    	        .css("color", "red")
+	    	        .html("&nbsp;" + (count + 1));
+
+	    	      // 추가 알림 토스트
+	    	      document.querySelector("#liveToast .toast-body").innerText = "위시리스트에 추가되었습니다!";
+	    	      const toast = bootstrap.Toast.getOrCreateInstance(document.getElementById('liveToast'));
+	    	      toast.show();
+	    	    }
+	    	  } else {
+	    	    alert(res.message || "처리에 실패했습니다.");
+	    	  }
+	    	},
+	      error: function () {
+	        alert("좋아요 처리 중 오류가 발생했습니다.");
+	      }
+	    });
+	  });
+	});
+
 
   
   // IntersectionObserver로 감지
@@ -100,10 +116,16 @@ function loadMoreItems() {
 	      setTimeout(() => {
 	        data.forEach(item => {
 	          const el = document.createElement("li");
+
+	          // 하트 관련 클래스와 색상 설정
+	          const isWished = item.wish === true;
+	          const heartClass = isWished ? "bi-heart-fill" : "bi-heart";
+	          const heartColor = isWished ? "red" : "gray";
+
 	          el.innerHTML =
 	            "<div class='item'>" +
-	            "<a href='/SemiProject/index.jsp?main=shop/sangpumpage.jsp&product_id=" + item.productId + "'>" +
-	                "<img src='" + item.mainImageUrl + "' alt=''>" +  // 이미지 경로
+	              "<a href='/SemiProject/index.jsp?main=shop/sangpumpage.jsp&product_id=" + item.productId + "'>" +
+	                "<img src='" + item.mainImageUrl + "' alt=''>" +
 	              "</a>" +
 	            "</div>" +
 	            "<div class='item-coment'>" +
@@ -111,15 +133,16 @@ function loadMoreItems() {
 	              "<div class='item-name'>" + item.productName + "</div>" +
 	              "<div class='item-price'>" + formatPrice(item.price) + "</div>" +
 	              "<div class='item-heart'>" +
-	              "<i class='bi bi-heart heart' " +
-	              "style='cursor: pointer; color: gray; font-style:normal;' " +
-	              "data-product-id='" + item.productId + "'>&nbsp;" +
-	              (item.likeCount == null ? 0 : item.likeCount) +
-	              "</i>&nbsp; " +
-	              "<i class='bi bi-eye' style='font-size: 16px;'></i>&nbsp;" +
-	              "<span style='font-size: 15px;'>" + item.viewCount + "</span>"
+	                "<i class='bi " + heartClass + " heart' " +
+	                  "style='cursor: pointer; color: " + heartColor + "; font-style:normal;' " +
+	                  "data-product-id='" + item.productId + "'>&nbsp;" +
+	                  (item.likeCount == null ? 0 : item.likeCount) +
+	                "</i>&nbsp; " +
+	                "<i class='bi bi-eye' style='font-size: 16px;'></i>&nbsp;" +
+	                "<span style='font-size: 15px;'>" + item.viewCount + "</span>" +
 	              "</div>" +
-	            "</div>"; 
+	            "</div>";
+
 	          document.querySelector(".main-items ul").appendChild(el);
 	        });
 
@@ -153,7 +176,7 @@ function loadMoreItems() {
 	.eventImg > ul{
 		display: flex; 
 		gap : 100px;
-		padding-left: 0px;
+		padding-left: 50px;
 		padding-bottom:100px;
 	}
 	.eventImg> ul >li{
@@ -199,11 +222,11 @@ function loadMoreItems() {
 	.main-item{
 		width: 100%;
 		height: 100%;
-		padding: 0 400px;
+		padding: 0 300px;
 	}
 	.main-items{
   		justify-content: center;
-	 	gap : 20px;
+	 	gap : 40px;
 		width: 100%;
 		height: 70%;
 	}
@@ -217,22 +240,23 @@ function loadMoreItems() {
 	}
 	.main-items >  ul > li{
 		width: 25%;
-		height: 400px;
-		padding: 5px 5px;
+		height: 430px;
+		padding: 5px 20px;
 	}
 	
 	.main-items> ul > li > .item{
 		width: 100%;
-		height: 60%;
+		height: 70%;
 	}
 	.main-items> ul > li > .item > a >img{
 		width: 100%;
-		height: 100%;
+		height: 280px;
+		object-fit: cover;
 		transition: 0.3s ease;
 	}
 	.main-items> ul > li > .item-coment{
 		width: 100%;
-		height: 40%;
+		height: 30%;
 	}
 	
 	.main-LikeItems {
@@ -312,20 +336,20 @@ function loadMoreItems() {
 <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel"data-bs-interval="5000">
   <div class="carousel-inner" style="height: 550px;">
     <div class="carousel-item active">
-      <a href="index.jsp?main=category/accesories.jsp"><img src="SemiImg/test.png" class="no-hover d-block w-100" alt="..."></a>
+      <a href="index.jsp?main=category/accesories.jsp&category1=악세서리"><img src="SemiImg/test.png" class="no-hover d-block w-100" alt="..."></a>
     </div>
     <div class="carousel-item">
-      <a href="index.jsp?main=category/accesories.jsp"><img src="SemiImg/test2.png" class="no-hover d-block w-100" alt="..."></a>
+      <a href="index.jsp?main=category/accesories.jsp&category1=악세서리"><img src="SemiImg/test2.png" class="no-hover d-block w-100" alt="..."></a>
     </div>
     <div class="carousel-item">
 
-      <a href="index.jsp?main=category/top.jsp"><img src="SemiImg/test3-1.jpg" class="no-hover d-block w-100" alt="..."></a>
+      <a href="index.jsp?main=category/top.jsp&category1=티셔츠&category2=아우터"><img src="SemiImg/test3-1.jpg" class="no-hover d-block w-100" alt="..."></a>
     </div>
     <div class="carousel-item">
       <a href="index.jsp?main=category/category.jsp"><img src="SemiImg/main.png" class="no-hover d-block w-100" alt="..."></a>
     </div>
      <div class="carousel-item">
-      <a href="index.jsp?main=category/shoes.jsp"><img src="SemiImg/main2.png" class="no-hover d-block w-100" alt="..."></a>
+      <a href="index.jsp?main=category/shoes.jsp&category1=신발"><img src="SemiImg/main2.png" class="no-hover d-block w-100" alt="..."></a>
 
     </div>		
   </div>
@@ -342,17 +366,25 @@ function loadMoreItems() {
 <%
 	String root = request.getContextPath(); 
 	ProductDao dao = new ProductDao();
+	MemberDao mdao = new MemberDao();
+	WishListDao wdao = new WishListDao();
 	List<ProductDto> list = dao.getTopLikedProducts();
+	
+	String id = (String)session.getAttribute("myid");
+	int memberId = mdao.getMemberNumById(id);
+
 %>
 <div class="main-item">
 
   <div class="LikeItem-conttent"><span><strong style="font-size: 1.7em;">Popular Listings</strong><br><b>인기 상품</b></span><br></div>
   <div class="main-LikeItems">
   <ul>
-  	<% for (ProductDto dto : list) { %>
+  	<% for (ProductDto dto : list) {
+    boolean checkwish = wdao.checkWish(memberId, dto.getProductId());
+%>
 <li>
     <div class="item">
-        <a href="<%=request.getContextPath()%>/index.jsp?main=shop/sangpumpage.jsp&product_id=<%=dto.getProductId()%>">
+        <a href="<%=root%>/index.jsp?main=shop/sangpumpage.jsp&product_id=<%=dto.getProductId()%>">
             <img alt="" src="<%=dto.getMainImageUrl()%>">
         </a>
     </div>
@@ -361,32 +393,33 @@ function loadMoreItems() {
         <div class="item-name"><%=dto.getProductName()%></div>
         <div class="item-price"><%=String.format("%,d", dto.getPrice().intValue())%>원</div>
         <div class="item-heart">
-            <i class="bi bi-heart heart"
-			   style="cursor: pointer; color: gray; font-style:normal;"
-			   data-product-id="<%=dto.getProductId()%>">
-			   <%=dto.getLikeCount() == null ?0 :dto.getLikeCount()%>
-			</i>
+            <i class="<%= checkwish ? "bi bi-heart-fill" : "bi bi-heart" %> heart"
+               style="cursor: pointer; color: <%= checkwish ? "red" : "gray" %>; font-style:normal;"
+               data-product-id="<%=dto.getProductId()%>">
+               <%=dto.getLikeCount() == null ? 0 : dto.getLikeCount()%>
+            </i>
             <i class="bi bi-eye" style="font-size: 16px;"></i>&nbsp;<span style="font-size: 15px;"><%=dto.getViewCount()%></span>
         </div>
     </div>
 </li>
 <% } %>
+
  	</ul>
   </div>
   
   <!-- 광고 -->
-  <div class="BigeventTitle"><span><strong>SPOTLIGHT</strong></span></div>
-  <div class="Bigeventimg" style="text-align: center;"><a href="#"><img src="<%=root%>/SemiImg/bigeventimg2.jpg" class="no-hover"style="width: 100%;"></a></div>
-  <div class="Bigeventcoment" style="padding-bottom: 50px;"><span><strong style="font-size: 1.5em;">#걸즈 올여름 어떤 컬러 티셔츠를 입을래?</strong>
-  <br><b style="color:gray;">본격적인 여름이 시작되면 가볍고 시원한 스타일을 찾게 되기 마련이다. 스타일이 단순해질수록 컬러의 존재감은 커진다.<br> 
-  티셔츠 컬러만 잘 골라도 룩의 분위기는 물론이고 기분 전환까지 가능하기 때문. 여름을 책임질 컬러 티셔츠 코디, 지금 만나보자.</b></span><br></div>
+  <div class="BigeventTitle" style="padding-left:10%;"><span><strong>SPOTLIGHT</strong></span></div>
+  <div class="Bigeventimg" style="text-align: center;"><a href="index.jsp?main=category/top.jsp&category1=티셔츠"><img src="<%=root%>/SemiImg/bigeventimg2.jpg" class="no-hover"style="width: 80%;"></a></div>
+  <div class="Bigeventcoment" style="padding-bottom: 50px; padding-left: 10%;"><span><strong style="font-size: 1.5em;">#걸즈 올여름 어떤 컬러 티셔츠를 입을래?</strong>
+  <br><b style="color:gray;">본격적인 여름이 시작되면 가볍고 시원한 스타일을 찾게 되기 마련이다. 스타일이 단순해질수록 컬러의 존재감은 커진다.</b><br> 
+  <b style="color:gray;">티셔츠 컬러만 잘 골라도 룩의 분위기는 물론이고 기분 전환까지 가능하기 때문. 여름을 책임질 컬러 티셔츠 코디, 지금 만나보자.</b></span><br></div>
   
-  <div class="SmalleventTitle"><span><strong>Today Hot Pick</strong></span></div>
+  <div class="SmalleventTitle" style="padding-left:5%;"><span><strong>Today Hot Pick</strong></span></div>
   <div class="eventImg">
   <ul>
     <li>
       <div class="smalleventimg">
-        <a href="<%=root%>/shop/sangpumpage.jsp">
+        <a href="<%=root%>/index.jsp?main=shop/sangpumpage.jsp&product_id=">
           <img src="<%=root%>/SemiImg/eventimg3.jpg">
           <div class="hover-text"></div>
         </a>

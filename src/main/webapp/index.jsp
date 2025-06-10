@@ -102,6 +102,7 @@
 </style>
 
 <script>
+
 window.addEventListener("DOMContentLoaded", function () {
 	  const backimg = document.querySelector(".backimg");
 
@@ -134,6 +135,7 @@ window.addEventListener("DOMContentLoaded", function () {
       menu.style.top = "50px";
     }
   });
+  
 </script>
 </head>
 

@@ -184,7 +184,7 @@ $(function () {
      // 각 상품에 대해 하트 아이콘 상태를 확인하여 채웁니다.    
     $(document).on("click", ".heart", function () {
     	const heartIcon=$(this);
-        const isFilled = heartIcon.hasClass("bi-suit-heart-fill");
+        const isFilled = heartIcon.hasClass("bi-heart-fill");
         const count = parseInt(heartIcon.text());
         const productId = heartIcon.closest(".product-card").data("product-id");
         const optionId = heartIcon.closest(".product-card").data("option-id");
@@ -204,16 +204,19 @@ $(function () {
                 success: function () {
                     if (isFilled) {
                         heartIcon
-                            .removeClass("bi-suit-heart-fill")
-                            .addClass("bi-suit-heart")
+                            .removeClass("bi-heart-fill")
+                            .addClass("bi-heart")
                             .css("color", "black")
-                            .text(count - 1);
+                            .html("&nbsp;" + (count - 1));
+                        document.querySelector("#liveToast .toast-body").innerText = "위시리스트에서 삭제되었습니다!";
+                        const toast = bootstrap.Toast.getOrCreateInstance(document.getElementById('liveToast'));
+                        toast.show();
                     } else {
                         heartIcon
-                            .removeClass("bi-suit-heart")
-                            .addClass("bi-suit-heart-fill")
+                            .removeClass("bi-heart")
+                            .addClass("bi-heart-fill")
                             .css("color", "red")
-                            .text(count + 1);
+                            .html("&nbsp;" + (count + 1));
                         document.querySelector("#liveToast .toast-body").innerText = "위시리스트에 추가되었습니다!";
                         const toast = bootstrap.Toast.getOrCreateInstance(document.getElementById('liveToast'));
                         toast.show();
@@ -262,7 +265,7 @@ $(function () {
                         "<div class='product-name' title='"+item.productName+"'>" + item.productName + "</div>" +
                         "<div class='product-price'>" + formatPrice(item.price) + "원</div>" + // 가격 그대로 출력
                         "<div class='item-heart'>" +
-                        "<i class='bi bi-suit-heart heart' style='cursor: pointer; color: black;'>" +
+                        "<i class='bi bi-heart heart' style='cursor: pointer; color: black; font-style: normal; font-size: 15px;'>&nbsp; " +
                         (item.likeCount == null ? 0 : item.likeCount) + "</i>&nbsp;" +  // 좋아요 수
                         "<i class='bi bi-eye' style='font-size: 16px;'></i>&nbsp; " + item.viewCount +  // 조회수
                         "</div>" +
@@ -272,9 +275,9 @@ $(function () {
                         if (productIds.includes(item.productId)) {
                             const heartIcon = el.querySelector(".heart");
                             if (heartIcon) {
-                                heartIcon.classList.remove("bi-suit-heart");
-                                heartIcon.classList.add("bi-suit-heart-fill");
-                                heartIcon.style.color = "red";  
+                                heartIcon.classList.remove("bi-heart");
+                                heartIcon.classList.add("bi-heart-fill");
+                                heartIcon.style.color = "red";  // 빨간색으로 하트 색상 변경
                             }
                         }
                     container.appendChild(el);
@@ -323,7 +326,7 @@ $(function () {
                             "<div class='product-name' title='"+item.productName+"'>" + item.productName + "</div>" +
                             "<div class='product-price'>" + formatPrice(item.price) + "원</div>" + // 가격 그대로 출력
                             "<div class='item-heart'>" +
-                            "<i class='bi bi-suit-heart heart' style='cursor: pointer; color: black;'>" +
+                            "<i class='bi bi-heart heart' style='cursor: pointer; color: black;'>" +
                             (item.likeCount == null ? 0 : item.likeCount) + "</i>&nbsp;" +  // 좋아요 수
                             "<i class='bi bi-eye' style='font-size: 16px;'></i>&nbsp; " + item.viewCount +  // 조회수
                             "</div>" +
@@ -332,8 +335,8 @@ $(function () {
                             if (productIds.includes(item.productId)) {
                                 const heartIcon = el.querySelector(".heart");
                                 if (heartIcon) {
-                                    heartIcon.classList.remove("bi-suit-heart");
-                                    heartIcon.classList.add("bi-suit-heart-fill");
+                                    heartIcon.classList.remove("bi-heart");
+                                    heartIcon.classList.add("bi-heart-fill");
                                     heartIcon.style.color = "red";  // 빨간색으로 하트 색상 변경
                                 }
                             }

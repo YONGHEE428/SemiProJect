@@ -57,6 +57,7 @@ ol, ul {
 }
 
 .searchpage {
+  display: none;
   position: fixed;
   left: 35%; /* 가운데 기준 */
   top: 120px;

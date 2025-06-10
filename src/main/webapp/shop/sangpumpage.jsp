@@ -1,3 +1,5 @@
+<%@page import="data.dao.MemberDao"%>
+<%@page import="data.dao.WishListDao"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="data.dao.ProductDao" %>
 <%@ page import="data.dto.ProductDto" %>
@@ -40,6 +42,12 @@
 
     DecimalFormat df = new DecimalFormat("#,###");
     boolean isFreeShipping = originalPrice >= 100000;
+    
+    MemberDao mdao = new MemberDao();
+    String id = (String)session.getAttribute("myid");
+    int memberId = mdao.getMemberNumById(id);
+    WishListDao wdao = new WishListDao();
+    boolean checkwish = wdao.checkWish(memberId, productId);
 %>
 
 <!DOCTYPE html>
@@ -59,43 +67,66 @@
     }
 
     .product-page {
-  display: flex;
-  justify-content: center; /* 중앙 정렬 */
-  gap: 40px;
-  align-items: flex-start;
-  margin-top: 30px;
-  overflow: visible;
-}
-
-  .left-panel {
-  flex: 2;
-  align-self: flex-start;
-}
-    .right-panel { 
-    flex: 1; 
-    min-width: 320px; 
-    align-self: flex-start; 
+      display: flex;
+      justify-content: flex-start;
+      gap: 10px;
+      align-items: flex-start;
+      padding-top: 30px;
+      padding-bottom: 300px;
+      overflow: visible;
+      max-width: 1500px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0px 20px;
+      position: relative;
+      min-height: calc(100vh - 300px);
+      isolation: isolate;
+      background-color: #F9F9F9;
     }
 
- .img-container {
-  max-width: 600px;
-  width: 100%;
-  border: 1px solid #ddd;
-  overflow: hidden;
-  position: sticky;
+    .left-panel {
+      flex: 1;
+      align-self: flex-start;
+      left: -10px;
+      position: relative;
+      width: 800px;
+      background: white;
+    }
 
-  /* 이미지 중앙 정렬 추가 */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto; /* 컨테이너 자체 중앙 배치 */
-}
+    .right-panel { 
+      flex: 1; 
+      min-width: 320px;
+      max-width:600px;
+      position: sticky;
+      right: 10px;
+      top: 100px;
+      height: 1000px;
+      overflow-y: auto;
+      padding: 20px 20px 20px 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      z-index: 1;
+    }
 
-.zoom-img {
-  max-width: 100%;
-  height: auto;
-  transition: transform 0.3s ease;
-}
+    .img-container {
+      max-width: 600px;
+      width: 100%;
+      border: 1px solid #ddd;
+      overflow: hidden;
+      position: sticky;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto;
+    }
+
+    .zoom-img {
+      max-width: 100%;
+      height: auto;
+      transition: transform 0.3s ease;
+    }
 
     .slide-btn {
       position: absolute;
@@ -345,8 +376,12 @@
     <div class="d-flex align-items-center gap-4 mt-2">
      <div class="product-title"><%= product.getProductName() %>&nbsp;&nbsp;&nbsp;</div>
       <div class="item-icons">
-       <i class="bi bi-heart"></i>&nbsp;<%= product.getLikeCount() %>&nbsp;&nbsp;
-<i class="bi bi-eye"></i>&nbsp;<%= product.getViewCount() %>
+      <%if(checkwish ==true){ %>
+      	<i class ="bi bi-heart-fill" style="color: red;">&nbsp;<%=product.getLikeCount()%>&nbsp;&nbsp;</i>
+      	<%}else{ %>
+       <i class="bi bi-heart"></i>&nbsp;<%=product.getLikeCount()%>&nbsp;&nbsp;
+       <%} %>
+		<i class="bi bi-eye"></i>&nbsp;<%= product.getViewCount()%>
       </div>
     </div>
 
@@ -624,7 +659,10 @@ function continueShopping() {
     });
   });
 
-  document.addEventListener("DOMContentLoaded", updateTotalPrice);
+  document.addEventListener("DOMContentLoaded", function() {
+    const rightPanel = document.querySelector('.right-panel');
+    const productPage = document.querySelector('.product-page');
+  });
 </script>
 
 </body>

@@ -83,22 +83,22 @@ public class WishListDao {
 	    }
 	    return list;
 	}
-	
-	//위시리스트에서 num값 불러옴
-	public boolean deleteWishList(int num) {
+
+	public boolean deleteWishList(int memberId,int productId) {
+
 		Connection conn=db.getConnection();
 		PreparedStatement pstmt=null;
 		boolean result=false;
 		
-		String sql="delete from wishlist where num=?";
+		String sql="DELETE FROM wishlist WHERE member_id = ? AND product_id = ?";
 		try {
 			pstmt=conn.prepareStatement(sql);
-			pstmt.setInt(1, num);
+			pstmt.setInt(1, memberId);
+			 pstmt.setInt(2, productId);
 			int rowsAffected=pstmt.executeUpdate();
 			if(rowsAffected>0) {
 				result=true;
 			}
-			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -107,26 +107,34 @@ public class WishListDao {
 		}
 		return result;
 	}
-	//category 에서 위시리스트 지우기
-	public boolean delWishList(int memberId, int productId) {
-	    Connection conn = db.getConnection();
-	    PreparedStatement psmt = null;
-	    String sql = "DELETE FROM wishlist WHERE member_id = ? AND product_id = ?";
-	    
-	    try {
-	        
-	        psmt = conn.prepareStatement(sql);
-	        psmt.setInt(1, memberId);
-	        psmt.setInt(2, productId);
-	        
-	        int rowsAffected = psmt.executeUpdate();
-	        return rowsAffected > 0;
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        return false;
-	    } finally {
-	        db.dbClose(psmt, conn);
-	    }
+	
+	//위시르스트에 포함되어있는지 체크
+	public boolean checkWish(int memberId, int productId) {
+		Connection cn = db.getConnection();
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		boolean check = false;
+		
+		String sql = "select * from wishlist where member_id = ? and product_id = ?";
+		
+		try {
+			pst = cn.prepareStatement(sql);
+			pst.setInt(1, memberId);
+			pst.setInt(2, productId);
+			
+			rs = pst.executeQuery();
+			if(rs.next()) {
+				check = true;
+			}
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}finally{
+			db.dbClose(rs, pst, cn);
+		}
+		return check;
 	}
+	
+
 }
 
