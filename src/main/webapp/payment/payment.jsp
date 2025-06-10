@@ -399,7 +399,7 @@ body {
 	}
 
 	// 배송비 계산 (8만원 이상 무료, 미만 3000원)
-	int deliveryFee = totalProductPrice >= 80000 ? 0 : 3000;
+	int deliveryFee = totalProductPrice >= 80000 ? 0 : 10;
 	int totalPrice = totalProductPrice + deliveryFee;
 	
 	 

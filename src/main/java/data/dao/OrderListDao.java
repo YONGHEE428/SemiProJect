@@ -35,6 +35,7 @@ public class OrderListDao {
                 int orderId = rsOrders.getInt("order_id");
 
                 order.setOrderId(orderId);
+                order.setOrderCode(rsOrders.getString("order_code"));
                 order.setMemberNum(String.valueOf(memberNum));
                 order.setOrderDate(rsOrders.getTimestamp("order_date"));
                 order.setOrderStatus(rsOrders.getString("order_status"));
@@ -159,7 +160,10 @@ public class OrderListDao {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
 
-        String sql = "SELECT * FROM orders WHERE order_code=?";
+        // 👉 주문상세에 회원 이름까지 join
+        String sql = "SELECT o.*, m.name AS member_name FROM orders o "
+                   + "JOIN member m ON o.member_num = m.num "
+                   + "WHERE o.order_code=?";
 
         try {
             pstmt = conn.prepareStatement(sql);
@@ -168,12 +172,12 @@ public class OrderListDao {
 
             if(rs.next()) {
                 dto.setOrderId(rs.getInt("order_id"));
+                dto.setOrderCode(rs.getString("order_code"));
                 dto.setMemberNum(rs.getString("member_num"));
                 dto.setOrderDate(rs.getTimestamp("order_date"));
                 dto.setOrderStatus(rs.getString("order_status"));
                 dto.setTotalPrice(rs.getInt("total_price"));
-
-                // 주문 상품 목록 가져오기
+                dto.setMemberName(rs.getString("member_name")); // **회원이름 추가!**
                 dto.setItems(getOrderItems(orderCode));
             }
         } catch (SQLException e) {
@@ -181,9 +185,9 @@ public class OrderListDao {
         } finally {
             db.dbClose(rs, pstmt, conn);
         }
-
         return dto;
     }
+
 
     // 주문 상품 목록 가져오기
     private List<OrderItem> getOrderItems(String orderCode) {

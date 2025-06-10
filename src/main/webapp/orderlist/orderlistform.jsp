@@ -274,11 +274,18 @@ body {
 	color: black;
 	border-bottom: 3px solid black;
 }
-body {
-    background: #f8f8f8;
-}
-.order-wrapper { max-width: 900px; margin: 70px auto; background: #fff; border: 1px solid #444; padding: 30px 25px; }
 
+body {
+	background: #f8f8f8;
+}
+
+.order-wrapper {
+	max-width: 900px;
+	margin: 70px auto;
+	background: #fff;
+	border: 1px solid #444;
+	padding: 30px 25px;
+}
 </style>
 </head>
 <%
@@ -286,10 +293,10 @@ String memberId = (String) session.getAttribute("myid");
 String name = (String) session.getAttribute("name");
 
 if (memberId == null) {
-    String orderListPageUrl = request.getContextPath() + "/index.jsp?main=orderlist/orderlistform.jsp";
-    response.sendRedirect(request.getContextPath() + "/index.jsp?main=login/loginform.jsp&redirect="
-    + java.net.URLEncoder.encode(orderListPageUrl, "UTF-8"));
-    return;
+	String orderListPageUrl = request.getContextPath() + "/index.jsp?main=orderlist/orderlistform.jsp";
+	response.sendRedirect(request.getContextPath() + "/index.jsp?main=login/loginform.jsp&redirect="
+	+ java.net.URLEncoder.encode(orderListPageUrl, "UTF-8"));
+	return;
 }
 
 MemberDao memberDao = new MemberDao();
@@ -300,124 +307,113 @@ List<OrderListDto> orderList = dao.getOrdersByMember(memberNum);
 
 String keyword = request.getParameter("keyword");
 if (keyword == null)
-    keyword = "";
-keyword = keyword.trim(); // <-- 공백 제거 꼭 추가!
+	keyword = "";
+keyword = keyword.trim(); // 검색어 공백제거
 %>
 <body>
-    <!-- 상단바 -->
-    <div class="mypage-content">
-        <div class="content-title">
-            <ul>
-                <li><a onclick="location.href='index.jsp?main=cart/cartform.jsp'">장바구니</a></li>
-                <li><a onclick="location.href='index.jsp?main=orderlist/orderlistform.jsp'" style="color: black; border-bottom: 3px solid black;">구매내역</a></li>
-                <li><a onclick="location.href='index.jsp?main=category/catewish.jsp'">위시리스트</a></li>
-            </ul>
-        </div>
-    </div>
+	<!-- 상단바 ... 생략 ... -->
 
-    <div class="container mt-5" style="margin-top: 5rem !important;">
-        <div class="mb-3 text-secondary">
-            홈 &gt; 마이페이지 &gt; <b>구매내역 (<%=name%>&nbsp;님)
-            </b>
-        </div>
-        <h2 class="mb-4">
-            구매내역 <span style="font-size: 16px; color: #aaa;">ⓘ</span>
-        </h2>
-    </div>
+	<div class="order-wrapper">
+		<div class="order-header">
+			<h2><%=name%>님의 주문목록
+			</h2>
+			<span class="order-count"><%=orderList.size()%>개의 주문</span>
+		</div>
 
-    <div class="order-wrapper">
-        <div class="order-header">
-            <h2><%=name%>님의 주문목록
-            </h2>
-            <span class="order-count"><%=orderList.size()%>개의 주문</span>
-        </div>
+		<form class="order-search-row" method="get" action="index.jsp">
+			<input type="hidden" name="main" value="orderlist/orderlistform.jsp">
+			<input type="text" name="keyword" placeholder="주문 상품 검색창"
+				value="<%=keyword%>">
+			<button type="submit" class="btn btn-outline-secondary">검색</button>
+			<a href="index.jsp?main=orderlist/orderlistform.jsp"
+				class="btn btn-outline-secondary">전체보기</a>
+		</form>
 
-        <form class="order-search-row" method="get" action="orderlistform.jsp">
-            <input type="text" name="keyword" placeholder="주문 상품 검색창"
-                value="<%=keyword%>">
-            <button type="submit" class="btn btn-outline-secondary">검색</button>
-            <a href="orderlistform.jsp" class="btn btn-outline-secondary">전체보기</a>
-        </form>
+		<!-- 기간 선택 버튼 ... 생략 ... -->
 
-        <div class="order-period-row">
-            <button class="btn btn-outline-secondary btn-sm">1개월</button>
-            <button class="btn btn-outline-secondary btn-sm">3개월</button>
-            <button class="btn btn-outline-secondary btn-sm">6개월</button>
-            <button class="btn btn-outline-secondary btn-sm">1년</button>
-        </div>
+		<div class="order-list-section">
+			<%
+			boolean hasResult = false;
+			for (OrderListDto order : orderList) {
+				List<OrderListDto.OrderItem> filteredItems = new ArrayList<>();
+				for (OrderListDto.OrderItem item : order.getItems()) {
+					String productName = item.getProductName();
+					if (keyword.isEmpty() || (productName != null && productName.toLowerCase().contains(keyword.toLowerCase()))) {
+				filteredItems.add(item);
+					}
+				}
+				if (filteredItems.size() == 0)
+					continue; // 이 주문카드에 노출될 상품이 없으면 skip
 
-        <div class="order-list-section">
-<%
-boolean hasResult = false;
-for (OrderListDto order : orderList) {
-    // 키워드 필터링(상품명 소문자, 키워드 소문자 비교)
-    List<OrderListDto.OrderItem> filteredItems = new ArrayList<>();
-    for (OrderListDto.OrderItem item : order.getItems()) {
-        String productName = item.getProductName();
-        if (keyword.isEmpty() ||
-            (productName != null && productName.toLowerCase().contains(keyword.toLowerCase()))
-        ) {
-            filteredItems.add(item);
-        }
-    }
-    if(filteredItems.size() == 0) continue; // 이 주문카드에 노출될 상품이 없으면 skip
+				hasResult = true;
+			%>
+			<div class="order-box">
+				<div class="order-header-bar">
+					<span class="order-status-label"> <%=order.getOrderStatus()%>
+						/ <%=order.getOrderDate()%>
+					</span>
+					<button class="order-delete-btn"
+						onclick="if(confirm('정말로 이 주문을 삭제하시겠습니까?')) { location.href='deleteorder.jsp?order_code=<%=order.getOrderCode()%>' }">주문내역
+						삭제</button>
+				</div>
+				<%
+				for (OrderListDto.OrderItem item : filteredItems) {
+				%>
+				<div class="order-item-box">
+					<div class="order-content-row">
+						<div class="order-thumb-box">
+							<img
+								src="<%=item.getProductImage() != null ? item.getProductImage() : "https://via.placeholder.com/90x90.png?text=이미지"%>"
+								alt="상품이미지"
+								style="width: 80px; height: 80px; object-fit: cover;">
+						</div>
+						<div class="order-prod-info">
+							<div class="order-prod-title"><%=item.getProductName()%></div>
+							<div class="order-prod-desc">
+								<%=item.getColor()%>
+								/
+								<%=item.getSize()%>
+								<span style="margin-left: 12px; font-size: 0.98em; color: #888;">
+									수량: <%=item.getCnt()%>
+								</span>
+							</div>
+							<div class="order-prod-price-row">
+								<span class="order-prod-price"> <%=NumberFormat.getInstance().format(item.getPrice())%>원
+								</span>
+								<button class="cart-btn" onclick="alert('장바구니 담기 개발중!')">장바구니에
+									담기</button>
+							</div>
+						</div>
 
-    hasResult = true;
-%>
-    <div class="order-box">
-        <div class="order-header-bar">
-            <span class="order-status-label"> <%=order.getOrderStatus()%>
-                / <%=order.getOrderDate()%>
-            </span>
-            <button class="order-delete-btn"
-                onclick="if(confirm('정말로 이 주문을 삭제하시겠습니까?')) { location.href='deleteorder.jsp?order_code=<%=order.getOrderCode()%>' }">주문내역
-                삭제</button>
-        </div>
-        <%
-        for (OrderListDto.OrderItem item : filteredItems) {
-        %>
-        <div class="order-item-box">
-            <div class="order-content-row">
-                <div class="order-thumb-box">
-                    <img
-                        src="<%=item.getProductImage() != null ? item.getProductImage() : "https://via.placeholder.com/90x90.png?text=이미지"%>"
-                        alt="상품이미지" style="width: 80px; height: 80px; object-fit: cover;">
-                </div>
-                <div class="order-prod-info">
-                    <div class="order-prod-title"><%=item.getProductName()%></div>
-                    <div class="order-prod-desc"><%=item.getColor()%>
-                        /
-                        <%=item.getSize()%></div>
-                    <div class="order-prod-price-row">
-                        <span class="order-prod-price"> <%=NumberFormat.getInstance().format(item.getPrice())%>원
-                        </span>
-                        <button class="cart-btn" onclick="alert('장바구니 담기 개발중!')">장바구니에
-                            담기</button>
-                    </div>
-                </div>
-                <div class="order-actions-col">
-                    <button class="btn btn-outline-secondary btn-sm">주문상세</button>
-                    <button class="btn btn-outline-secondary btn-sm">리뷰작성</button>
-                    <button class="btn btn-outline-secondary btn-sm">교환/반품</button>
-                </div>
-            </div>
-        </div>
-        <%
-        }
-        %>
-    </div>
-<%
-}
-if (!hasResult) { %>
-    <div class="empty-order">
-        <i class="bi bi-box"></i>
-        <p>주문 내역이 없습니다.</p>
-        <p>새로운 상품을 구매해보세요.</p>
-        <a href="../../index.jsp?main=product/productlist.jsp"
-            class="continue-shopping">쇼핑 계속하기</a>
-    </div>
-<% } %>
-        </div>
-    </div>
+						<div class="order-actions-col">
+							
+							<button class="btn btn-outline-secondary btn-sm"
+								onclick="location.href='orderlist/detailform.jsp?order_code=<%=order.getOrderCode()%>'">
+								주문상세</button>
+							<button class="btn btn-outline-secondary btn-sm">리뷰작성</button>
+							<button class="btn btn-outline-secondary btn-sm">교환/반품</button>
+						</div>
+					</div>
+				</div>
+				<%
+				}
+				%>
+			</div>
+			<%
+			}
+			if (!hasResult) {
+			%>
+			<div class="empty-order">
+				<i class="bi bi-box"></i>
+				<p>주문 내역이 없습니다.</p>
+				<p>새로운 상품을 구매해보세요.</p>
+				<a href="../index.jsp?main=main.jsp" class="continue-shopping">쇼핑
+					계속하기</a>
+			</div>
+			<%
+			}
+			%>
+		</div>
+	</div>
 </body>
 </html>
