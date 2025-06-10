@@ -155,7 +155,6 @@
 	String id=(String)session.getAttribute("myid");
 	if(id!=null&&!id.isEmpty()){
 		int memberId=mdao.getMemberNumById(id);
-		System.out.println(memberId);
 		List<WishListDto> wishProductIds=wdao.getWishList(memberId);
 		List<Integer> productIds = new ArrayList<>();
 		
@@ -173,13 +172,16 @@
 	
 %>
 $(function () {
-    // 하트 클릭 (동적 요소 대응)
+    
+    /* Java 객체인 productIds를 JSON 형식으로 변환하고, 그 결과를 출력 */
+    /* com.google.gson.Gson은 Java 객체를 JSON 문자열로 변환할 수 있게 해주는 Gson 라이브러리
+    toJson() 메서드는 productIds라는 Java 객체를 JSON 포맷의 문자열로 변환 */
      var productIds = <%= new com.google.gson.Gson().toJson(request.getAttribute("productIds")) %>;
      console.log('Product IDs:', productIds);
+  	
      
-     // 각 상품에 대해 하트 아이콘 상태를 확인하여 채웁니다.
-    
-     
+     // 하트 클릭 (동적 요소 대응) 
+     // 각 상품에 대해 하트 아이콘 상태를 확인하여 채웁니다.    
     $(document).on("click", ".heart", function () {
     	const heartIcon=$(this);
         const isFilled = heartIcon.hasClass("bi-suit-heart-fill");
@@ -240,7 +242,8 @@ $(function () {
                 // 데이터가 없으면 로딩 종료
                 if (data.length === 0) {
                     return;
-                }
+                }        
+
                 // 상품 첫페이지(16종)
                 const container = document.getElementById("product-list");
                 data.forEach(item => {
@@ -250,7 +253,7 @@ $(function () {
                     el.innerHTML =
                         "<div class='product-card' data-product-id='"+item.productId +"' data-option-id='"+productOptionId+"'>" +
                         "<div class='item'>" +
-                        "<a href='/SemiProject/index.jsp?main=shop/sangpumpage.jsp'>" +
+                        "<a href='/SemiProject/index.jsp?main=shop/sangpumpage.jsp&product_id="+item.productId+"'>" +
                         "<img src='" + item.mainImageUrl + "' alt='' class='product-image'>" +  // 상품 이미지
                         "</a>" +
                         "</div>" +
@@ -265,12 +268,13 @@ $(function () {
                         "</div>" +
                         "</div>" +
                         "</div>";
+                        //item.productId 포함하면 빨간색으로 하트 색상 변경
                         if (productIds.includes(item.productId)) {
                             const heartIcon = el.querySelector(".heart");
                             if (heartIcon) {
                                 heartIcon.classList.remove("bi-suit-heart");
                                 heartIcon.classList.add("bi-suit-heart-fill");
-                                heartIcon.style.color = "red";  // 빨간색으로 하트 색상 변경
+                                heartIcon.style.color = "red";  
                             }
                         }
                     container.appendChild(el);
@@ -310,7 +314,7 @@ $(function () {
                         el.innerHTML =
                             "<div class='product-card' data-product-id='" + item.productId + "' data-option-id='"+productOptionId+"'>" +
                             "<div class='item'>" +
-                            "<a href='/Semiproject/shop/sangpumpage.jsp'>" +
+                            "<a href='/SemiProject/index.jsp?main=shop/sangpumpage.jsp&product_id="+item.productId+"'>" +
                             "<img src='" + item.mainImageUrl + "' alt='' class='product-image'>" +  // 상품 이미지
                             "</a>" +
                             "</div>" +

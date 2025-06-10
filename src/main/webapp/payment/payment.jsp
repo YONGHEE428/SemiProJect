@@ -373,6 +373,7 @@ body {
 	String root = request.getContextPath();
 	String name = (String) session.getAttribute("name");
 	String hp = (String) session.getAttribute("hp");
+	String email=(String) session.getAttribute("email");
 	StringTokenizer stk = new StringTokenizer(hp, "-");
 
 	String idxs = request.getParameter("idxs"); // "2,4,8"
@@ -400,6 +401,8 @@ body {
 	// 배송비 계산 (8만원 이상 무료, 미만 3000원)
 	int deliveryFee = totalProductPrice >= 80000 ? 0 : 3000;
 	int totalPrice = totalProductPrice + deliveryFee;
+	
+	 
 	%>
 
 	<!-- 헤더 -->
@@ -552,6 +555,7 @@ body {
 								class="text-muted">선택안함</span>
 							<button type="button" class="btn btn-custom btn-sm">
 								<i class="bi bi-ticket-perforated"></i> 쿠폰찾기
+								
 							</button>
 						</div>
 					</div>
@@ -626,6 +630,8 @@ body {
 	</div>
 
 	<script>
+	
+	
         $(function(){
             // 결제 수단 선택
             $(".payment-method-btn").click(function() {
@@ -670,6 +676,7 @@ body {
                 if($(this).is(":checked")){
                     $("#name").val("<%=name%>");
                     $("#hp").val("<%=stk.nextToken()%>"+"<%=stk.nextToken()%>"+"<%=stk.nextToken()%>");
+                    $("#email").val("<%=email%>");
 						} else {
 							$("#name").val("");
 							$("#hp").val("");
@@ -677,20 +684,7 @@ body {
 					});
 		});
 
-		// 주문번호 생성
-		function generateOrderNumber() {
-			const today = new Date();
-			const year = today.getFullYear().toString().slice(-2);
-			const month = String(today.getMonth() + 1).padStart(2, '0');
-			const day = String(today.getDate()).padStart(2, '0');
-			const hour = String(today.getHours()).padStart(2, '0');
-			const minute = String(today.getMinutes()).padStart(2, '0');
-			const second = String(today.getSeconds()).padStart(2, '0');
-			const random = Math.floor(Math.random() * 1000).toString()
-					.padStart(3, '0');
-
-			return `ORDER${year}${month}${day}${hour}${minute}${second}${random}`;
-		}
+		
 
 		// 결제 요청
 		function payrequest() {
@@ -720,9 +714,36 @@ body {
 				alert("지원하지 않는 결제 수단입니다.");
 			}
 		}
+		// 주문번호 생성
+		function generateOrderNumber() {
+			const today = new Date();
+			const year = today.getFullYear().toString().slice(-2);
+			const month = String(today.getMonth() + 1).padStart(2, '0');
+			const day = String(today.getDate()).padStart(2, '0');
+			const hour = String(today.getHours()).padStart(2, '0');
+			const minute = String(today.getMinutes()).padStart(2, '0');
+			const second = String(today.getSeconds()).padStart(2, '0');
+			const random = Math.floor(Math.random() * 1000).toString()
+					.padStart(3, '0');
 
+			return `ORDER${year}${month}${day}${hour}${minute}${second}${random}`;
+		}
 		// 카드결제
 		function cardPay() {
+			/* 콘솔 */
+			console.log({
+			    pg: "kicc",
+			    pay_method: "card",
+			    merchant_uid: generateOrderNumber(),
+			    name: '결제테스트',
+			    amount: <%= totalPrice %>, 
+			    buyer_email: '<%=email%>',
+			    buyer_name: '<%= name %>',
+			    buyer_tel: '<%= hp %>',
+			    buyer_addr: $("#userAddress").val()+$("#userDtlAddress").val(),
+			    buyer_postcode: $("#userPostCode").val(),
+			});
+			
 			var IMP = window.IMP;
 			IMP.init('imp23623506');
 
@@ -732,12 +753,13 @@ body {
 				merchant_uid: generateOrderNumber(),
 				name: '결제테스트',
 				amount: <%=totalPrice%>,  // 실제 계산된 금액으로 변경
-				buyer_email: 'iamport@siot.do',
-				buyer_name: '구매자',
-				buyer_tel: '010-1234-5678',
-				buyer_addr: '서울특별시 강남구 삼성동',
-				buyer_postcode: '123-456'
+				buyer_email: '<%=email%>',
+				buyer_name: '<%=name%>',
+				buyer_tel: '<%=hp%>',
+				buyer_addr: $("#userAddress").val()+$("#userDtlAddress").val(),
+				buyer_postcode: $("#userPostCode").val(),
 			}, function(rsp) {
+				
 				if (rsp.success) {
 					// 결제 성공 시 buyok 값 업데이트
 					$.ajax({
@@ -764,6 +786,7 @@ body {
 
 		function naverPay() {
 			alert("공사 중입니다.");
+			
 		}
 
 		function logout() {

@@ -9,20 +9,15 @@
 
 	String productIdStr=request.getParameter("productId");
 	String action=request.getParameter("action");
-		
+	
 	int memberId=mdao.getMemberNumById((String)session.getAttribute("myid"));
-<<<<<<< HEAD
-	System.out.println("세션 아이디: " + memberId);
-	System.out.println("물품아이디 " + productIdStr);		
-=======
-		
->>>>>>> 830485a8a1c565deb43d322a757950f94926ed23
+
 	String optionIdStr=request.getParameter("optionId");
 	
 	if(productIdStr!=null && action!=null){
 		
 		int productId=Integer.parseInt(productIdStr);
-		int optionId= optionIdStr !=null?Integer.parseInt(optionIdStr):0;
+		int optionId= (optionIdStr !=null)?Integer.parseInt(optionIdStr):0;
 		System.out.println(memberId+","+productId);	
 		if("like".equals(action)){
 			pdao.updateLikeCount(productId);
@@ -37,7 +32,7 @@
             
 		}else if("unlike".equals(action)){
 			pdao.decreaseLikeCount(productId);
-			
+			wdao.delWishList(memberId, productId);
 		}
 	}
 	

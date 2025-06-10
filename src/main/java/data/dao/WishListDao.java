@@ -83,6 +83,8 @@ public class WishListDao {
 	    }
 	    return list;
 	}
+	
+	//위시리스트에서 num값 불러옴
 	public boolean deleteWishList(int num) {
 		Connection conn=db.getConnection();
 		PreparedStatement pstmt=null;
@@ -105,6 +107,26 @@ public class WishListDao {
 		}
 		return result;
 	}
-	
+	//category 에서 위시리스트 지우기
+	public boolean delWishList(int memberId, int productId) {
+	    Connection conn = db.getConnection();
+	    PreparedStatement psmt = null;
+	    String sql = "DELETE FROM wishlist WHERE member_id = ? AND product_id = ?";
+	    
+	    try {
+	        
+	        psmt = conn.prepareStatement(sql);
+	        psmt.setInt(1, memberId);
+	        psmt.setInt(2, productId);
+	        
+	        int rowsAffected = psmt.executeUpdate();
+	        return rowsAffected > 0;
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return false;
+	    } finally {
+	        db.dbClose(psmt, conn);
+	    }
+	}
 }
 
