@@ -246,32 +246,37 @@ body {
 	background: #333;
 }
 /* 상단바 */
-.mypage-content {
-	height: 60px;
-	line-height: 60px;
-	top: 150px;
-	position: fixed;
-	width: 100%;
-	min-height: 5px;
-	font-weight: bold;
-	text-align: center;
-	background-color: white;
-	transition: top 0.3s ease;
-}
+ .mypage-content{
+    	height:60px;
+    	line-height:60px;
+    	top:150px;
+    	position:fixed;
+		width:70%;
+		min-height: 5px;
+		font-weight: bold;
+		text-align: center;
+		background-color: white;
+		transition: top 0.3s ease;
+		border-bottom: 1px solid gray;
+		margin-left: 260px;
+
+	}
 
 .content-title>ul {
 	display: flex;
 	justify-content: center;
 	gap: 170px;
+	color : gray;
 }
 
 .content-title>ul>li>a {
-	color: gray;
+
 	text-decoration: none;
+	cursor: pointer;	
 }
 
 .content-title>ul>li>a:hover {
-	color: black;
+	color: black !important;
 	border-bottom: 3px solid black;
 }
 
@@ -287,6 +292,22 @@ body {
 	padding: 30px 25px;
 }
 </style>
+<script type="text/javascript">
+	$(function(){
+	
+		window.addEventListener("scroll", function () {
+		    const mypage = document.querySelector(".mypage-content");
+		    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+		    if (scrollTop > 50) {
+		      mypage.style.top = "100px";
+		    } else {
+		      mypage.style.top = "150px";
+		    }
+	  });
+	
+	})
+</script>
 </head>
 <%
 String memberId = (String) session.getAttribute("myid");
@@ -312,7 +333,17 @@ keyword = keyword.trim(); // 검색어 공백제거
 %>
 <body>
 	<!-- 상단바 ... 생략 ... -->
-
+	
+	<div class="mypage-content">
+        <div class="content-title">
+            <ul>
+                <li><a onclick="location.href='index.jsp?main=category/catewish.jsp'">위시리스트</a></li>
+                <li><a onclick="location.href='index.jsp?main=cart/cartform.jsp'">장바구니</a></li>
+                <li><a onclick="location.href='index.jsp?main=orderlist/orderlistform.jsp'" style="color: black; border-bottom: 3px solid black;">구매내역</a></li>
+            </ul>
+        </div>
+    </div>
+	
 	<div class="order-wrapper">
 		<div class="order-header">
 			<h2><%=name%>님의 주문목록

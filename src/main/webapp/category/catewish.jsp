@@ -174,25 +174,29 @@
     	line-height:60px;
     	top:150px;
     	position:fixed;
-		width:100%;
+		width:70%;
 		min-height: 5px;
 		font-weight: bold;
 		text-align: center;
 		background-color: white;
 		transition: top 0.3s ease;
+		border-bottom: 1px solid gray;
+		margin-left: 260px;
 
 	}
 	.content-title > ul{
 	display: flex;
 	justify-content: center;
 	gap : 170px;
+	color : gray;
 	}
-	.content-title > ul > li >a{
-		color:gray;
+	.content-title > ul > li > a{
+		color: gray ;
 		text-decoration: none;
+		cursor: pointer;
 	}
 	.content-title > ul > li > a:hover{
-		color:black;
+		color: black !important;
 		border-bottom: 3px solid black;
 	}
 
@@ -237,9 +241,9 @@
 <div class="mypage-content">
         <div class="content-title">
             <ul>
+            	<li><a onclick="location.href='index.jsp?main=category/catewish.jsp'" style="color: black; border-bottom: 3px solid black;">위시리스트</a></li>  
                 <li><a onclick="location.href='index.jsp?main=cart/cartform.jsp'">장바구니</a></li>
-                <li><a onclick="location.href='index.jsp?main=orderlist/orderlistform.jsp'">구매내역</a></li>
-                <li><a onclick="location.href='index.jsp?main=category/catewish.jsp'" style="color: black; border-bottom: 3px solid black;">위시리스트</a></li>            
+                <li><a onclick="location.href='index.jsp?main=orderlist/orderlistform.jsp'">구매내역</a></li>       
             </ul>
         </div>
     </div>
