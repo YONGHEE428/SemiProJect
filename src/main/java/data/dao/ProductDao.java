@@ -253,7 +253,11 @@ public class ProductDao {
     	PreparedStatement pst = null;
     	ResultSet rs = null;
     	
+<<<<<<< HEAD
+    	String sql = "selcet option_id from product_option where color = ? and size = ? and product_id = ?";
+=======
     	String sql = "select option_id from product_option where color = ? and size = ? and product_id = ?";
+>>>>>>> 6cd55fb2480015ec0d1540f56cf7f0ff3686c6f3
     	
     	try {
 			pst=cn.prepareStatement(sql);
