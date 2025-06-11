@@ -8,9 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import data.dao.PaymentDao;
-import data.dto.PaymentDto;
-
 import org.json.simple.JSONObject;
 
 //클라이언트가 /payment/verify 경로로 요청할 때 이 서블릿이 동작하도록 설정
@@ -29,10 +26,12 @@ public class PaymentVerifyServlet extends HttpServlet {
         
         try {
             // 파라미터 유효성 검사
-            String impUid = request.getParameter("imp_uid");
-            String merchantUid = request.getParameter("merchant_uid");
-            String amountStr = request.getParameter("amount");
-            
+        	 String impUid = request.getParameter("imp_uid");
+             String merchantUid = request.getParameter("merchant_uid");
+             String amountStr = request.getParameter("amount");
+             String addr = request.getParameter("addr");
+             String deliveryMsg = request.getParameter("delivery_msg");
+             
             // 필수 파라미터 검사
             if (impUid == null || merchantUid == null || amountStr == null) {
                 writeJson(response, false, "필수 파라미터가 누락되었습니다.");
@@ -59,18 +58,38 @@ public class PaymentVerifyServlet extends HttpServlet {
                 return;
             }
 
-            Integer memberNum = (Integer) session.getAttribute("member_num");
+         // 세션에서 "num" 속성을 String으로 가져옴
+            String memberNumStr = (String) session.getAttribute("num");
+
+            Integer memberNum = null; // 초기화
+
+            // null 체크를 먼저 하고, String이 비어있지 않은지 확인 후 숫자로 변환
+            if (memberNumStr != null && !memberNumStr.isEmpty()) {
+                try {
+                    memberNum = Integer.parseInt(memberNumStr);
+                } catch (NumberFormatException e) {
+                    // 숫자로 변환할 수 없는 경우의 예외 처리
+                    writeJson(response, false, "유효하지 않은 회원 번호입니다.");
+                    e.printStackTrace(); // 개발 중에는 로그에 출력하여 원인 파악
+                    return;
+                }
+            }
+
+            // 이후 memberNum이 null인지 검사하는 기존 로직은 그대로 유지
             if (memberNum == null) {
                 writeJson(response, false, "로그인이 필요한 서비스입니다.");
                 return;
             }
+        
 
             // XSS 방지를 위한 입력값 정제
             impUid = sanitizeInput(impUid);
             merchantUid = sanitizeInput(merchantUid);
-
+            addr = sanitizeInput(addr);
+            deliveryMsg = sanitizeInput(deliveryMsg);
+            
             // 결제 검증 처리
-            boolean isValid = service.processPayment(memberNum, impUid, merchantUid, amount);
+            boolean isValid = service.processPayment(memberNum, impUid, merchantUid, amount, addr, deliveryMsg);
             
             if (isValid) {
                 writeJson(response, true, "결제가 성공적으로 완료되었습니다.");
@@ -94,7 +113,7 @@ public class PaymentVerifyServlet extends HttpServlet {
             return null;
         }
         // 특수문자 제거
-        return input.replaceAll("[<>\"'&]", "");
+        return input.replaceAll("[<>\"'&]", "").trim();
     }
  // JSON 형식으로 결과를 작성해 응답 스트림에 출력하는 함수
     @SuppressWarnings("unchecked")

@@ -117,7 +117,7 @@
         // Payment 테이블에 결제 정보 저장
         pdao.insertPayment(pdto);
         System.out.println("updateBuyOk.jsp: 결제 정보가 payment 테이블에 성공적으로 저장되었습니다.");
-
+		
         // 전체상품 주문인지 체크
         String all = request.getParameter("all");
         String idxs = request.getParameter("idxs"); // 개별 선택 상품 주문 시
