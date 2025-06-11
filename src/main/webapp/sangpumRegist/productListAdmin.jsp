@@ -66,7 +66,7 @@
     <style>
     
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f8f9fa; color: #212529; }
-        .container { max-width: 1200px; margin: auto; background-color: #ffffff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+        .container { max-width: 1400px; margin: auto; background-color: #ffffff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
         h1 { color: #343a40; text-align: center; margin-bottom: 25px; font-weight: 600; }
         .category-nav { margin-bottom: 25px; text-align: center; padding-bottom: 15px; border-bottom: 1px solid #dee2e6;}
         .category-nav a {
@@ -95,8 +95,8 @@
             margin-right: 6px; padding: 7px 12px; text-decoration: none; border-radius: 5px; font-size: 0.85em; cursor: pointer; border: none; transition: opacity 0.2s;
         }
         .actions a:hover, .actions button:hover { opacity: 0.85; }
-        .edit-btn { background-color: #20c997; color: white; } /* 민트색 계열 */
-        .delete-btn { background-color: #e63946; color: white; } /* 부드러운 빨강 */
+        .edit-btn { background-color: #20c997; color: white; padding:10px 10px; } /* 민트색 계열 */
+        .delete-btn { background-color: #e63946; color: white;padding:10px 10px;  } /* 부드러운 빨강 */
         .no-data { text-align: center; padding: 30px; color: #6c757d; font-size: 1.1em; }
         .error-message { color: #dc3545; text-align: center; margin-bottom: 20px; font-weight: 500; padding: 10px; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 5px;}
     </style>
