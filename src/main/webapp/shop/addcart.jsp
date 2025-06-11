@@ -25,8 +25,13 @@
 	String id = (String)session.getAttribute("myid");
      //2. 세션에서 member_id 가져오기
     if (id == null) {
-        // 로그인 안 된 경우 로그인 페이지로 이동
-        response.sendRedirect("login.jsp");
+        // 로그인 안 된 경우 alert 창을 보여주고 로그인 페이지로 이동
+%>
+        <script>
+            alert("로그인 후 이용 가능합니다.");
+            location.href = "../index.jsp?main=login/loginform.jsp";
+        </script>
+<%
         return;
     }
     ProductDao pdao = new ProductDao();

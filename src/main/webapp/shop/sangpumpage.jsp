@@ -434,6 +434,8 @@
     let quantity = 1;
     const pricePerUnit = <%= originalPrice %>;
 
+
+
     function changeQty(delta) {
       if (delta === -1 && quantity > 1) {
         quantity--;
@@ -478,45 +480,11 @@ document.addEventListener("DOMContentLoaded", updateTotalPrice);
     <div class="mt-2"><strong>총 가격:</strong> <span id="Price"></span></div>
 
     <div class="action-buttons">
-    <%
-      boolean isLoggedIn = session.getAttribute("userId") != null;
-    %>
-
-    <div class="action-buttons">
       <button id="addToCartBtn" class="btn btn-outline-primary">장바구니</button>
       <button id="buyNowBtn" class="btn btn-primary">바로구매</button>
     </div>
 
-    <!-- 모달 -->
-    <div id="cartModal" class="modal" style="display: none;">
-      <div class="modal-content">
-        <span class="close-btn" onclick="closeModal()">×</span>
-        <h3>장바구니 담기</h3>
-        <p>선택하신 상품을 장바구니에 담았습니다.<br>지금 장바구니를 확인하시겠습니까?</p>
-        <button onclick="goToCart()" class="btn-black">장바구니 확인</button>
-        <button onclick="continueShopping()" class="btn-white">쇼핑 계속하기</button>
-      </div>
-    </div>
-
     <script>
-    const isLoggedIn = <%= isLoggedIn %>;
-
-    // 옵션 ID 자동 생성 (예: opt-M-red)
-    function updateOptionId() {
-        const size = document.getElementById("size").value;
-        const color = document.getElementById("color").value;
-        const optionId = document.getElementById("optionId");
-
-        if (size && color) {
-            optionId.value = `opt-${size}-${color}`; // 조합 방식 (임시 예시)
-        } else {
-            optionId.value = "";
-        }
-    }
-
-    document.getElementById("size").addEventListener("change", updateOptionId);
-    document.getElementById("color").addEventListener("change", updateOptionId);
-
     // 장바구니 추가 함수
     function addToCart(redirect) {
         const productId = <%= productId %>; // 제품 번호
@@ -567,22 +535,7 @@ document.addEventListener("DOMContentLoaded", updateTotalPrice);
     document.getElementById("buyNowBtn").addEventListener("click", function() {
         addToCart('payment');
     });
-
-    function showModal() {
-        document.getElementById("cartModal").style.display = "block";
-    }
-    function closeModal() {
-        document.getElementById("cartModal").style.display = "none";
-    }
-    function goToCart() {
-        window.location.href = "../index.jsp?main=cart/cartform.jsp";
-    }
-    function continueShopping() {
-        closeModal();
-        window.location.href = "../index.jsp?main=category/category.jsp";
-    }
     </script>
-    </div>
 
     <ul class="menu-list">
       <li onclick="openPanel('panel1')">교환 및 환불 <span>›</span></li>
@@ -591,34 +544,34 @@ document.addEventListener("DOMContentLoaded", updateTotalPrice);
 
     <div id="panel1" class="slide-panel">
       <div class="panel-header">교환 및 환불<button onclick="closePanel('panel1')">×</button></div>
-     <strong>배송 전 취소</strong><br>
-          - 입금전 주문취소는 마이페이지에서 직접 가능합니다.<br />
-          - 배송전인 상품은 Q&A 게시판, 혹은 이메일로 주문취소 접수가 가능합니다.<br />
-          - 주문취소 및 환불은 이메일 혹은 고객센터를 통해 접수가 가능합니다.<br />
+      <strong>배송 전 취소</strong><br>
+      - 입금전 주문취소는 마이페이지에서 직접 가능합니다.<br />
+      - 배송전인 상품은 Q&A 게시판, 혹은 이메일로 주문취소 접수가 가능합니다.<br />
+      - 주문취소 및 환불은 이메일 혹은 고객센터를 통해 접수가 가능합니다.<br />
 
-          <strong>교환 및 환불</strong><br />
-          - 상품 수령일로부터 7일 이내만 교환/환불 가능합니다.<br />
-          - 훼손/파손 우려가 있는 상품은 재포장하여 반송해주세요.<br />
-          - 제품과 함께 들어있던 패키지/라벨/사은품도 함께 반송해주세요.<br />
-          - 상품불량 또는 파손에 의한 반품은 하이츠에서 부담합니다.<br />
-          - 제품이 도착하고 회수처리 완료 후 환불이 진행됩니다.<br />
+      <strong>교환 및 환불</strong><br />
+      - 상품 수령일로부터 7일 이내만 교환/환불 가능합니다.<br />
+      - 훼손/파손 우려가 있는 상품은 재포장하여 반송해주세요.<br />
+      - 제품과 함께 들어있던 패키지/라벨/사은품도 함께 반송해주세요.<br />
+      - 상품불량 또는 파손에 의한 반품은 하이츠에서 부담합니다.<br />
+      - 제품이 도착하고 회수처리 완료 후 환불이 진행됩니다.<br />
 
-          <strong>반품 주소</strong><br />
-          SSY<br />
-          (01685) 서울시 마포구 양화로17길 22-9 5층<br />
+      <strong>반품 주소</strong><br />
+      SSY<br />
+      (01685) 서울시 마포구 양화로17길 22-9 5층<br />
     </div>
 
     <div id="panel2" class="slide-panel">
       <div class="panel-header">배송 안내<button onclick="closePanel('panel2')">×</button></div>
-   <div class="panel-content">
-          - 상품별로 상품 특성 및 배송지에 따라 배송유형 및 소요기간이 달라집니다.<br />
-          - 일부 주문상품 또는 예약상품의 경우 기본 배송일 외에 추가 배송 소요일이 발생될 수 있습니다.<br />
-          - 제주 및 도서산간 지역은 출고, 반품, 교환시 추가 배송비(항공, 도선료)가 부과 될 수 있습니다.<br />
-          - 공휴일 및 휴일은 배송이 불가합니다.<br />
-          - SSY 자체발송은 오후 2시까지 결제확인된 주문은 당일 출고되고 10만원 이상 주문은 무료배송, 10만원 미만은 3,000원의 배송비가 추가됩니다.<br />
-        </div>
-       
+      <div class="panel-content">
+        - 상품별로 상품 특성 및 배송지에 따라 배송유형 및 소요기간이 달라집니다.<br />
+        - 일부 주문상품 또는 예약상품의 경우 기본 배송일 외에 추가 배송 소요일이 발생될 수 있습니다.<br />
+        - 제주 및 도서산간 지역은 출고, 반품, 교환시 추가 배송비(항공, 도선료)가 부과 될 수 있습니다.<br />
+        - 공휴일 및 휴일은 배송이 불가합니다.<br />
+        - SSY 자체발송은 오후 2시까지 결제확인된 주문은 당일 출고되고 10만원 이상 주문은 무료배송, 10만원 미만은 3,000원의 배송비가 추가됩니다.<br />
+      </div>
     </div>
+
     <div style="margin-top: 20px; text-align: right; width: 200px; height:900;" >
       <img src="../image/sale.png" alt="여름 아이템 할인 배너" style="max-width: 100%; height: auto;" />
     </div>
