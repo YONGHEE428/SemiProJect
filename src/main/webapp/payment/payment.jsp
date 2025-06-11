@@ -461,8 +461,7 @@ body {
 							style="width: 100px; height: 100px; border-radius: 8px; object-fit: cover; border: 1px solid #ddd;">
 					</div>
 					<div>
-						<div
-							style="font-weight: bold; font-size: 1.08rem; margin-bottom: 7px;"><%=item.getProduct_name()%></div>
+						<div style="font-weight: bold; font-size: 1.08rem; margin-bottom: 7px;"><%=item.getProduct_name()%></div>
 						<div style="color: #666; font-size: 0.97rem;">
 							<%=item.getColor()%> 
 							/<%=item.getSize()%>
@@ -774,6 +773,7 @@ body {
 				buyer_postcode: $("#userPostCode").val(),
 
 			}, function(rsp) {
+
 			    if (rsp.success) {
 			        // 배송메시지 처리
 			        const deliveryMessage = $(".form-select").val() === "직접 입력" ? 
@@ -825,6 +825,7 @@ body {
 			        // 결제 실패
 			        alert('결제에 실패하였습니다.\n에러내용: ' + rsp.error_msg);
 			    }
+
 			});
 		}
 					// 주문 처리 함수 (결제 검증 완료 후 실행)
