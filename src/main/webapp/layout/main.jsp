@@ -246,11 +246,24 @@ function loadMoreItems() {
 	.main-items> ul > li > .item{
 		width: 100%;
 		height: 70%;
+		position: relative;
+		overflow: hidden;
+		padding-bottom: 100%; /* 1:1 비율 유지 */
+	}
+	.main-items> ul > li > .item > a {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
 	}
 	.main-items> ul > li > .item > a >img{
 		width: 100%;
-		height: 280px;
-		object-fit: cover;
+		height: 100%;
+		object-fit: cover; /* 이미지 비율 유지하면서 컨테이너 채우기 */
+		position: absolute;
+		top: 0;
+		left: 0;
 		transition: 0.3s ease;
 	}
 	.main-items> ul > li > .item-coment{
@@ -280,10 +293,24 @@ function loadMoreItems() {
 	.main-LikeItems> ul > li > .item{
 		width: 100%;
 		height: 70%;
+		position: relative;
+		overflow: hidden;
+		padding-bottom: 100%; /* 1:1 비율 유지 */
+	}
+	.main-LikeItems> ul > li > .item > a {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
 	}
 	.main-LikeItems> ul > li > .item > a >img{
 		width: 100%;
 		height: 100%;
+		object-fit: cover; /* 이미지 비율 유지하면서 컨테이너 채우기 */
+		position: absolute;
+		top: 0;
+		left: 0;
 		transition: 0.3s ease;
 	}
 	.main-LikeItems> ul > li > .item-coment{
@@ -421,7 +448,7 @@ function loadMoreItems() {
   <ul>
     <li>
       <div class="smalleventimg">
-        <a href="<%=root%>/index.jsp?main=shop/sangpumpage.jsp&product_id=">
+        <a href="<%=root%>/index.jsp?main=shop/sangpumpage.jsp&product_id=106">
           <img src="<%=root%>/SemiImg/eventimg3.jpg">
           <div class="hover-text"></div>
         </a>
@@ -436,7 +463,7 @@ function loadMoreItems() {
 
     <li>
       <div class="smalleventimg">
-        <a href="<%=root%>/index.jsp?main=shop/sangpumpage.jsp&product_id=">
+        <a href="<%=root%>/index.jsp?main=shop/sangpumpage.jsp&product_id=108">
           <img src="<%=root%>/SemiImg/eventimg5_1.png">
           <div class="hover-text"></div>
         </a>

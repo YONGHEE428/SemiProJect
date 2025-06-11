@@ -1,3 +1,5 @@
+<%@page import="data.dto.MemberDto"%>
+<%@page import="data.dao.MemberDao"%>
 <%@page import="data.dao.CartListDao"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="data.dto.CartListDto"%>
@@ -28,6 +30,7 @@
 	src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 <script type="text/javascript"
 	src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <title>결제하기</title>
 <style>
 /* 전역 스타일 */
@@ -357,6 +360,118 @@ body {
 	color: inherit; /* 색상 변경 방지 */
 	text-decoration: none; /* 밑줄 제거 */
 }
+
+.coupon-item {
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    overflow: hidden;
+    min-height: 120px;
+}
+
+.coupon-image-container {
+    width: 250px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.coupon-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.coupon-content {
+    flex: 1;
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 90px;
+}
+
+.coupon-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    color: #000;
+}
+
+.coupon-description {
+    font-size: 1rem;
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+
+.coupon-expiry {
+    font-size: 0.9em;
+    color: #999;
+    margin-top: auto;
+}
+
+.coupon-item.selected {
+    border: 2px solid #000;
+    background-color: #f8f9fa;
+}
+
+.coupon-cancel {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    color: #aaa;
+    font-size: 18px;
+    line-height: 1;
+    display: none;
+    z-index: 2;
+}
+
+.coupon-cancel:hover {
+    color: #666;
+}
+
+.coupon-item.selected .coupon-cancel {
+    display: block;
+}
+
+.coupon-radio {
+    display: none;
+}
+
+.modal-footer {
+    border-top: none;
+    padding: 1rem;
+}
+
+.modal-footer .btn-apply {
+    width: 100%;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.modal-footer .btn-apply:hover {
+    background-color: #333;
+}
 </style>
 </head>
 <body>
@@ -365,6 +480,18 @@ body {
 	String name = (String) session.getAttribute("name");
 	String hp = (String) session.getAttribute("hp");
 	String email=(String) session.getAttribute("email");
+	String id = (String)session.getAttribute("myid");
+	MemberDao mdao = new MemberDao();
+	String memberNum = String.valueOf(mdao.getMemberNumById(id));
+	MemberDto mdto = mdao.getData(memberNum);
+	String birth =  mdto.getBirth();// 생일 정보 가져오기
+	boolean isJuneBirth = false;
+
+	// 생일이 6월인지 확인
+	if (birth.substring(5,7).equals("06")) {
+	    isJuneBirth = true;
+	}
+
 	StringTokenizer stk = new StringTokenizer(hp, "-");
 
 	String idxs = request.getParameter("idxs"); // "2,4,8"
@@ -389,8 +516,8 @@ body {
 		totalQuantity += quantity;
 	}
 
-	// 배송비 계산 (8만원 이상 무료, 미만 3000원)
-	int deliveryFee = totalProductPrice >= 80000 ? 0 : 10;
+	// 배송비 계산 (10만원 이상 무료, 미만 3000원)
+	int deliveryFee = totalProductPrice >= 100000 ? 0 : 3000;
 	int totalPrice = totalProductPrice + deliveryFee;
 	
 	  //member_num
@@ -545,11 +672,10 @@ body {
 					<!-- 쿠폰 선택 -->
 					<div class="col-12">
 						<div class="d-flex align-items-center gap-3">
-							<span class="fw-bold">쿠폰 적용</span> <span id="usecoupon"
-								class="text-muted">선택안함</span>
-							<button type="button" class="btn btn-custom btn-sm">
+							<span class="fw-bold">쿠폰 적용</span>
+							<span id="usecoupon" class="text-muted">선택안함</span>
+							<button type="button" class="btn btn-custom btn-sm" data-bs-toggle="modal" data-bs-target="#couponModal">
 								<i class="bi bi-ticket-perforated"></i> 쿠폰찾기
-								
 							</button>
 						</div>
 					</div>
@@ -605,10 +731,13 @@ body {
 					<span>상품금액</span> <span><%=NumberFormat.getInstance().format(totalProductPrice)%>원</span>
 				</div>
 				<div class="summary-item">
-					<span>배송비</span> <span><%=NumberFormat.getInstance().format(deliveryFee)%>원</span>
+					<span>쿠폰 할인</span>
+					<div>
+						<span id="coupon-discount">0원</span>
+					</div>
 				</div>
 				<div class="summary-item">
-					<span>할인금액</span> <span>0원</span>
+					<span>배송비</span> <span><%=NumberFormat.getInstance().format(deliveryFee)%>원</span>
 				</div>
 				<div class="total-amount">
 					<span>총 결제금액</span> <span><%=NumberFormat.getInstance().format(totalPrice)%>원</span>
@@ -621,6 +750,69 @@ body {
 				<i class="bi bi-check-circle"></i> 결제하기
 			</button>
 		</section>
+	</div>
+
+	<!-- 쿠폰모달 -->
+	<div class="modal fade" id="couponModal" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="couponModalLabel">사용 가능한 쿠폰</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="coupon-item" data-discount="20">
+						<input type="radio" name="coupon" value="welcome" class="coupon-radio">
+						<div class="coupon-image-container">
+							<img src="<%=root%>/SemiImg/MemberCoupon.png" alt="웰컴 쿠폰" class="coupon-image">
+						</div>
+						<div class="coupon-content">
+							<div class="coupon-title">회원가입 감사 쿠폰</div>
+							<div class="coupon-description">20% 할인</div>
+							<div class="coupon-expiry">2025-09-31 까지</div>
+						</div>
+						<button type="button" class="coupon-cancel">
+							<i class="bi bi-x-lg"></i>
+						</button>
+					</div>
+					
+					<% if (isJuneBirth) { %>
+					<div class="coupon-item" data-discount="25">
+						<input type="radio" name="coupon" value="birthday" class="coupon-radio">
+						<div class="coupon-image-container">
+							<img src="<%=root%>/SemiImg/BirthCoupon.png" alt="생일 쿠폰" class="coupon-image">
+						</div>
+						<div class="coupon-content">
+							<div class="coupon-title">6월 생일자 할인 쿠폰</div>
+							<div class="coupon-description">25% 할인</div>
+							<div class="coupon-expiry">2025-06-30 까지</div>
+						</div>
+						<button type="button" class="coupon-cancel">
+							<i class="bi bi-x-lg"></i>
+						</button>
+					</div>
+					<% } %>
+					
+					<div class="coupon-item" data-discount="50">
+						<input type="radio" name="coupon" value="summer" class="coupon-radio">
+						<div class="coupon-image-container">
+							<img src="<%=root%>/SemiImg/SummerCoupon.png" alt="여름 쿠폰" class="coupon-image">
+						</div>
+						<div class="coupon-content">
+							<div class="coupon-title">여름 빅할인 쿠폰</div>
+							<div class="coupon-description">50% 할인</div>
+							<div class="coupon-expiry">2025-08-31 까지</div>
+						</div>
+						<button type="button" class="coupon-cancel">
+							<i class="bi bi-x-lg"></i>
+						</button>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn-apply" id="applyCouponBtn">쿠폰 적용하기</button>
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<script>
@@ -675,6 +867,72 @@ body {
 		                    $("#email").val("");
 						}
 					});
+            
+         // Bootstrap 모달 객체
+    		var couponModal = new bootstrap.Modal(document.getElementById('couponModal'));
+    		
+    		// 쿠폰찾기 버튼 클릭시 모달 열기
+    		$('.btn-custom.btn-sm').click(function() {
+    			couponModal.show();
+    		});
+    		
+    		// 쿠폰 아이템 클릭 시 라디오 버튼 선택
+    		$('.coupon-item').click(function(e) {
+    			// 취소 버튼 클릭 시 이벤트 전파 중지
+    			if ($(e.target).closest('.coupon-cancel').length) {
+    				return;
+    			}
+    			
+    			const radio = $(this).find('input[type="radio"]');
+    			radio.prop('checked', true);
+    			$('.coupon-item').removeClass('selected');
+    			$(this).addClass('selected');
+    		});
+    		
+    		// 취소 버튼 클릭 시
+    		$('.coupon-cancel').click(function(e) {
+    			e.stopPropagation(); // 이벤트 전파 중지
+    			const couponItem = $(this).closest('.coupon-item');
+    			couponItem.removeClass('selected');
+    			couponItem.find('input[type="radio"]').prop('checked', false);
+    			
+    			// 할인 금액 초기화
+    			$('#coupon-discount').text('0원');
+    			$('.total-amount span:last').text('<%= NumberFormat.getInstance().format(totalPrice) %>원');
+    			$('#usecoupon').text('선택안함');
+    		});
+            
+    		// 쿠폰 적용 버튼 클릭시
+    		$('#applyCouponBtn').click(function() {
+    			var selectedCoupon = $('input[name="coupon"]:checked');
+    			if (selectedCoupon.length > 0) {
+    				var couponType = selectedCoupon.val();
+    				var discount = selectedCoupon.closest('.coupon-item').data('discount');
+    				
+    				// 할인 금액 계산
+    				var totalPrice = <%= totalPrice %>;
+    				var discountAmount = Math.floor(<%=totalProductPrice%> * (discount / 100));
+    				
+    				// 할인 금액 표시
+    				$('#coupon-discount').text('-' + discountAmount.toLocaleString() + '원');
+    				
+    				// 최종 금액 업데이트
+    				var finalAmount = totalPrice - discountAmount;
+    				$('.total-amount span:last').text(finalAmount.toLocaleString() + '원');
+    				
+    				// 쿠폰 선택 텍스트 업데이트
+    				var couponName = couponType === 'welcome' ? '회원가입 감사 쿠폰' : '6월 생일자 축하 쿠폰';
+    				$('#usecoupon').text(couponName + ' (' + discount + '% 할인)');
+    			} else {
+    				// 선택된 쿠폰이 없을 때
+    				$('#coupon-discount').text('0원');
+    				$('.total-amount span:last').text('<%= NumberFormat.getInstance().format(totalPrice) %>원');
+    				$('#usecoupon').text('선택안함');
+    			}
+    			
+    			// 모달 닫기
+    			$('#couponModal').modal('hide');
+    		});
 		});
 
         function generateOrderNumber() {
@@ -879,8 +1137,7 @@ body {
 			alert("로그아웃 하셨습니다.");
 			location.href = "../login/logoutform.jsp";
 		}
-			console.log("Name:", "<%=name%>");
-		    console.log("Email:", "<%=email%>");
+			
 		    console.log("<%=member_num%>");
 		    console.log("JSP에서 전달된 totalPrice:", <%= totalPrice %>);
 		    console.log("JSP에서 전달된 member_num:", "<%= member_num %>");
