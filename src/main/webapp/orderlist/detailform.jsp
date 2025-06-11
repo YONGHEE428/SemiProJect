@@ -66,13 +66,26 @@ body {
 .table th, .table td {
 	vertical-align: middle;
 }
+.order-delete-btn {
+	border: 1px solid #d66;
+	background: #fff;
+	color: #c44;
+	border-radius: 5px;
+	font-size: 0.97rem;
+	padding: 4px 13px;
+	transition: background .2s;
+}
+
+.order-delete-btn:hover {
+	background: #ffe7e7;
+}
 </style>
 </head>
 <body>
 	<div class="order-container">
 		<div class="mb-4 d-flex justify-content-between align-items-center">
 			<span class="order-title"><i class="bi bi-receipt"></i> 주문 상세</span>
-			<a href="#" class="btn btn-outline-secondary btn-sm"><i
+			<a onclick="location.href='index.jsp?main=orderlist/orderlistform.jsp'" class="btn btn-outline-secondary btn-sm"><i
 				class="bi bi-list"></i> 주문목록</a>
 		</div>
 		<!-- 주문 기본 정보 -->
@@ -215,8 +228,8 @@ body {
 		</div>
 		<!-- 하단 버튼 -->
 		<div class="mt-4 text-end">
-			<a href="#" class="btn btn-outline-secondary"><i
-				class="bi bi-arrow-left"></i> 목록삭제</a>
+			<button class="order-delete-btn"
+						onclick="if(confirm('정말로 이 주문을 삭제하시겠습니까?')) { location.href='deleteorder.jsp?order_code=<%=order.getOrderCode()%>' }">주문내역 삭제</button>
 		</div>
 	</div>
 </body>

@@ -475,8 +475,7 @@ body {
 							style="width: 100px; height: 100px; border-radius: 8px; object-fit: cover; border: 1px solid #ddd;">
 					</div>
 					<div>
-						<div
-							style="font-weight: bold; font-size: 1.08rem; margin-bottom: 7px;"><%=item.getProduct_name()%></div>
+						<div style="font-weight: bold; font-size: 1.08rem; margin-bottom: 7px;"><%=item.getProduct_name()%></div>
 						<div style="color: #666; font-size: 0.97rem;">
 							<%=item.getColor()%> 
 							/<%=item.getSize()%>
@@ -810,6 +809,7 @@ body {
 							 if (response.trim() === "success") {
 			                        alert('결제가 완료되었습니다. 주문 목록으로 이동합니다.');
 			                        location.href = '../index.jsp?main=orderlist/orderlistform.jsp';
+			                        
 			                    } else {
 			                        // 서버에서 에러 응답을 보냈을 경우
 			                        alert('결제는 완료되었으나 서버 처리 중 문제가 발생했습니다: ' + response);
