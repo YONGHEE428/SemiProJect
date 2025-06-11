@@ -218,6 +218,7 @@
 .product-row > .product-type-item:last-child {
     flex: 0 0 150px; /* 선택 항목 고정 */
     display: flex;
+    flex-wrap:wrap;
     justify-content: center;
     align-items: center;
 }
@@ -226,7 +227,7 @@
 </head>
 <body>
 <%
-
+	String root = request.getContextPath();
 	SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	String referer = request.getHeader("referer");
 	String name = (String)session.getAttribute("name");
@@ -287,12 +288,19 @@
             		 <div class="product-row">
             		 
 					    <div class="product-type-item">
+					    <a href='/SemiProject/index.jsp?main=shop/sangpumpage.jsp&product_id=<%=pdto.getProductId()%>'>     
 					        <img src="<%=pdto.getMainImageUrl() %>" alt="Product Image" class="product-image">
+					       </a>
 					    </div>
 					    <div class="product-info product-type-item" style="text-align: center;">
+					   
 					    	
 					        <div class="product-company"><b><%=pdto.getCategory() %></b></div>
-					        <div class="product-name"><%=pdto.getProductName() %></div>
+					        <div class="product-name">
+					   		<a href='/SemiProject/index.jsp?main=shop/sangpumpage.jsp&product_id=<%=pdto.getProductId()%>'>     
+					        <%=pdto.getProductName() %>
+					        </a>
+					        </div>
 					        <div class="product-price">
 					        <%
 							    BigDecimal price = pdto.getPrice();
@@ -303,12 +311,14 @@
 					        </div>
 					    </div>
 					    <div class="product-type-item">
-					   
+					        <button class="btn btn-sm btn-outline-warning" style="font-size: 11px; margin-bottom: 5px; width: 120px;"
+					         onclick="location.href='<%=root%>/index.jsp?main=shop/sangpumpage.jsp&product_id=<%=pdto.getProductId()%>'">
+					        제품 상세보기
+					        </button>
 					        <button class="btn btn-sm btn-outline-danger" style="font-size: 11px;"
 					         onclick="funcdel(<%=wdto.getProductId()%>)">
 					        위시리스트에서 제거
 					        </button>
-					        
 					    </div>
 					</div>
             		

@@ -518,78 +518,100 @@ document.addEventListener("DOMContentLoaded", updateTotalPrice);
     <div class="mt-2"><strong>총 가격:</strong> <span id="Price"></span></div>
 
     <div class="action-buttons">
+<<<<<<< HEAD
   
 <div class="action-buttons">
   <button id="addToCartBtn" class="btn btn-black-custom">장바구니</button>
 <button class="btn btn-black-custom" onclick="location.href='../payment/payment.jsp'">바로구매</button>
 </div>
+=======
+    <%
+      boolean isLoggedIn = session.getAttribute("userId") != null;
+    %>
 
-<!-- 모달 -->
-<div id="cartModal" class="modal" style="display: none;">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closeModal()">×</span>
-    <h3>장바구니 담기</h3>
-    <p>선택하신 상품을 장바구니에 담았습니다.<br>지금 장바구니를 확인하시겠습니까?</p>
-    <button onclick="goToCart()" class="btn-black">장바구니 확인</button>
-    <button onclick="continueShopping()" class="btn-white">쇼핑 계속하기</button>
-  </div>
-</div>
+    <div class="action-buttons">
+      <button id="addToCartBtn" class="btn btn-outline-primary">장바구니</button>
+      <button id="buyNowBtn" class="btn btn-primary">바로구매</button>
+    </div>
 
-<script>
-const isLoggedIn = <%= isLoggedIn %>;
+    <!-- 모달 -->
+    <div id="cartModal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">×</span>
+        <h3>장바구니 담기</h3>
+        <p>선택하신 상품을 장바구니에 담았습니다.<br>지금 장바구니를 확인하시겠습니까?</p>
+        <button onclick="goToCart()" class="btn-black">장바구니 확인</button>
+        <button onclick="continueShopping()" class="btn-white">쇼핑 계속하기</button>
+      </div>
+    </div>
+>>>>>>> 4686d0fbf61d1ced95decb1a8fa7d1ba583d6bc6
 
-// 옵션 ID 자동 생성 (예: opt-M-red)
-function updateOptionId() {
-    const size = document.getElementById("size").value;
-    const color = document.getElementById("color").value;
-    const optionId = document.getElementById("optionId");
+    <script>
+    const isLoggedIn = <%= isLoggedIn %>;
 
-    if (size && color) {
-        optionId.value = opt-${size}-${color}; // 조합 방식 (임시 예시)
-    } else {
-        optionId.value = "";
-    }
-}
+    // 옵션 ID 자동 생성 (예: opt-M-red)
+    function updateOptionId() {
+        const size = document.getElementById("size").value;
+        const color = document.getElementById("color").value;
+        const optionId = document.getElementById("optionId");
 
-document.getElementById("size").addEventListener("change", updateOptionId);
-document.getElementById("color").addEventListener("change", updateOptionId);
-
-document.getElementById("addToCartBtn").addEventListener("click", function() {
-    const productId = <%= productId %>; // 제품 번호
-    const size = document.getElementById("size").value;
-    const color = document.getElementById("color").value;
-    const quantity = document.getElementById("qty").textContent;
-
-    if (!size || !color) {
-        alert("옵션을 모두 선택해주세요.");
-        return;
+        if (size && color) {
+            optionId.value = `opt-${size}-${color}`; // 조합 방식 (임시 예시)
+        } else {
+            optionId.value = "";
+        }
     }
 
-    // form 생성 및 전송
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = "shop/addcart.jsp";
+    document.getElementById("size").addEventListener("change", updateOptionId);
+    document.getElementById("color").addEventListener("change", updateOptionId);
 
-    // hidden input 추가
-    const fields = {
-        'product_id': productId,
-        'size': size,
-        'color': color,
-        'quantity': quantity
-    };
+    // 장바구니 추가 함수
+    function addToCart(redirect) {
+        const productId = <%= productId %>; // 제품 번호
+        const size = document.getElementById("size").value;
+        const color = document.getElementById("color").value;
+        const quantity = document.getElementById("qty").textContent;
 
-    for (const [key, value] of Object.entries(fields)) {
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = key;
-        input.value = value;
-        form.appendChild(input);
+        if (!size || !color) {
+            alert("옵션을 모두 선택해주세요.");
+            return;
+        }
+
+        // form 생성 및 전송
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = "shop/addcart.jsp";
+
+        // hidden input 추가
+        const fields = {
+            'product_id': productId,
+            'size': size,
+            'color': color,
+            'quantity': quantity
+        };
+
+        if (redirect) {
+            fields['redirect'] = redirect;
+        }
+
+        for (const [key, value] of Object.entries(fields)) {
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = key;
+            input.value = value;
+            form.appendChild(input);
+        }
+
+        document.body.appendChild(form);
+        form.submit();
     }
 
-    document.body.appendChild(form);
-    form.submit();
-});
+    // 장바구니 버튼 클릭 이벤트
+    document.getElementById("addToCartBtn").addEventListener("click", function() {
+        addToCart();
+    });
 
+<<<<<<< HEAD
 function showModal() {
     document.getElementById("cartModal").style.display = "block";
 }
@@ -605,6 +627,27 @@ function continueShopping() {
 }
 </script>
      
+=======
+    // 바로구매 버튼 클릭 이벤트
+    document.getElementById("buyNowBtn").addEventListener("click", function() {
+        addToCart('payment');
+    });
+
+    function showModal() {
+        document.getElementById("cartModal").style.display = "block";
+    }
+    function closeModal() {
+        document.getElementById("cartModal").style.display = "none";
+    }
+    function goToCart() {
+        window.location.href = "../index.jsp?main=cart/cartform.jsp";
+    }
+    function continueShopping() {
+        closeModal();
+        window.location.href = "../index.jsp?main=category/category.jsp";
+    }
+    </script>
+>>>>>>> 4686d0fbf61d1ced95decb1a8fa7d1ba583d6bc6
     </div>
 
     <!-- 오른쪽 하단에 있는 메뉴 -->

@@ -1,3 +1,5 @@
+<%@page import="data.dto.MemberDto"%>
+<%@page import="data.dao.MemberDao"%>
 <%@page import="data.dao.CartListDao"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="data.dto.CartListDto"%>
@@ -28,8 +30,8 @@
 	src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 <script type="text/javascript"
 	src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <title>결제하기</title>
-
 <style>
 /* 전역 스타일 */
 * {
@@ -47,7 +49,6 @@ body {
 	color: #333;
 	background-color: #f8f9fa;
 }
-
 /* 헤더 스타일 */
 .top-header {
 	background-color: #fff;
@@ -57,11 +58,8 @@ body {
 	top: 0;
 	z-index: 1000;
 	/* display block: 한 줄 전체 차지
-
 			   inline: 내용 크기만큼 차지
-		
 			   flex: 유연하게 정렬, 가로/세로 배치 가능
-
 			   grid: 격자 형태 배치 */
 	display: flex;
 	/* space-between: 양 끝 정렬, 중간은 균등 간격 */
@@ -314,7 +312,6 @@ body {
 		padding: 0.5rem 1rem;
 	}
 }
-
 /* 애니메이션 효과 */
 @keyframes fadeIn {
 	from {
@@ -334,14 +331,12 @@ body {
 .form-control:focus ~ label, .form-select:focus ~ label {
 	color: #c9a797;
 }
-
 /* 버튼 로딩 상태 */
 .btn-custom.loading {
 	position: relative;
 	pointer-events: none;
 	opacity: 0.8;
 }
-
 .btn-custom.loading::after {
 	content: '';
 	position: absolute;
@@ -354,7 +349,6 @@ body {
 	right: 1rem;
 	top: calc(50% - 10px);
 }
-
 @keyframes spin {
 	to {
 		transform: rotate(360deg);
@@ -366,6 +360,118 @@ body {
 	color: inherit; /* 색상 변경 방지 */
 	text-decoration: none; /* 밑줄 제거 */
 }
+
+.coupon-item {
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    overflow: hidden;
+    min-height: 120px;
+}
+
+.coupon-image-container {
+    width: 250px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.coupon-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.coupon-content {
+    flex: 1;
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 90px;
+}
+
+.coupon-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    color: #000;
+}
+
+.coupon-description {
+    font-size: 1rem;
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+
+.coupon-expiry {
+    font-size: 0.9em;
+    color: #999;
+    margin-top: auto;
+}
+
+.coupon-item.selected {
+    border: 2px solid #000;
+    background-color: #f8f9fa;
+}
+
+.coupon-cancel {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    color: #aaa;
+    font-size: 18px;
+    line-height: 1;
+    display: none;
+    z-index: 2;
+}
+
+.coupon-cancel:hover {
+    color: #666;
+}
+
+.coupon-item.selected .coupon-cancel {
+    display: block;
+}
+
+.coupon-radio {
+    display: none;
+}
+
+.modal-footer {
+    border-top: none;
+    padding: 1rem;
+}
+
+.modal-footer .btn-apply {
+    width: 100%;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.modal-footer .btn-apply:hover {
+    background-color: #333;
+}
 </style>
 </head>
 <body>
@@ -374,6 +480,18 @@ body {
 	String name = (String) session.getAttribute("name");
 	String hp = (String) session.getAttribute("hp");
 	String email=(String) session.getAttribute("email");
+	String id = (String)session.getAttribute("myid");
+	MemberDao mdao = new MemberDao();
+	String memberNum = String.valueOf(mdao.getMemberNumById(id));
+	MemberDto mdto = mdao.getData(memberNum);
+	String birth =  mdto.getBirth();// 생일 정보 가져오기
+	boolean isJuneBirth = false;
+
+	// 생일이 6월인지 확인
+	if (birth.substring(5,7).equals("06")) {
+	    isJuneBirth = true;
+	}
+
 	StringTokenizer stk = new StringTokenizer(hp, "-");
 
 	String idxs = request.getParameter("idxs"); // "2,4,8"
@@ -398,8 +516,8 @@ body {
 		totalQuantity += quantity;
 	}
 
-	// 배송비 계산 (8만원 이상 무료, 미만 3000원)
-	int deliveryFee = totalProductPrice >= 80000 ? 0 : 10;
+	// 배송비 계산 (10만원 이상 무료, 미만 3000원)
+	int deliveryFee = totalProductPrice >= 100000 ? 0 : 3000;
 	int totalPrice = totalProductPrice + deliveryFee;
 	
 	  //member_num
@@ -413,11 +531,7 @@ body {
 	        System.err.println("세션 'num' 값이 유효한 숫자가 아닙니다: " + memberNumStr);
 	    }
 	}
-
-   
 	%>
-
-	<!-- 헤더 -->
 	<header>
 		<div class="top-header">
 			<div class="left-section">
@@ -458,7 +572,6 @@ body {
 			</div>
 		</div>
 	</header>
-
 	<!-- 메인 컨테이너 -->
 	<div class="container">
 		<!-- 주문 섹션 -->
@@ -475,8 +588,7 @@ body {
 							style="width: 100px; height: 100px; border-radius: 8px; object-fit: cover; border: 1px solid #ddd;">
 					</div>
 					<div>
-						<div
-							style="font-weight: bold; font-size: 1.08rem; margin-bottom: 7px;"><%=item.getProduct_name()%></div>
+						<div style="font-weight: bold; font-size: 1.08rem; margin-bottom: 7px;"><%=item.getProduct_name()%></div>
 						<div style="color: #666; font-size: 0.97rem;">
 							<%=item.getColor()%> 
 							/<%=item.getSize()%>
@@ -487,7 +599,6 @@ body {
 				<%}%>
 			</div>
 		</section>
-
 		<!-- 주문자 정보 섹션 -->
 		<section class="card">
 			<h2 class="section-title">주문자 정보</h2>
@@ -512,7 +623,6 @@ body {
 							<label for="hp">전화번호 (-없이 입력)</label>
 						</div>
 					</div>
-
 					<!-- 주소 입력 -->
 					<div class="col-12">
 						<h3 class="h5 mb-3">배송지 주소</h3>
@@ -526,7 +636,6 @@ body {
 							</button>
 						</div>
 					</div>
-
 					<!-- 우편번호 -->
 					<div class="col-md-4">
 						<div class="form-floating">
@@ -563,11 +672,10 @@ body {
 					<!-- 쿠폰 선택 -->
 					<div class="col-12">
 						<div class="d-flex align-items-center gap-3">
-							<span class="fw-bold">쿠폰 적용</span> <span id="usecoupon"
-								class="text-muted">선택안함</span>
-							<button type="button" class="btn btn-custom btn-sm">
+							<span class="fw-bold">쿠폰 적용</span>
+							<span id="usecoupon" class="text-muted">선택안함</span>
+							<button type="button" class="btn btn-custom btn-sm" data-bs-toggle="modal" data-bs-target="#couponModal">
 								<i class="bi bi-ticket-perforated"></i> 쿠폰찾기
-								
 							</button>
 						</div>
 					</div>
@@ -623,10 +731,13 @@ body {
 					<span>상품금액</span> <span><%=NumberFormat.getInstance().format(totalProductPrice)%>원</span>
 				</div>
 				<div class="summary-item">
-					<span>배송비</span> <span><%=NumberFormat.getInstance().format(deliveryFee)%>원</span>
+					<span>쿠폰 할인</span>
+					<div>
+						<span id="coupon-discount">0원</span>
+					</div>
 				</div>
 				<div class="summary-item">
-					<span>할인금액</span> <span>0원</span>
+					<span>배송비</span> <span><%=NumberFormat.getInstance().format(deliveryFee)%>원</span>
 				</div>
 				<div class="total-amount">
 					<span>총 결제금액</span> <span><%=NumberFormat.getInstance().format(totalPrice)%>원</span>
@@ -639,6 +750,69 @@ body {
 				<i class="bi bi-check-circle"></i> 결제하기
 			</button>
 		</section>
+	</div>
+
+	<!-- 쿠폰모달 -->
+	<div class="modal fade" id="couponModal" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="couponModalLabel">사용 가능한 쿠폰</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="coupon-item" data-discount="20">
+						<input type="radio" name="coupon" value="welcome" class="coupon-radio">
+						<div class="coupon-image-container">
+							<img src="<%=root%>/SemiImg/MemberCoupon.png" alt="웰컴 쿠폰" class="coupon-image">
+						</div>
+						<div class="coupon-content">
+							<div class="coupon-title">회원가입 감사 쿠폰</div>
+							<div class="coupon-description">20% 할인</div>
+							<div class="coupon-expiry">2025-09-31 까지</div>
+						</div>
+						<button type="button" class="coupon-cancel">
+							<i class="bi bi-x-lg"></i>
+						</button>
+					</div>
+					
+					<% if (isJuneBirth) { %>
+					<div class="coupon-item" data-discount="25">
+						<input type="radio" name="coupon" value="birthday" class="coupon-radio">
+						<div class="coupon-image-container">
+							<img src="<%=root%>/SemiImg/BirthCoupon.png" alt="생일 쿠폰" class="coupon-image">
+						</div>
+						<div class="coupon-content">
+							<div class="coupon-title">6월 생일자 할인 쿠폰</div>
+							<div class="coupon-description">25% 할인</div>
+							<div class="coupon-expiry">2025-06-30 까지</div>
+						</div>
+						<button type="button" class="coupon-cancel">
+							<i class="bi bi-x-lg"></i>
+						</button>
+					</div>
+					<% } %>
+					
+					<div class="coupon-item" data-discount="50">
+						<input type="radio" name="coupon" value="summer" class="coupon-radio">
+						<div class="coupon-image-container">
+							<img src="<%=root%>/SemiImg/SummerCoupon.png" alt="여름 쿠폰" class="coupon-image">
+						</div>
+						<div class="coupon-content">
+							<div class="coupon-title">여름 빅할인 쿠폰</div>
+							<div class="coupon-description">50% 할인</div>
+							<div class="coupon-expiry">2025-08-31 까지</div>
+						</div>
+						<button type="button" class="coupon-cancel">
+							<i class="bi bi-x-lg"></i>
+						</button>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn-apply" id="applyCouponBtn">쿠폰 적용하기</button>
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<script>
@@ -693,29 +867,107 @@ body {
 		                    $("#email").val("");
 						}
 					});
+            
+         // Bootstrap 모달 객체
+    		var couponModal = new bootstrap.Modal(document.getElementById('couponModal'));
+    		
+    		// 쿠폰찾기 버튼 클릭시 모달 열기
+    		$('.btn-custom.btn-sm').click(function() {
+    			couponModal.show();
+    		});
+    		
+    		// 쿠폰 아이템 클릭 시 라디오 버튼 선택
+    		$('.coupon-item').click(function(e) {
+    			// 취소 버튼 클릭 시 이벤트 전파 중지
+    			if ($(e.target).closest('.coupon-cancel').length) {
+    				return;
+    			}
+    			
+    			const radio = $(this).find('input[type="radio"]');
+    			radio.prop('checked', true);
+    			$('.coupon-item').removeClass('selected');
+    			$(this).addClass('selected');
+    		});
+    		
+    		// 취소 버튼 클릭 시
+    		$('.coupon-cancel').click(function(e) {
+    			e.stopPropagation(); // 이벤트 전파 중지
+    			const couponItem = $(this).closest('.coupon-item');
+    			couponItem.removeClass('selected');
+    			couponItem.find('input[type="radio"]').prop('checked', false);
+    			
+    			// 할인 금액 초기화
+    			$('#coupon-discount').text('0원');
+    			$('.total-amount span:last').text('<%= NumberFormat.getInstance().format(totalPrice) %>원');
+    			$('#usecoupon').text('선택안함');
+    		});
+            
+    		// 쿠폰 적용 버튼 클릭시
+    		$('#applyCouponBtn').click(function() {
+    			var selectedCoupon = $('input[name="coupon"]:checked');
+    			if (selectedCoupon.length > 0) {
+    				var couponType = selectedCoupon.val();
+    				var discount = selectedCoupon.closest('.coupon-item').data('discount');
+    				
+    				// 할인 금액 계산
+    				var totalPrice = <%= totalPrice %>;
+    				var discountAmount = Math.floor(<%=totalProductPrice%> * (discount / 100));
+    				
+    				// 할인 금액 표시
+    				$('#coupon-discount').text('-' + discountAmount.toLocaleString() + '원');
+    				
+    				// 최종 금액 업데이트
+    				var finalAmount = totalPrice - discountAmount;
+    				$('.total-amount span:last').text(finalAmount.toLocaleString() + '원');
+    				
+    				// 쿠폰 선택 텍스트 업데이트
+    				var couponName = couponType === 'welcome' ? '회원가입 감사 쿠폰' : '6월 생일자 축하 쿠폰';
+    				$('#usecoupon').text(couponName + ' (' + discount + '% 할인)');
+    			} else {
+    				// 선택된 쿠폰이 없을 때
+    				$('#coupon-discount').text('0원');
+    				$('.total-amount span:last').text('<%= NumberFormat.getInstance().format(totalPrice) %>원');
+    				$('#usecoupon').text('선택안함');
+    			}
+    			
+    			// 모달 닫기
+    			$('#couponModal').modal('hide');
+    		});
 		});
 
         function generateOrderNumber() {
-        		const pad = (n) => String(n).padStart(2, '0');
-        	    const now = new Date();
+        	   /* 문자열의 길이를 2로 만들고 길이가 2보다 짧으면 왼쪽에 0을 채운다 */
+            const pad = (n) => String(n).padStart(2, '0');
+            
+            const now = new Date();
+            const year = String(now.getFullYear());
+            const month = pad(now.getMonth() + 1);
+            const day = pad(now.getDate());
 
-        	    const year = String(now.getFullYear()).slice(-2);
-        	    const month = pad(now.getMonth() + 1);
-        	    const day = pad(now.getDate());
-        	    const hour = pad(now.getHours());
-        	    const minute = pad(now.getMinutes());
-        	    const second = pad(now.getSeconds());
-        	    const random = String(Math.floor(Math.random() * 1000)).padStart(3, '0');
-        	    const orderNum = "ORDER" + year + month + day + hour + minute + second + random;
-        	    console.log("최종 생성된 merchant_uid:", orderNum);
+            const fullUuid = crypto.randomUUID(); 
+            
+            // 2. UUID에서 하이픈을 모두 제거하여 순수 문자열로 만듭니다. (예: "abcdef123456...")
+            const uuidWithoutHyphens = fullUuid.replace(/-/g, '');
 
-        	    return orderNum;
+            // 3. 순수 문자열의 앞 6자리만 추출합니다.
+            //    **경고**: 이 방법은 고유성 충돌 가능성을 크게 높입니다.
+            //    특히 많은 결제가 발생할 경우 중복될 위험이 존재합니다.
+            //    결제 시스템의 merchant_uid는 고유해야 하므로, 이 방식은 신중하게 사용해야 합니다.
+            const shortUniqueId = uuidWithoutHyphens.substring(0, 6);
+            // ---
+
+            // 서버의 "ORD" + YYYYMMDD + "-" + ID 형식과 유사하게 만듭니다.
+            // 여기서는 ID 부분에 단축된 UUID를 사용합니다.
+            const merchantUid = "ORD" + year + month + day + "-" + shortUniqueId;
+            
+            console.log("최종 생성된 merchant_uid (단축된 UUID 기반):", merchantUid);
+
+            return merchantUid;
         }
 	
 		// 결제 요청
 		function payrequest() {
 		    const newMerchantUid = generateOrderNumber();
-		    console.log("생성된 merchant_uid:", newMerchantUid); 
 			const selectedPay = $("#selectedPay").val();
 			if (!selectedPay) {
 				alert("결제 수단을 선택해주세요.");
@@ -744,9 +996,7 @@ body {
 			default:
 				alert("지원하지 않는 결제 수단입니다.");
 			}
-			
 		}
-		
 		// 카드결제
 		function cardPay(newMerchantUid, memberNum) {
 		    console.log("memberNum:", memberNum); // 이 메시지가 뜨는지 확인
@@ -762,11 +1012,9 @@ body {
 			    buyer_name: $("#name").val(),
 			    buyer_tel: $("#hp").val(),
 			    buyer_addr: $("#userAddress").val()+$("#userDtlAddress").val(),
-			    buyer_postcode: $("#userPostCode").val()
-				
+			    buyer_postcode: $("#userPostCode").val()				
 			});
-			/*  */
-			
+		    
 			var IMP = window.IMP;
 			IMP.init('imp23623506');
 
@@ -783,49 +1031,96 @@ body {
 				buyer_postcode: $("#userPostCode").val(),
 
 			}, function(rsp) {
-				
-				if (rsp.success) {
-					//배송메세지 처리
-					  const deliveryMessage = $(".form-select").val() === "직접 입력" ?
-                              $("#mymessage textarea").val() :
-                              $(".form-select").val(); // option value를 사용하도록 수정
-					// 결제 성공 시 buyok 값 업데이트
-					$.ajax({
-						url: "updateBuyOk.jsp",
-						method: "POST",
-						data: {
-							"idxs": "<%=request.getParameter("idxs")%>",  // 선택상품 주문의 경우
-							"all": "<%=request.getParameter("all")%>",  // 전체상품 주문의 경우
-							"member_Id": "<%=session.getAttribute("myid")%>",  // 전체상품 주문 시 필요
-							 // payment 테이블 저장을 위한 정보
-		                    "imp_uid": rsp.imp_uid,          // 아임포트 결제 고유 번호
-		                    "merchant_uid": rsp.merchant_uid,  // 상점 주문 번호
-		                    "totalPrice": rsp.paid_amount,     // 아임포트에서 실제 결제된 금액
-		                    "addr": rsp.buyer_addr,          // 구매자 주소
-		                    "delivery_msg": deliveryMessage, // 배송 메시지
-		                    "hp": rsp.buyer_tel,              // 구매자 연락처
-		                    "member_num":memberNum
-						},
-						success: function(response) {
-							 if (response.trim() === "success") {
-			                        alert('결제가 완료되었습니다. 주문 목록으로 이동합니다.');
-			                        location.href = '../index.jsp?main=orderlist/orderlistform.jsp';
-			                    } else {
-			                        // 서버에서 에러 응답을 보냈을 경우
-			                        alert('결제는 완료되었으나 서버 처리 중 문제가 발생했습니다: ' + response);
-			                    }
-						},
-						error: function() {
-							 console.error("AJAX Error:", status, error);
-			                    alert('결제는 완료되었으나 주문 처리 중 오류가 발생했습니다. 고객센터에 문의하세요.');
-						}
-					});
-				} else {
-					alert('결제에 실패하였습니다.\n' + '에러내용: ' + rsp.error_msg);
-				}
+
+			    if (rsp.success) {
+			        // 배송메시지 처리
+			        const deliveryMessage = $(".form-select").val() === "직접 입력" ? 
+			            $("#mymessage textarea").val() : 
+			            $(".form-select").val();
+			        
+			        // 1단계: 아임포트 결제 검증 (PaymentVerifyServlet 사용)
+			        $.ajax({
+			            url: "<%=root%>/payment/verify",  // PaymentVerifyServlet 경로
+			            method: "POST",
+			            data: {
+			                "imp_uid": rsp.imp_uid,           // 아임포트 결제 고유번호
+			                "merchant_uid": rsp.merchant_uid, // 상점 주문번호
+			                "amount": rsp.paid_amount,        // 실제 결제된 금액
+			                "addr": rsp.buyer_addr,           // 구매자 주소
+			                "delivery_msg": deliveryMessage   // 배송 메시지
+			            },
+			            success: function(verifyResponse) {
+			                if (verifyResponse.status === "success") {
+			                	// 서버에서 전달받은 memberNum을 추출
+		                        // PaymentVerifyServlet에서 success 시 memberNum을 응답에 포함하도록 수정했음
+		                        const verifiedMemberNum = verifyResponse.memberNum;
+			                	
+			                    // 2단계: 결제 검증 성공 후 주문 처리
+			                    processOrder(rsp, deliveryMessage,memberNum);
+			                } else {
+			                    // 결제 검증 실패
+			                    alert('결제 검증에 실패했습니다: ' + verifyResponse.message);
+			                    console.error('Payment verification failed:', verifyResponse.message);
+			                }
+			            },
+			            error: function(xhr, status, error) {
+			                let errorMessage = '결제 검증 중 오류가 발생했습니다.';
+			                
+			                if (xhr.responseJSON && xhr.responseJSON.message) {
+			                    errorMessage = xhr.responseJSON.message;
+			                } else if (xhr.status === 400) {
+			                    errorMessage = '결제 정보가 올바르지 않습니다.';
+			                } else if (xhr.status === 500) {
+			                    errorMessage = '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+			                }
+			                
+			                alert(errorMessage);
+			                console.error('Payment verification error:', status, error);
+			            }
+			        });
+			        
+			    } else {
+			        // 결제 실패
+			        alert('결제에 실패하였습니다.\n에러내용: ' + rsp.error_msg);
+			    }
+
 			});
 		}
-
+					// 주문 처리 함수 (결제 검증 완료 후 실행)
+					function processOrder(rsp, deliveryMessage, memberNum) {
+					    $.ajax({
+					        url: "updateBuyOk.jsp",
+					        method: "POST",
+					        data: {
+					            // 기존 주문 처리 데이터
+					            "idxs": "<%=request.getParameter("idxs")%>",
+					            "all": "<%=request.getParameter("all")%>",
+					            "member_Id": "<%=session.getAttribute("myid")%>",
+					            
+					            // 결제 관련 정보 (이미 PaymentService에서 DB에 저장됨)
+					            "imp_uid": rsp.imp_uid,
+					            "merchant_uid": rsp.merchant_uid,
+					            "totalPrice": rsp.paid_amount,
+					            "addr": rsp.buyer_addr,
+					            "delivery_msg": deliveryMessage,
+					            "hp": rsp.buyer_tel,
+					            "member_num": memberNum
+					        },
+					        success: function(response) {
+					            if (response.trim() === "success") {
+					                alert('결제 및 주문이 완료되었습니다. 주문 목록으로 이동합니다.');
+					                location.href = '../index.jsp?main=orderlist/orderlistform.jsp';
+					            } else {
+					                alert('결제는 완료되었으나 주문 처리 중 문제가 발생했습니다: ' + response);
+					                console.error('Order processing failed:', response);
+					            }
+					        },
+					        error: function(xhr, status, error) {
+					            alert('결제는 완료되었으나 주문 처리 중 오류가 발생했습니다. 고객센터에 문의하세요.');
+					            console.error("Order processing error:", status, error);
+					        }
+					    });
+					}
 		function naverPay() {
 			alert("공사 중입니다.");
 		}
@@ -842,10 +1137,11 @@ body {
 			alert("로그아웃 하셨습니다.");
 			location.href = "../login/logoutform.jsp";
 		}
-
-		 console.log("Name:", "<%=name%>");
-		    console.log("Email:", "<%=email%>");
+			
 		    console.log("<%=member_num%>");
+		    console.log("JSP에서 전달된 totalPrice:", <%= totalPrice %>);
+		    console.log("JSP에서 전달된 member_num:", "<%= member_num %>");
+		  
 	</script>
 </body>
 </html>

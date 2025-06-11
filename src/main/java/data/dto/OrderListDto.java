@@ -1,16 +1,18 @@
+// data.dto.OrderListDto.java
+
 package data.dto;
 
 import java.sql.Timestamp;
 import java.util.List;
 
 public class OrderListDto {
-    private int orderId;             // 주문번호 (orders.order_id)
-    private String orderCode;        // 주문번호 (orders.order_code)
-    private String memberNum;        // 회원번호 (orders.member_num)
-    private Timestamp orderDate;     // 주문일시 (orders.order_date)
-    private String orderStatus;      // 주문상태
-    private int totalPrice;          // 총 가격
-    private List<OrderItem> items;   // 주문된 상품들 리스트   
+    private int orderId;            // 주문번호 (orders.order_id)
+    private String orderCode;       // 주문번호 (orders.order_code)
+    private int memberNum;          // 회원번호 (orders.member_num) - int로 변경
+    private Timestamp orderDate;    // 주문일시 (orders.order_date)
+    private String orderStatus;     // 주문상태
+    private int totalPrice;         // 총 가격
+    private List<OrderItem> items;  // 주문된 상품들 리스트    
     private String memberName;
 
     public String getMemberName() {
@@ -20,7 +22,6 @@ public class OrderListDto {
         this.memberName = memberName;
     }
 
-    
     // Getters and Setters
     public int getOrderId() {
         return orderId;
@@ -34,10 +35,10 @@ public class OrderListDto {
     public void setOrderCode(String orderCode) {
         this.orderCode = orderCode;
     }
-    public String getMemberNum() {
+    public int getMemberNum() { // 변경된 getter
         return memberNum;
     }
-    public void setMemberNum(String memberNum) {
+    public void setMemberNum(int memberNum) { // 변경된 setter
         this.memberNum = memberNum;
     }
     public Timestamp getOrderDate() {
@@ -66,14 +67,14 @@ public class OrderListDto {
     }
 
     public static class OrderItem {
-        private int productId;        // 상품번호
-        private int optionId;         // 옵션번호
-        private int cnt;              // 수량
-        private int price;            // 가격
-        private String productName;   // 상품명
-        private String productImage;  // 상품이미지
-        private String color;         // 옵션 색상
-        private String size;          // 옵션 사이즈
+        private int productId;      // 상품번호
+        private int optionId;       // 옵션번호
+        private int cnt;            // 수량
+        private int price;          // 가격
+        private String productName; // 상품명
+        private String productImage;// 상품이미지
+        private String color;       // 옵션 색상
+        private String size;        // 옵션 사이즈
         
         // Getters and Setters
         public int getProductId() {

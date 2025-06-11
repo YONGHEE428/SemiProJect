@@ -543,4 +543,46 @@ public class ProductDao {
 	    return productList;
 	}
 
+    public List<ProductDto> searchProducts(String keyword, int start, int itemsPerPage) {
+        List<ProductDto> list = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = db.getConnection();
+            String sql = "SELECT * FROM product WHERE product_name LIKE ? OR category LIKE ? ORDER BY product_id DESC LIMIT ?, ?";
+            pstmt = conn.prepareStatement(sql);
+            
+            String searchKeyword = "%" + keyword + "%";
+            pstmt.setString(1, searchKeyword);
+            pstmt.setString(2, searchKeyword);
+            pstmt.setInt(3, start);
+            pstmt.setInt(4, itemsPerPage);
+            
+            rs = pstmt.executeQuery();
+
+            while(rs.next()) {
+                ProductDto dto = new ProductDto();
+                dto.setProductId(rs.getInt("product_id"));
+                dto.setProductName(rs.getString("product_name"));
+                dto.setPrice(rs.getBigDecimal("price"));
+                dto.setMainImageUrl(rs.getString("main_image_url"));
+                dto.setDescription(rs.getString("description"));
+                dto.setCategory(rs.getString("category"));
+                dto.setRegisteredAt(rs.getTimestamp("registered_at"));
+                dto.setLikeCout(rs.getString("like_count"));
+                dto.setViewCount(rs.getString("view_count"));
+                dto.setUpdatedAt(rs.getTimestamp("updated_at"));
+                list.add(dto);
+            }
+        } catch (SQLException e) {
+            System.err.println("searchProducts 오류: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            db.dbClose(rs, pstmt, conn);
+        }
+        return list;
+    }
+
 }

@@ -287,7 +287,7 @@ body {
 
          $("#selectedCount").text(count);
          $("#selectedTotalPrice").text(total.toLocaleString());
-         let shipping = (total >= 80000 || total === 0) ? 0 : 3000;
+         let shipping = (total >= 100000 || total === 0) ? 0 : 3000;
          $("#shippingCost").text(shipping.toLocaleString());
          $("#finalTotalPrice").text((total + shipping).toLocaleString());
       }
@@ -549,7 +549,7 @@ String name = (String) session.getAttribute("name");
          </div>
          <div>
             배송비 <span class="fw-bold" id="shippingCost">0</span>원 <span
-               class="text-secondary">(8만원 이상 무료배송)</span>
+               class="text-secondary">(10만원 이상 무료배송)</span>
          </div>
          <div>
             총 결제 예상금액 <span class="fw-bold" id="finalTotalPrice">0</span>원
