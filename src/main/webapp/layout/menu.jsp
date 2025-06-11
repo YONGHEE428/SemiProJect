@@ -163,11 +163,11 @@
   		<li><a href="index.jsp?main=search/searchResult.jsp&keyword=반바지"><strong>5 &nbsp;&nbsp;반바지</strong><span class="arrow" style="color: #E0E0E0;">▬</span></a></li>
   		</ol>
   		<ol>
-  		<li><a href="index.jsp?main=search/searchResult.jsp&keyword=바람막이"><strong>1 &nbsp;&nbsp;바람막이</strong><span class="arrow" style="color: #E0E0E0;">▬</span></a></li>
-  		<li><a href="index.jsp?main=search/searchResult.jsp&keyword=아디다스"><strong>2 &nbsp;&nbsp;아디다스</strong><span class="arrow" style="color: red;">▲</span></a></li>
-  		<li><a href="index.jsp?main=search/searchResult.jsp&keyword=청바지"><strong>3 &nbsp;&nbsp;청바지</strong><span class="arrow" style="color: red;">▲</span></a></li>
-  		<li><a href="index.jsp?main=search/searchResult.jsp&keyword=트레이닝바지"><strong>4 &nbsp;&nbsp;트레이닝바지</strong><span class="arrow" style="color: blue;">▼</span></a></li>
-  		<li><a href="index.jsp?main=search/searchResult.jsp&keyword=레인부츠"><strong>5 &nbsp;&nbsp;레인부츠</strong><span class="arrow" style="color: blue;">▼</span></a></li>
+  		<li><a href="index.jsp?main=search/searchResult.jsp&keyword=바람막이"><strong>6 &nbsp;&nbsp;바람막이</strong><span class="arrow" style="color: #E0E0E0;">▬</span></a></li>
+  		<li><a href="index.jsp?main=search/searchResult.jsp&keyword=아디다스"><strong>7 &nbsp;&nbsp;아디다스</strong><span class="arrow" style="color: red;">▲</span></a></li>
+  		<li><a href="index.jsp?main=search/searchResult.jsp&keyword=청바지"><strong>8 &nbsp;&nbsp;청바지</strong><span class="arrow" style="color: red;">▲</span></a></li>
+  		<li><a href="index.jsp?main=search/searchResult.jsp&keyword=트레이닝바지"><strong>9 &nbsp;&nbsp;트레이닝바지</strong><span class="arrow" style="color: blue;">▼</span></a></li>
+  		<li><a href="index.jsp?main=search/searchResult.jsp&keyword=레인부츠"><strong>10 &nbsp;&nbsp;레인부츠</strong><span class="arrow" style="color: blue;">▼</span></a></li>
   		</ol>
   	</div>
   </div>
