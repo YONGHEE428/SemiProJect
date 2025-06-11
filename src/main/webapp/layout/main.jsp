@@ -1,4 +1,3 @@
-
 <%@page import="data.dao.WishListDao"%>
 <%@page import="data.dao.MemberDao"%>
 <%@page import="java.lang.reflect.Member"%>
@@ -171,7 +170,7 @@ function loadMoreItems() {
 	.carousel-item > img{
 		width: 100%;
 		height: 100%;
-
+		object-fit: cover;
 	}
 	.eventImg > ul{
 		display: flex; 
@@ -273,14 +272,14 @@ function loadMoreItems() {
 	}
 	.main-LikeItems >  ul > li{
 		width: 16.66%;
-		height: 300px;
+		height: 350px;
 		margin-bottom: 50px;
 		padding: 5px 5px;
 	}
 	
 	.main-LikeItems> ul > li > .item{
 		width: 100%;
-		height: 60%;
+		height: 70%;
 	}
 	.main-LikeItems> ul > li > .item > a >img{
 		width: 100%;
@@ -337,7 +336,7 @@ function loadMoreItems() {
         </div>
     </div>
 <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel"data-bs-interval="5000">
-  <div class="carousel-inner" style="height: 550px;">
+  <div class="carousel-inner" style="height: 650px;">
     <div class="carousel-item active">
       <a href="index.jsp?main=category/accesories.jsp&category1=악세서리"><img src="SemiImg/test.png" class="no-hover d-block w-100" alt="..."></a>
     </div>
@@ -437,7 +436,7 @@ function loadMoreItems() {
 
     <li>
       <div class="smalleventimg">
-        <a href="<%=root%>/shop/sangpumpage.jsp">
+        <a href="<%=root%>/index.jsp?main=shop/sangpumpage.jsp&product_id=">
           <img src="<%=root%>/SemiImg/eventimg5_1.png">
           <div class="hover-text"></div>
         </a>
