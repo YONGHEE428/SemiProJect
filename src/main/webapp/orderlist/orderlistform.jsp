@@ -310,6 +310,7 @@ body {
 </script>
 </head>
 <%
+String root = request.getContextPath();
 String memberId = (String) session.getAttribute("myid");
 String name = (String) session.getAttribute("name");
 
@@ -446,7 +447,7 @@ keyword = keyword.trim();
 				<i class="bi bi-box"></i>
 				<p>주문 내역이 없습니다.</p>
 				<p>새로운 상품을 구매해보세요.</p>
-				<a href="../index.jsp?main=main.jsp" class="continue-shopping">쇼핑
+				<a href="<%=root%>/index.jsp?main=category/category.jsp" class="continue-shopping">쇼핑
 					계속하기</a>
 			</div>
 			<%

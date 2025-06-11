@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&family=Nanum+Brush+Script&family=Nanum+Pen+Script&display=swap" rel="stylesheet"><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&family=Nanum+Brush+Script&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
@@ -15,10 +15,12 @@
 </head>
 <%
     // 1. 파라미터 받기
+    request.setCharacterEncoding("UTF-8");
     int product_id = Integer.parseInt(request.getParameter("product_id"));
     String size = request.getParameter("size");
     String color = request.getParameter("color");
     String cnt = request.getParameter("quantity");
+    String redirect = request.getParameter("redirect"); // 리다이렉트 파라미터 추가
 	
 	String id = (String)session.getAttribute("myid");
      //2. 세션에서 member_id 가져오기
@@ -39,8 +41,16 @@
 
     // 4. DAO 호출
     CartListDao dao = new CartListDao(); 
-    
     dao.InsertCartList(dto);  
+
+    // 5. 리다이렉트 처리
+    if("payment".equals(redirect)) {
+        // 가장 최근에 추가된 장바구니 항목의 idx 가져오기
+        int latest_idx = dao.getLatestCartIdx(id);
+        // 바로구매인 경우 결제 페이지로 이동
+        response.sendRedirect("../payment/payment.jsp?idxs=" + latest_idx);
+        return;
+    }
 %>
 <script>
     if(confirm("장바구니에 추가되었습니다. 이동하시겠습니까?")) {
