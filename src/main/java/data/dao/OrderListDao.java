@@ -12,7 +12,7 @@ import db.copy.DBConnect;
 public class OrderListDao {
 	DBConnect db = new DBConnect();
 
-	// 1. 주문목록 전체 조회 (회원번호 기준)
+	//주문목록 전체 조회 (회원번호 기준)
 	public List<OrderListDto> getOrdersByMember(int memberNum) {
 		List<OrderListDto> orderList = new ArrayList<>();
 		String sql = "SELECT o.*, m.name AS member_name FROM orders o JOIN member m ON o.member_num = m.num WHERE o.member_num=? ORDER BY o.order_id DESC";
@@ -37,7 +37,7 @@ public class OrderListDao {
 		return orderList;
 	}
 
-	// 2. 주문상세 조회 (order_code 기준)
+	//주문상세 조회 (order_code 기준)
 	public OrderListDto getOrderDetailByCode(String orderCode) {
 		OrderListDto order = null;
 		String sql = "SELECT o.*, m.name AS member_name FROM orders o JOIN member m ON o.member_num = m.num WHERE o.order_code=?";
@@ -61,34 +61,7 @@ public class OrderListDao {
 		return order;
 	}
 
-	// 3. 주문상품 목록 (order_id 기준)
-	private List<OrderItem> getOrderItemsByOrderId(int orderId) {
-		List<OrderItem> items = new ArrayList<>();
-		String sql = "SELECT s.*, p.product_name, p.main_image_url, o.color, o.size " + "FROM order_sangpum s "
-				+ "JOIN product p ON s.product_id = p.product_id "
-				+ "JOIN product_option o ON s.option_id = o.option_id " + "WHERE s.order_id=?";
-		try (Connection conn = db.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setInt(1, orderId);
-			ResultSet rs = pstmt.executeQuery();
-			while (rs.next()) {
-				OrderItem item = new OrderItem();
-				item.setProductId(rs.getInt("product_id"));
-				item.setOptionId(rs.getInt("option_id"));
-				item.setCnt(rs.getInt("cnt"));
-				item.setPrice(rs.getInt("price"));
-				item.setProductName(rs.getString("product_name"));
-				item.setProductImage(rs.getString("main_image_url"));
-				item.setColor(rs.getString("color"));
-				item.setSize(rs.getString("size"));
-				items.add(item);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return items;
-	}
-
-	// 4. 주문 생성 (cart → order + order_sangpum 저장)
+	//  주문 생성 (cart → order + order_sangpum 저장)
 	public boolean createOrder(int memberNum, List<CartListDto> itemList) {
 		String insertOrderSQL = "INSERT INTO orders (order_code, member_num, total_price) VALUES (?, ?, ?)";
 		String insertItemSQL = "INSERT INTO order_sangpum (order_id, product_id, option_id, cnt, price) VALUES (?, ?, ?, ?, ?)";
@@ -109,7 +82,7 @@ public class OrderListDao {
 
 			int orderId = 0;
 
-			// 2. 일단 order_code를 null로 INSERT (주문코드는 아직 모름)
+			// 2. order_code를 null로 INSERT (주문코드는 아직 모름)
 			psOrder = conn.prepareStatement(insertOrderSQL, Statement.RETURN_GENERATED_KEYS);
 			psOrder.setString(1, null); // 임시로 null
 			psOrder.setInt(2, memberNum); // int로 설정
@@ -185,7 +158,7 @@ public class OrderListDao {
 		}
 	}
 
-	// 5. 주문 전체목록 (관리자)
+	//  주문 전체목록 (관리자)
 	public List<OrderListDto> getAllOrders() {
 		List<OrderListDto> list = new ArrayList<>();
 		String sql = "SELECT o.*, m.name AS member_name FROM orders o JOIN member m ON o.member_num = m.num ORDER BY o.order_date DESC";
@@ -209,7 +182,7 @@ public class OrderListDao {
 		return list;
 	}
 
-	// 6. 주문 삭제
+	// 주문 삭제
 	public boolean deleteOrder(String orderCode) {
 		Connection conn = db.getConnection();
 		PreparedStatement pstmt = null;
@@ -291,7 +264,7 @@ public class OrderListDao {
 	        ResultSet rs = pstmt.executeQuery();
 	        while (rs.next()) {
 	            OrderItem item = new OrderItem();
-	            item.setOrderSangpumId(rs.getInt("order_sangpum_id")); // 필수!
+	            item.setOrderSangpumId(rs.getInt("order_sangpum_id")); 
 	            item.setProductId(rs.getInt("product_id"));
 	            item.setOptionId(rs.getInt("option_id"));
 	            item.setCnt(rs.getInt("cnt"));
