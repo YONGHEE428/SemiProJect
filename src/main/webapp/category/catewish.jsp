@@ -288,12 +288,19 @@
             		 <div class="product-row">
             		 
 					    <div class="product-type-item">
+					    <a href='/SemiProject/index.jsp?main=shop/sangpumpage.jsp&product_id=<%=pdto.getProductId()%>'>     
 					        <img src="<%=pdto.getMainImageUrl() %>" alt="Product Image" class="product-image">
+					       </a>
 					    </div>
 					    <div class="product-info product-type-item" style="text-align: center;">
+					   
 					    	
 					        <div class="product-company"><b><%=pdto.getCategory() %></b></div>
-					        <div class="product-name"><%=pdto.getProductName() %></div>
+					        <div class="product-name">
+					   		<a href='/SemiProject/index.jsp?main=shop/sangpumpage.jsp&product_id=<%=pdto.getProductId()%>'>     
+					        <%=pdto.getProductName() %>
+					        </a>
+					        </div>
 					        <div class="product-price">
 					        <%
 							    BigDecimal price = pdto.getPrice();

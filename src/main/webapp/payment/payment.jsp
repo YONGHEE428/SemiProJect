@@ -29,7 +29,6 @@
 <script type="text/javascript"
 	src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <title>결제하기</title>
-
 <style>
 /* 전역 스타일 */
 * {
@@ -47,7 +46,6 @@ body {
 	color: #333;
 	background-color: #f8f9fa;
 }
-
 /* 헤더 스타일 */
 .top-header {
 	background-color: #fff;
@@ -57,11 +55,8 @@ body {
 	top: 0;
 	z-index: 1000;
 	/* display block: 한 줄 전체 차지
-
 			   inline: 내용 크기만큼 차지
-		
 			   flex: 유연하게 정렬, 가로/세로 배치 가능
-
 			   grid: 격자 형태 배치 */
 	display: flex;
 	/* space-between: 양 끝 정렬, 중간은 균등 간격 */
@@ -314,7 +309,6 @@ body {
 		padding: 0.5rem 1rem;
 	}
 }
-
 /* 애니메이션 효과 */
 @keyframes fadeIn {
 	from {
@@ -334,14 +328,12 @@ body {
 .form-control:focus ~ label, .form-select:focus ~ label {
 	color: #c9a797;
 }
-
 /* 버튼 로딩 상태 */
 .btn-custom.loading {
 	position: relative;
 	pointer-events: none;
 	opacity: 0.8;
 }
-
 .btn-custom.loading::after {
 	content: '';
 	position: absolute;
@@ -354,7 +346,6 @@ body {
 	right: 1rem;
 	top: calc(50% - 10px);
 }
-
 @keyframes spin {
 	to {
 		transform: rotate(360deg);
@@ -413,11 +404,7 @@ body {
 	        System.err.println("세션 'num' 값이 유효한 숫자가 아닙니다: " + memberNumStr);
 	    }
 	}
-
-   
 	%>
-
-	<!-- 헤더 -->
 	<header>
 		<div class="top-header">
 			<div class="left-section">
@@ -458,7 +445,6 @@ body {
 			</div>
 		</div>
 	</header>
-
 	<!-- 메인 컨테이너 -->
 	<div class="container">
 		<!-- 주문 섹션 -->
@@ -486,7 +472,6 @@ body {
 				<%}%>
 			</div>
 		</section>
-
 		<!-- 주문자 정보 섹션 -->
 		<section class="card">
 			<h2 class="section-title">주문자 정보</h2>
@@ -511,7 +496,6 @@ body {
 							<label for="hp">전화번호 (-없이 입력)</label>
 						</div>
 					</div>
-
 					<!-- 주소 입력 -->
 					<div class="col-12">
 						<h3 class="h5 mb-3">배송지 주소</h3>
@@ -525,7 +509,6 @@ body {
 							</button>
 						</div>
 					</div>
-
 					<!-- 우편번호 -->
 					<div class="col-md-4">
 						<div class="form-floating">
@@ -695,26 +678,38 @@ body {
 		});
 
         function generateOrderNumber() {
-        		const pad = (n) => String(n).padStart(2, '0');
-        	    const now = new Date();
+        	   /* 문자열의 길이를 2로 만들고 길이가 2보다 짧으면 왼쪽에 0을 채운다 */
+            const pad = (n) => String(n).padStart(2, '0');
+            
+            const now = new Date();
+            const year = String(now.getFullYear());
+            const month = pad(now.getMonth() + 1);
+            const day = pad(now.getDate());
 
-        	    const year = String(now.getFullYear()).slice(-2);
-        	    const month = pad(now.getMonth() + 1);
-        	    const day = pad(now.getDate());
-        	    const hour = pad(now.getHours());
-        	    const minute = pad(now.getMinutes());
-        	    const second = pad(now.getSeconds());
-        	    const random = String(Math.floor(Math.random() * 1000)).padStart(3, '0');
-        	    const orderNum = "ORDER" + year + month + day + hour + minute + second + random;
-        	    console.log("최종 생성된 merchant_uid:", orderNum);
+            const fullUuid = crypto.randomUUID(); 
+            
+            // 2. UUID에서 하이픈을 모두 제거하여 순수 문자열로 만듭니다. (예: "abcdef123456...")
+            const uuidWithoutHyphens = fullUuid.replace(/-/g, '');
 
-        	    return orderNum;
+            // 3. 순수 문자열의 앞 6자리만 추출합니다.
+            //    **경고**: 이 방법은 고유성 충돌 가능성을 크게 높입니다.
+            //    특히 많은 결제가 발생할 경우 중복될 위험이 존재합니다.
+            //    결제 시스템의 merchant_uid는 고유해야 하므로, 이 방식은 신중하게 사용해야 합니다.
+            const shortUniqueId = uuidWithoutHyphens.substring(0, 6);
+            // ---
+
+            // 서버의 "ORD" + YYYYMMDD + "-" + ID 형식과 유사하게 만듭니다.
+            // 여기서는 ID 부분에 단축된 UUID를 사용합니다.
+            const merchantUid = "ORD" + year + month + day + "-" + shortUniqueId;
+            
+            console.log("최종 생성된 merchant_uid (단축된 UUID 기반):", merchantUid);
+
+            return merchantUid;
         }
 	
 		// 결제 요청
 		function payrequest() {
 		    const newMerchantUid = generateOrderNumber();
-		    console.log("생성된 merchant_uid:", newMerchantUid); 
 			const selectedPay = $("#selectedPay").val();
 			if (!selectedPay) {
 				alert("결제 수단을 선택해주세요.");
@@ -743,9 +738,7 @@ body {
 			default:
 				alert("지원하지 않는 결제 수단입니다.");
 			}
-			
 		}
-		
 		// 카드결제
 		function cardPay(newMerchantUid, memberNum) {
 		    console.log("memberNum:", memberNum); // 이 메시지가 뜨는지 확인
@@ -761,11 +754,9 @@ body {
 			    buyer_name: $("#name").val(),
 			    buyer_tel: $("#hp").val(),
 			    buyer_addr: $("#userAddress").val()+$("#userDtlAddress").val(),
-			    buyer_postcode: $("#userPostCode").val()
-				
+			    buyer_postcode: $("#userPostCode").val()				
 			});
-			/*  */
-			
+		    
 			var IMP = window.IMP;
 			IMP.init('imp23623506');
 
@@ -782,50 +773,96 @@ body {
 				buyer_postcode: $("#userPostCode").val(),
 
 			}, function(rsp) {
-				
-				if (rsp.success) {
-					//배송메세지 처리
-					  const deliveryMessage = $(".form-select").val() === "직접 입력" ?
-                              $("#mymessage textarea").val() :
-                              $(".form-select").val(); // option value를 사용하도록 수정
-					// 결제 성공 시 buyok 값 업데이트
-					$.ajax({
-						url: "updateBuyOk.jsp",
-						method: "POST",
-						data: {
-							"idxs": "<%=request.getParameter("idxs")%>",  // 선택상품 주문의 경우
-							"all": "<%=request.getParameter("all")%>",  // 전체상품 주문의 경우
-							"member_Id": "<%=session.getAttribute("myid")%>",  // 전체상품 주문 시 필요
-							 // payment 테이블 저장을 위한 정보
-		                    "imp_uid": rsp.imp_uid,          // 아임포트 결제 고유 번호
-		                    "merchant_uid": rsp.merchant_uid,  // 상점 주문 번호
-		                    "totalPrice": rsp.paid_amount,     // 아임포트에서 실제 결제된 금액
-		                    "addr": rsp.buyer_addr,          // 구매자 주소
-		                    "delivery_msg": deliveryMessage, // 배송 메시지
-		                    "hp": rsp.buyer_tel,              // 구매자 연락처
-		                    "member_num":memberNum
-						},
-						success: function(response) {
-							 if (response.trim() === "success") {
-			                        alert('결제가 완료되었습니다. 주문 목록으로 이동합니다.');
-			                        location.href = '../index.jsp?main=orderlist/orderlistform.jsp';
-			                        
-			                    } else {
-			                        // 서버에서 에러 응답을 보냈을 경우
-			                        alert('결제는 완료되었으나 서버 처리 중 문제가 발생했습니다: ' + response);
-			                    }
-						},
-						error: function() {
-							 console.error("AJAX Error:", status, error);
-			                    alert('결제는 완료되었으나 주문 처리 중 오류가 발생했습니다. 고객센터에 문의하세요.');
-						}
-					});
-				} else {
-					alert('결제에 실패하였습니다.\n' + '에러내용: ' + rsp.error_msg);
-				}
+
+			    if (rsp.success) {
+			        // 배송메시지 처리
+			        const deliveryMessage = $(".form-select").val() === "직접 입력" ? 
+			            $("#mymessage textarea").val() : 
+			            $(".form-select").val();
+			        
+			        // 1단계: 아임포트 결제 검증 (PaymentVerifyServlet 사용)
+			        $.ajax({
+			            url: "<%=root%>/payment/verify",  // PaymentVerifyServlet 경로
+			            method: "POST",
+			            data: {
+			                "imp_uid": rsp.imp_uid,           // 아임포트 결제 고유번호
+			                "merchant_uid": rsp.merchant_uid, // 상점 주문번호
+			                "amount": rsp.paid_amount,        // 실제 결제된 금액
+			                "addr": rsp.buyer_addr,           // 구매자 주소
+			                "delivery_msg": deliveryMessage   // 배송 메시지
+			            },
+			            success: function(verifyResponse) {
+			                if (verifyResponse.status === "success") {
+			                	// 서버에서 전달받은 memberNum을 추출
+		                        // PaymentVerifyServlet에서 success 시 memberNum을 응답에 포함하도록 수정했음
+		                        const verifiedMemberNum = verifyResponse.memberNum;
+			                	
+			                    // 2단계: 결제 검증 성공 후 주문 처리
+			                    processOrder(rsp, deliveryMessage,memberNum);
+			                } else {
+			                    // 결제 검증 실패
+			                    alert('결제 검증에 실패했습니다: ' + verifyResponse.message);
+			                    console.error('Payment verification failed:', verifyResponse.message);
+			                }
+			            },
+			            error: function(xhr, status, error) {
+			                let errorMessage = '결제 검증 중 오류가 발생했습니다.';
+			                
+			                if (xhr.responseJSON && xhr.responseJSON.message) {
+			                    errorMessage = xhr.responseJSON.message;
+			                } else if (xhr.status === 400) {
+			                    errorMessage = '결제 정보가 올바르지 않습니다.';
+			                } else if (xhr.status === 500) {
+			                    errorMessage = '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+			                }
+			                
+			                alert(errorMessage);
+			                console.error('Payment verification error:', status, error);
+			            }
+			        });
+			        
+			    } else {
+			        // 결제 실패
+			        alert('결제에 실패하였습니다.\n에러내용: ' + rsp.error_msg);
+			    }
+
 			});
 		}
-
+					// 주문 처리 함수 (결제 검증 완료 후 실행)
+					function processOrder(rsp, deliveryMessage, memberNum) {
+					    $.ajax({
+					        url: "updateBuyOk.jsp",
+					        method: "POST",
+					        data: {
+					            // 기존 주문 처리 데이터
+					            "idxs": "<%=request.getParameter("idxs")%>",
+					            "all": "<%=request.getParameter("all")%>",
+					            "member_Id": "<%=session.getAttribute("myid")%>",
+					            
+					            // 결제 관련 정보 (이미 PaymentService에서 DB에 저장됨)
+					            "imp_uid": rsp.imp_uid,
+					            "merchant_uid": rsp.merchant_uid,
+					            "totalPrice": rsp.paid_amount,
+					            "addr": rsp.buyer_addr,
+					            "delivery_msg": deliveryMessage,
+					            "hp": rsp.buyer_tel,
+					            "member_num": memberNum
+					        },
+					        success: function(response) {
+					            if (response.trim() === "success") {
+					                alert('결제 및 주문이 완료되었습니다. 주문 목록으로 이동합니다.');
+					                location.href = '../index.jsp?main=orderlist/orderlistform.jsp';
+					            } else {
+					                alert('결제는 완료되었으나 주문 처리 중 문제가 발생했습니다: ' + response);
+					                console.error('Order processing failed:', response);
+					            }
+					        },
+					        error: function(xhr, status, error) {
+					            alert('결제는 완료되었으나 주문 처리 중 오류가 발생했습니다. 고객센터에 문의하세요.');
+					            console.error("Order processing error:", status, error);
+					        }
+					    });
+					}
 		function naverPay() {
 			alert("공사 중입니다.");
 		}
@@ -842,10 +879,12 @@ body {
 			alert("로그아웃 하셨습니다.");
 			location.href = "../login/logoutform.jsp";
 		}
-
-		 console.log("Name:", "<%=name%>");
+			console.log("Name:", "<%=name%>");
 		    console.log("Email:", "<%=email%>");
 		    console.log("<%=member_num%>");
+		    console.log("JSP에서 전달된 totalPrice:", <%= totalPrice %>);
+		    console.log("JSP에서 전달된 member_num:", "<%= member_num %>");
+		  
 	</script>
 </body>
 </html>
