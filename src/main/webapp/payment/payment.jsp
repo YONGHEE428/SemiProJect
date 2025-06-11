@@ -911,7 +911,7 @@ body {
     				
     				// 할인 금액 계산
     				var totalPrice = <%= totalPrice %>;
-    				var discountAmount = Math.floor(<%=NumberFormat.getInstance().format(totalProductPrice)%> * (discount / 100));
+    				var discountAmount = Math.floor(<%=totalProductPrice%> * (discount / 100));
     				
     				// 할인 금액 표시
     				$('#coupon-discount').text('-' + discountAmount.toLocaleString() + '원');
