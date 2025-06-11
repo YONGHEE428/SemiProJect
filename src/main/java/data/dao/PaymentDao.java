@@ -5,8 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 
 import data.dto.PaymentDto;
 import db.copy.DBConnect;
@@ -57,7 +59,7 @@ public class PaymentDao {
         Connection conn = db.getConnection();
         PreparedStatement pstmt = null;
         
-        String sql = "INSERT INTO payment (imp_uid, merchant_uid, member_num, amount, addr, delivery_msg, status, paymentday) VALUES (?,?,?,?,?,?,?,now())";
+        String sql = "INSERT INTO payment (imp_uid, merchant_uid, member_num, amount, addr, delivery_msg, status, paymentday) VALUES (?,?,?,?,?,?,?,?)";
         
         try {
             pstmt = conn.prepareStatement(sql);
@@ -68,6 +70,11 @@ public class PaymentDao {
             pstmt.setString(5, dto.getAddr());
             pstmt.setString(6, dto.getDelivery_msg());
             pstmt.setString(7, dto.getStatus());
+            // 8번째 파라미터: KST (UTC+9) 기준으로 현재 시간을 생성하여 삽입
+            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"));
+            java.sql.Timestamp paymentTimestamp = new java.sql.Timestamp(cal.getTimeInMillis());
+            
+            pstmt.setTimestamp(8, paymentTimestamp); // 8번째 ?에 KST 시간 삽입 (hp 제거로 인덱스 변경 없음)
             
             pstmt.execute();
         } catch (SQLException e) {
@@ -262,5 +269,37 @@ public class PaymentDao {
         }
         
         return list;
+    }
+
+	// 반품창에서 써야하는 id값조회
+    public PaymentDto getPaymentByIdx(String idx) {
+        PaymentDto dto = null;
+        Connection conn = db.getConnection();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "SELECT p.*, m.hp FROM payment p JOIN member m ON p.member_num = m.num WHERE p.idx = ?";
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, idx);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                dto = new PaymentDto();
+                dto.setIdx(rs.getString("idx"));
+                dto.setImp_uid(rs.getString("imp_uid"));
+                dto.setMerchant_uid(rs.getString("merchant_uid"));
+                dto.setMember_num(rs.getInt("member_num"));
+                dto.setAmount(rs.getInt("amount"));
+                dto.setAddr(rs.getString("addr"));
+                dto.setDelivery_msg(rs.getString("delivery_msg"));
+                dto.setStatus(rs.getString("status"));
+                dto.setPaymentday(rs.getTimestamp("paymentday"));
+                dto.setHp(rs.getString("hp"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.dbClose(rs, pstmt, conn);
+        }
+        return dto;
     }
 }

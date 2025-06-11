@@ -1,3 +1,5 @@
+<%@page import="data.dao.PaymentDao"%>
+<%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="data.dto.OrderListDto"%>
 <%@page import="data.dao.OrderListDao"%>
@@ -335,7 +337,10 @@ String keyword = request.getParameter("keyword");
 if (keyword == null)
 	keyword = "";
 keyword = keyword.trim();
+
+PaymentDao paymentDao = new PaymentDao();
 %>
+
 <body>
 	<!-- 상단바 ... 생략 ... -->
 
@@ -386,11 +391,15 @@ keyword = keyword.trim();
 					continue;
 
 				hasResult = true;
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+				//주문일시가 order.getOrderDate() 라고 할 때
+				String dateStr = sdf.format(order.getOrderDate());
 			%>
 			<div class="order-box">
 				<div class="order-header-bar">
 					<span class="order-status-label"> <%=order.getOrderStatus()%>
-						/ <%=order.getOrderDate()%>
+						/ <%=sdf.format(order.getOrderDate())%>
+
 					</span>
 					<button class="order-delete-btn"
 						onclick="if(confirm('정말로 이 주문을 삭제하시겠습니까?')) { location.href='deleteorder.jsp?order_code=<%=order.getOrderCode()%>' }">주문내역
@@ -398,11 +407,14 @@ keyword = keyword.trim();
 				</div>
 				<%
 				for (OrderListDto.OrderItem item : filteredItems) {
+					
+				    data.dto.PaymentDto payment = paymentDao.getPaymentByOrderCode(order.getOrderCode());
 				%>
 				<div class="order-item-box">
 					<div class="order-content-row">
 						<div class="order-thumb-box">
-							<a href="index.jsp?main=shop/sangpumpage.jsp&product_id=<%=item.getProductId()%>">
+							<a
+								href="index.jsp?main=shop/sangpumpage.jsp&product_id=<%=item.getProductId()%>">
 								<img
 								src="<%=item.getProductImage() != null ? item.getProductImage() : "https://via.placeholder.com/90x90.png?text=이미지"%>"
 								alt="상품이미지"
@@ -411,7 +423,12 @@ keyword = keyword.trim();
 						</div>
 
 						<div class="order-prod-info">
-							<div class="order-prod-title"> <a href="index.jsp?main=shop/sangpumpage.jsp&product_id=<%=item.getProductId()%>"> <%=item.getProductName()%> </a> </div>
+							<div class="order-prod-title">
+								<a
+									href="index.jsp?main=shop/sangpumpage.jsp&product_id=<%=item.getProductId()%>">
+									<%=item.getProductName()%>
+								</a>
+							</div>
 							<div class="order-prod-desc">
 								<%=item.getColor()%>
 								/
@@ -431,7 +448,10 @@ keyword = keyword.trim();
 								onclick="location.href='orderlist/detailform.jsp?order_code=<%=order.getOrderCode()%>'">
 								주문상세</button>
 							<button class="btn btn-outline-secondary btn-sm">리뷰작성</button>
-							<button class="btn btn-outline-secondary btn-sm">교환/반품</button>
+							<a
+								href="orderlist/takeback.jsp?order_id=<%=order.getOrderId()%>&payment_idx=<%=payment.getIdx()%>"
+								class="btn btn-outline-danger btn-sm">반품신청</a>
+
 						</div>
 					</div>
 				</div>
