@@ -518,17 +518,13 @@ document.addEventListener("DOMContentLoaded", updateTotalPrice);
     <div class="mt-2"><strong>총 가격:</strong> <span id="Price"></span></div>
 
     <div class="action-buttons">
-<<<<<<< HEAD
-  
+
 <div class="action-buttons">
   <button id="addToCartBtn" class="btn btn-black-custom">장바구니</button>
 <button class="btn btn-black-custom" onclick="location.href='../payment/payment.jsp'">바로구매</button>
 </div>
-=======
-    <%
-      boolean isLoggedIn = session.getAttribute("userId") != null;
-    %>
 
+  
     <div class="action-buttons">
       <button id="addToCartBtn" class="btn btn-outline-primary">장바구니</button>
       <button id="buyNowBtn" class="btn btn-primary">바로구매</button>
@@ -544,7 +540,7 @@ document.addEventListener("DOMContentLoaded", updateTotalPrice);
         <button onclick="continueShopping()" class="btn-white">쇼핑 계속하기</button>
       </div>
     </div>
->>>>>>> 4686d0fbf61d1ced95decb1a8fa7d1ba583d6bc6
+
 
     <script>
     const isLoggedIn = <%= isLoggedIn %>;
@@ -611,7 +607,6 @@ document.addEventListener("DOMContentLoaded", updateTotalPrice);
         addToCart();
     });
 
-<<<<<<< HEAD
 function showModal() {
     document.getElementById("cartModal").style.display = "block";
 }
@@ -627,7 +622,7 @@ function continueShopping() {
 }
 </script>
      
-=======
+
     // 바로구매 버튼 클릭 이벤트
     document.getElementById("buyNowBtn").addEventListener("click", function() {
         addToCart('payment');
@@ -647,7 +642,7 @@ function continueShopping() {
         window.location.href = "../index.jsp?main=category/category.jsp";
     }
     </script>
->>>>>>> 4686d0fbf61d1ced95decb1a8fa7d1ba583d6bc6
+
     </div>
 
     <!-- 오른쪽 하단에 있는 메뉴 -->

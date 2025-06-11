@@ -47,7 +47,7 @@ public class InsertInquiryServlet extends HttpServlet {
 
       // 5) 결과에 따라 리다이렉트 혹은 에러 페이지
       if (success) {
-        resp.sendRedirect(req.getContextPath() + "/productDetail.jsp?product_id=" + productId);
+        resp.sendRedirect(req.getContextPath() + "/../shop/sangpumpage.jsp?product_id=" + productId);
       } else {
         req.setAttribute("errorMessage", "문의 등록에 실패했습니다.");
         req.getRequestDispatcher("/error.jsp").forward(req, resp);
