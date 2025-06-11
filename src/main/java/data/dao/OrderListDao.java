@@ -7,9 +7,11 @@ import java.util.*;
 import data.dto.CartListDto;
 import data.dto.OrderListDto;
 import data.dto.OrderListDto.OrderItem;
+import data.dto.PaymentDto;
 import db.copy.DBConnect;
 
 public class OrderListDao {
+
 	DBConnect db = new DBConnect();
 
 	// 1. 주문목록 전체 조회 (회원번호 기준)
@@ -278,4 +280,5 @@ public class OrderListDao {
 		}
 		return order;
 	}
+
 }

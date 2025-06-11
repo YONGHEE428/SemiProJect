@@ -421,7 +421,7 @@ function loadMoreItems() {
   <ul>
     <li>
       <div class="smalleventimg">
-        <a href="<%=root%>/index.jsp?main=shop/sangpumpage.jsp&product_id=">
+        <a href="<%=root%>/index.jsp?main=shop/sangpumpage.jsp&product_id=106">
           <img src="<%=root%>/SemiImg/eventimg3.jpg">
           <div class="hover-text"></div>
         </a>
@@ -436,7 +436,7 @@ function loadMoreItems() {
 
     <li>
       <div class="smalleventimg">
-        <a href="<%=root%>/index.jsp?main=shop/sangpumpage.jsp&product_id=">
+        <a href="<%=root%>/index.jsp?main=shop/sangpumpage.jsp&product_id=108">
           <img src="<%=root%>/SemiImg/eventimg5_1.png">
           <div class="hover-text"></div>
         </a>
