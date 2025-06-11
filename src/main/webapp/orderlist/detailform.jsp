@@ -275,9 +275,6 @@ body {
 						</td>
 					</tr>
 				</tfoot>
-
-
-
 			</table>
 		</div>
 

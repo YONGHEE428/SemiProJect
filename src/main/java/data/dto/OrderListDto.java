@@ -75,8 +75,14 @@ public class OrderListDto {
         private String productImage;// 상품이미지
         private String color;       // 옵션 색상
         private String size;        // 옵션 사이즈
+        private int orderSangpumId;
         
-        // Getters and Setters
+        public int getOrderSangpumId() {
+            return orderSangpumId;
+        }
+        public void setOrderSangpumId(int orderSangpumId) {
+            this.orderSangpumId = orderSangpumId;
+        }      
         public int getProductId() {
             return productId;
         }
