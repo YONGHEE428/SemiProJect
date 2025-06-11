@@ -402,7 +402,7 @@ section h2 {
   <h2>문의</h2>
   <div class="qna-write-area mb-3">
    <button type="button" onclick="openInquiryModal()">문의 작성</button>
-  <%@ include file="writeInquiryModal.jsp" %>
+  <%-- <%@ include file="writeInquiryModal.jsp" %> --%>
   </div>
   <div id="qna-list-container">
     <jsp:include page="q&alist.jsp" flush="true">
@@ -474,6 +474,8 @@ section h2 {
     let quantity = 1;
     const pricePerUnit = <%= originalPrice %>;
 
+
+
     function changeQty(delta) {
       if (delta === -1 && quantity > 1) {
         quantity--;
@@ -518,53 +520,10 @@ document.addEventListener("DOMContentLoaded", updateTotalPrice);
     <div class="mt-2"><strong>총 가격:</strong> <span id="Price"></span></div>
 
     <div class="action-buttons">
-<<<<<<< HEAD
-  
-<div class="action-buttons">
-  <button id="addToCartBtn" class="btn btn-black-custom">장바구니</button>
-<button class="btn btn-black-custom" onclick="location.href='../payment/payment.jsp'">바로구매</button>
-</div>
-=======
-    <%
-      boolean isLoggedIn = session.getAttribute("userId") != null;
-    %>
-
-    <div class="action-buttons">
       <button id="addToCartBtn" class="btn btn-outline-primary">장바구니</button>
       <button id="buyNowBtn" class="btn btn-primary">바로구매</button>
     </div>
-
-    <!-- 모달 -->
-    <div id="cartModal" class="modal" style="display: none;">
-      <div class="modal-content">
-        <span class="close-btn" onclick="closeModal()">×</span>
-        <h3>장바구니 담기</h3>
-        <p>선택하신 상품을 장바구니에 담았습니다.<br>지금 장바구니를 확인하시겠습니까?</p>
-        <button onclick="goToCart()" class="btn-black">장바구니 확인</button>
-        <button onclick="continueShopping()" class="btn-white">쇼핑 계속하기</button>
-      </div>
-    </div>
->>>>>>> 4686d0fbf61d1ced95decb1a8fa7d1ba583d6bc6
-
     <script>
-    const isLoggedIn = <%= isLoggedIn %>;
-
-    // 옵션 ID 자동 생성 (예: opt-M-red)
-    function updateOptionId() {
-        const size = document.getElementById("size").value;
-        const color = document.getElementById("color").value;
-        const optionId = document.getElementById("optionId");
-
-        if (size && color) {
-            optionId.value = `opt-${size}-${color}`; // 조합 방식 (임시 예시)
-        } else {
-            optionId.value = "";
-        }
-    }
-
-    document.getElementById("size").addEventListener("change", updateOptionId);
-    document.getElementById("color").addEventListener("change", updateOptionId);
-
     // 장바구니 추가 함수
     function addToCart(redirect) {
         const productId = <%= productId %>; // 제품 번호
@@ -611,56 +570,24 @@ document.addEventListener("DOMContentLoaded", updateTotalPrice);
         addToCart();
     });
 
-<<<<<<< HEAD
-function showModal() {
-    document.getElementById("cartModal").style.display = "block";
-}
-function closeModal() {
-    document.getElementById("cartModal").style.display = "none";
-}
-function goToCart() {
-    window.location.href = "../index.jsp?main=cart/cartform.jsp";
-}
-function continueShopping() {
-    closeModal();
-    window.location.href = "../index.jsp?main=category/category.jsp";
-}
-</script>
-     
-=======
     // 바로구매 버튼 클릭 이벤트
     document.getElementById("buyNowBtn").addEventListener("click", function() {
         addToCart('payment');
     });
-
-    function showModal() {
-        document.getElementById("cartModal").style.display = "block";
-    }
-    function closeModal() {
-        document.getElementById("cartModal").style.display = "none";
-    }
-    function goToCart() {
-        window.location.href = "../index.jsp?main=cart/cartform.jsp";
-    }
-    function continueShopping() {
-        closeModal();
-        window.location.href = "../index.jsp?main=category/category.jsp";
-    }
     </script>
->>>>>>> 4686d0fbf61d1ced95decb1a8fa7d1ba583d6bc6
-    </div>
 
     <!-- 오른쪽 하단에 있는 메뉴 -->
+    <jsp:include page="guide.jsp" />
+
+    <div id="panel1" class="slide-panel">
+      <div class="panel-header">교환 및 환불<button onclick="closePanel('panel1')">×</button></div>
+      <div class="panel-content">...</div>
+    </div>
+    <div id="panel2" class="slide-panel">
+      <div class="panel-header">배송 안내<button onclick="closePanel('panel2')">×</button></div>
+      <div class="panel-content">...</div>
+    </div>
     
-<jsp:include page="guide.jsp" />
-<div id="panel1" class="slide-panel">
-  <div class="panel-header">교환 및 환불<button onclick="closePanel('panel1')">×</button></div>
-  <div class="panel-content">...</div>
-</div>
-<div id="panel2" class="slide-panel">
-  <div class="panel-header">배송 안내<button onclick="closePanel('panel2')">×</button></div>
-  <div class="panel-content">...</div>
-</div>
     <div style="margin-top: 20px; text-align: right; width: 200px; height:900;" >
       <img src="sale.png"  alt="여름 아이템 할인 배너" style="max-width: 100%; height: auto;" />
     </div>
@@ -707,7 +634,7 @@ function continueShopping() {
     });
 
     document.querySelectorAll(".tab-item").forEach(el => {
-      el.classList.toggle("active", el.getAttribute("href") === #${current});
+      el.classList.toggle("active", el.getAttribute("href") === "#" + current);
     });
   });
 
