@@ -114,7 +114,7 @@
     // -------------------------------------------------------------
     // 3. 결제 정보 저장 (Payment 테이블 insert)
     // -------------------------------------------------------------
-    PaymentDto pdto = new PaymentDto();
+    /* PaymentDto pdto = new PaymentDto();
     pdto.setImp_uid(imp_uid);
     pdto.setMerchant_uid(merchant_uid);
     pdto.setMember_num(member_num);
@@ -126,7 +126,7 @@
 
     PaymentDao pdao = new PaymentDao();
     pdao.insertPayment(pdto);
-    System.out.println("updateBuyOk.jsp: 결제 정보가 payment 테이블에 성공적으로 저장되었습니다.");
+    System.out.println("updateBuyOk.jsp: 결제 정보가 payment 테이블에 성공적으로 저장되었습니다."); */
 
     // -------------------------------------------------------------
     // 4. 장바구니 구매 처리 (buyok=1 등 기존 코드)
