@@ -278,4 +278,33 @@ public class OrderListDao {
 		}
 		return order;
 	}
+	private List<OrderItem> getOrderItemsByOrderId(int orderId) {
+	    List<OrderItem> items = new ArrayList<>();
+	    String sql = "SELECT s.order_sangpum_id, s.product_id, s.option_id, s.cnt, s.price, " +
+	                 "p.product_name, p.main_image_url, o.color, o.size " +
+	                 "FROM order_sangpum s " +
+	                 "JOIN product p ON s.product_id = p.product_id " +
+	                 "JOIN product_option o ON s.option_id = o.option_id " +
+	                 "WHERE s.order_id=?";
+	    try (Connection conn = db.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setInt(1, orderId);
+	        ResultSet rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	            OrderItem item = new OrderItem();
+	            item.setOrderSangpumId(rs.getInt("order_sangpum_id")); // 필수!
+	            item.setProductId(rs.getInt("product_id"));
+	            item.setOptionId(rs.getInt("option_id"));
+	            item.setCnt(rs.getInt("cnt"));
+	            item.setPrice(rs.getInt("price"));
+	            item.setProductName(rs.getString("product_name"));
+	            item.setProductImage(rs.getString("main_image_url"));
+	            item.setColor(rs.getString("color"));
+	            item.setSize(rs.getString("size"));
+	            items.add(item);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return items;
+	}
 }

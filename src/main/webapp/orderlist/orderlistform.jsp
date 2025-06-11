@@ -315,7 +315,7 @@ body {
 String memberId = (String) session.getAttribute("myid");
 String name = (String) session.getAttribute("name");
 
-// 로그인 체크 (변경 없음)
+// 로그인 체크
 if (memberId == null) {
 	String orderListPageUrl = request.getContextPath() + "/index.jsp?main=orderlist/orderlistform.jsp";
 	response.sendRedirect(request.getContextPath() + "/index.jsp?main=login/loginform.jsp&redirect="
@@ -323,18 +323,14 @@ if (memberId == null) {
 	return;
 }
 
-// ✅ MemberDao로 memberNum 얻기
 MemberDao memberDao = new MemberDao();
 int memberNum = memberDao.getMemberNumById(memberId);
 
-// ✅ 반드시 OrderListDao 사용해서 주문목록 뽑기!
 OrderListDao dao = new OrderListDao();
 List<OrderListDto> orderList = dao.getOrdersByMember(memberNum);
 
-// (검색어 필터링)
 String keyword = request.getParameter("keyword");
-if (keyword == null)
-	keyword = "";
+if (keyword == null) keyword = "";
 keyword = keyword.trim();
 
 PaymentDao paymentDao = new PaymentDao();
@@ -448,9 +444,8 @@ PaymentDao paymentDao = new PaymentDao();
 								주문상세</button>
 							<button class="btn btn-outline-secondary btn-sm">리뷰작성</button>
 							<a
-								href="orderlist/takeback.jsp?order_id=<%=order.getOrderId()%>&payment_idx=<%=payment.getIdx()%>"
+								href="orderlist/takeback.jsp?order_id=<%=order.getOrderId()%>&payment_idx=<%=payment.getIdx()%>&order_sangpum_id=<%=item.getOrderSangpumId()%>"
 								class="btn btn-outline-danger btn-sm">반품신청</a>
-
 						</div>
 					</div>
 				</div>
