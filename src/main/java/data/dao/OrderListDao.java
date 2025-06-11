@@ -95,7 +95,7 @@ public class OrderListDao {
     }
 
     // 4. 주문 생성 (cart → order + order_sangpum 저장)
-    public boolean createOrder(int memberNum, List<CartListDto> itemList) {
+    public boolean createOrder(int memberNum, List<CartListDto> itemList, String merchantUid) {
         String insertOrderSQL = "INSERT INTO orders (order_code, member_num, total_price) VALUES (?, ?, ?)";
         String insertItemSQL = "INSERT INTO order_sangpum (order_id, product_id, option_id, cnt, price) VALUES (?, ?, ?, ?, ?)";
         Connection conn = null;
@@ -120,36 +120,22 @@ public class OrderListDao {
                 insertOrderSQL,
                 Statement.RETURN_GENERATED_KEYS
             );
-            psOrder.setString(1, null); // 임시로 null
+            psOrder.setString(1, merchantUid); // 임시로 null
             psOrder.setInt(2, memberNum); // int로 설정
             psOrder.setInt(3, total);
             psOrder.executeUpdate();
 
             rs = psOrder.getGeneratedKeys();
-            String orderCode = "";
             if (rs.next()) {
                 orderId = rs.getInt(1);
-
-                // 3. order_id 받아서 주문코드 생성
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-                String today = sdf.format(new java.util.Date());
-                orderCode = "ORD" + today + "-" + String.format("%05d", orderId);
-
-                // 4. 주문코드 update
-                PreparedStatement psUpdate = conn.prepareStatement(
-                    "UPDATE orders SET order_code=? WHERE order_id=?"
-                );
-                psUpdate.setString(1, orderCode);
-                psUpdate.setInt(2, orderId);
-                psUpdate.executeUpdate();
-                psUpdate.close();
+            } else {
+                throw new SQLException("주문 ID를 가져오지 못했습니다.");
             }
-
-            // 5. order_sangpum 테이블에 상품들 insert
+            // 3. order_sangpum 테이블에 상품들 insert
             psItem = conn.prepareStatement(insertItemSQL);
             for (CartListDto item : itemList) {
                 int cnt = Integer.parseInt(item.getCnt());
-                int price = item.getPrice() * cnt;
+                int price = item.getPrice() * cnt; // 단가 * 수량
 
                 psItem.setInt(1, orderId);
                 psItem.setInt(2, item.getProduct_id());
@@ -174,6 +160,8 @@ public class OrderListDao {
             try { if (conn != null) conn.close(); } catch (Exception e) {}
         }
     }
+
+    
 
     // 5. 주문 전체목록 (관리자)
     public List<OrderListDto> getAllOrders() {
@@ -245,22 +233,6 @@ public class OrderListDao {
 
         return success;
     }
-    OrderListDao orderDao = new OrderListDao();
-    PaymentDao paymentDao = new PaymentDao();
-
-    // 주문 코드 기준으로 주문 + 결제 상세 조회
-    public Map<String, Object> getOrderAndPaymentDetail(String orderCode) {
-        Map<String, Object> result = new HashMap<>();
-
-        // 1. 주문 정보
-        OrderListDto order = orderDao.getOrderDetailByCode(orderCode);
-        result.put("order", order);
-
-        // 2. 결제 정보
-        PaymentDto payment = paymentDao.getPaymentByOrderCode(orderCode);
-        result.put("payment", payment);
-
-        return result;
-    }
+   
     
 }
