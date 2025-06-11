@@ -52,6 +52,11 @@
 
 <!DOCTYPE html>
 <html>
+<%
+    
+    boolean isLoggedIn = session.getAttribute("myid") != null;
+
+%>
 <head>
   <meta charset="UTF-8">
   <title>Product Detail</title>
@@ -89,7 +94,7 @@
       align-self: flex-start;
       left: -10px;
       position: relative;
-      width: 800px;
+      width: 700px;
       background: white;
     }
 
@@ -253,11 +258,11 @@
     }
 
     .tab-menu {
-      display: flex;
-      justify-content: center;
-      font-size: 15px;
-      font-weight: 500;
-    }
+  display: flex;
+  justify-content: center;
+  font-size:15px; 
+  font-weight: 500;
+}
 
     .tab-item {
       padding: 15px 20px;
@@ -330,6 +335,26 @@
     background: white;
     cursor: pointer;
 }
+.btn-black-custom {
+  background-color: black;
+  color: white;
+  border: none;
+  padding: 12px 0;
+  width: 100%;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 6px;
+  transition: background-color 0.3s;
+}
+
+.btn-black-custom:hover {
+  background-color: #333;
+}
+
+section h2 {
+  font-size: 20px;
+  font-weight: bold;
+}
   </style>
 </head>
 
@@ -345,26 +370,47 @@
   <div class="left-panel">
    <!-- 이미지 영역 -->
 <div class="img-container">
-  <button id="prevBtn" class="slide-btn" onclick="changeImage(-1)">‹</button>
-  <button id="nextBtn" class="slide-btn" onclick="changeImage(1)">›</button>
  <img id="productImage" src="<%= product.getMainImageUrl() %>" class="zoom-img" />
 </div>
 
-    <div class="product-tab sticky" id="tabMenu">
-      <div class="tab-menu">
-        <a href="#desc" class="tab-item active" onclick="selectTab(this)">상품 설명</a>
-        <a href="#reviews" class="tab-item" onclick="selectTab(this)">리뷰</a>
-        <a href="#qna" class="tab-item" onclick="selectTab(this)">문의 [0]</a>
-      </div>
-    </div>
-
-   <!-- 상품 설명 -->
-<section id="desc"><h2>상품 설명</h2><%= product.getDescription() %></section>
-   <section id="reviews"><h2>리뷰</h2></section>
-   <!-- 리뷰 작성 버튼 -->
-<button onclick="openReviewModal()">리뷰 작성</button>
-    <section id="qna"><h2>문의</h2></section>
+    <!-- 탭 메뉴 -->
+<div class="product-tab sticky" id="tabMenu">
+  <div class="tab-menu">
+    <a href="#desc"    class="tab-item active" onclick="selectTab(this)">상품 설명</a>
+    <a href="#reviews" class="tab-item"        onclick="selectTab(this)">리뷰</a>
+    <a href="#qna"     class="tab-item"        onclick="selectTab(this)">문의</a>
   </div>
+</div>
+
+<section id="desc" class="tab-section active">
+  <h2>상품 설명</h2>
+  <%= product.getDescription() %>
+</section>
+<section id="reviews" class="tab-section">
+  <h2>리뷰</h2>
+  <div class="review-write-area mb-3">
+    <jsp:include page="reviewwrite.jsp" flush="true" />
+    <button type="button" onclick="openReviewModal()">리뷰 작성</button>
+  </div>
+  <div id="review-list-container">
+    <jsp:include page="reviewList.jsp" flush="true">
+      <jsp:param name="product_id" value="<%= product.getProductId() %>" />
+    </jsp:include>
+  </div>
+</section>
+<section id="qna" class="tab-section">
+  <h2>문의</h2>
+  <div class="qna-write-area mb-3">
+   <button type="button" onclick="openInquiryModal()">문의 작성</button>
+  <%-- <%@ include file="writeInquiryModal.jsp" %> --%>
+  </div>
+  <div id="qna-list-container">
+    <jsp:include page="q&alist.jsp" flush="true">
+      <jsp:param name="product_id" value="<%= product.getProductId() %>" />
+    </jsp:include>
+  </div>
+</section>
+</div>
 
   <!-- Right Panel: Info -->
   <div class="right-panel">
@@ -385,11 +431,7 @@
 		<i class="bi bi-eye" style="font-size:18px; font-style: normal;">&nbsp;<%= product.getViewCount()%></i>
       </div>
 
-    <div class="mt-3">
-      <span class="stars">⭐</span> 
-      <span class="review-link text-primary" onclick="goToReviews()" style="cursor:pointer;">리뷰</span>
-    </div>
-
+ 
 <!-- 상품 가격 -->
 <div class="price mt-2" style="font-size: 20px; font-weight: bold;">
   <%= df.format(originalPrice) %>원
@@ -400,8 +442,6 @@
   <div>나의 구매 가능 가격 ▼</div>
   <div><strong>첫 구매가:</strong> 20% <span><%= df.format(discountPrice) %>원</span></div>
 </div>
-
-
 
     <div class="mt-2">배송정보: <span class="highlight">3일 이내 출고</span></div>
     <div>배송비: <span class="highlight">3,000원</span> (10만원 이상 무료배송, 제주/도서산간 3,000원 추가)</div>
@@ -483,7 +523,6 @@ document.addEventListener("DOMContentLoaded", updateTotalPrice);
       <button id="addToCartBtn" class="btn btn-outline-primary">장바구니</button>
       <button id="buyNowBtn" class="btn btn-primary">바로구매</button>
     </div>
-
     <script>
     // 장바구니 추가 함수
     function addToCart(redirect) {
@@ -537,56 +576,27 @@ document.addEventListener("DOMContentLoaded", updateTotalPrice);
     });
     </script>
 
-    <ul class="menu-list">
-      <li onclick="openPanel('panel1')">교환 및 환불 <span>›</span></li>
-      <li onclick="openPanel('panel2')">배송 안내 <span>›</span></li>
-    </ul>
+    <!-- 오른쪽 하단에 있는 메뉴 -->
+    <jsp:include page="guide.jsp" />
 
     <div id="panel1" class="slide-panel">
       <div class="panel-header">교환 및 환불<button onclick="closePanel('panel1')">×</button></div>
-      <strong>배송 전 취소</strong><br>
-      - 입금전 주문취소는 마이페이지에서 직접 가능합니다.<br />
-      - 배송전인 상품은 Q&A 게시판, 혹은 이메일로 주문취소 접수가 가능합니다.<br />
-      - 주문취소 및 환불은 이메일 혹은 고객센터를 통해 접수가 가능합니다.<br />
-
-      <strong>교환 및 환불</strong><br />
-      - 상품 수령일로부터 7일 이내만 교환/환불 가능합니다.<br />
-      - 훼손/파손 우려가 있는 상품은 재포장하여 반송해주세요.<br />
-      - 제품과 함께 들어있던 패키지/라벨/사은품도 함께 반송해주세요.<br />
-      - 상품불량 또는 파손에 의한 반품은 하이츠에서 부담합니다.<br />
-      - 제품이 도착하고 회수처리 완료 후 환불이 진행됩니다.<br />
-
-      <strong>반품 주소</strong><br />
-      SSY<br />
-      (01685) 서울시 마포구 양화로17길 22-9 5층<br />
+      <div class="panel-content">...</div>
     </div>
-
     <div id="panel2" class="slide-panel">
       <div class="panel-header">배송 안내<button onclick="closePanel('panel2')">×</button></div>
-      <div class="panel-content">
-        - 상품별로 상품 특성 및 배송지에 따라 배송유형 및 소요기간이 달라집니다.<br />
-        - 일부 주문상품 또는 예약상품의 경우 기본 배송일 외에 추가 배송 소요일이 발생될 수 있습니다.<br />
-        - 제주 및 도서산간 지역은 출고, 반품, 교환시 추가 배송비(항공, 도선료)가 부과 될 수 있습니다.<br />
-        - 공휴일 및 휴일은 배송이 불가합니다.<br />
-        - SSY 자체발송은 오후 2시까지 결제확인된 주문은 당일 출고되고 10만원 이상 주문은 무료배송, 10만원 미만은 3,000원의 배송비가 추가됩니다.<br />
-      </div>
+      <div class="panel-content">...</div>
     </div>
-
+    
     <div style="margin-top: 20px; text-align: right; width: 200px; height:900;" >
-      <img src="../image/sale.png" alt="여름 아이템 할인 배너" style="max-width: 100%; height: auto;" />
+      <img src="sale.png"  alt="여름 아이템 할인 배너" style="max-width: 100%; height: auto;" />
     </div>
   </div>
 </div>
 
 <!-- Script -->
 <script>
-  const images = [
-    "<%= request.getContextPath() %>/image/top/f81.jpg",
-    "<%= request.getContextPath() %>/image/top/f82.jpg",
-    "<%= request.getContextPath() %>/image/top/f83.jpg",
-    "<%= request.getContextPath() %>/image/top/f84.jpg"
-  ];
-  
+ 
  
   function goToReviews() {
     const reviewsSection = document.getElementById("reviews");
@@ -594,13 +604,17 @@ document.addEventListener("DOMContentLoaded", updateTotalPrice);
   }
 
   function openPanel(id) {
-    document.getElementById(id).classList.add("open");
-  }
-
-  function closePanel(id) {
-    document.getElementById(id).classList.remove("open");
-  }
-
+	  const panel = document.getElementById(id);
+	  if (panel) {
+	    panel.classList.add('open');
+	  }
+	}
+	function closePanel(id) {
+	  const panel = document.getElementById(id);
+	  if (panel) {
+	    panel.classList.remove('open');
+	  }
+	}
   function selectTab(el) {
     document.querySelectorAll(".tab-item").forEach(tab => tab.classList.remove("active"));
     el.classList.add("active");
@@ -620,7 +634,7 @@ document.addEventListener("DOMContentLoaded", updateTotalPrice);
     });
 
     document.querySelectorAll(".tab-item").forEach(el => {
-      el.classList.toggle("active", el.getAttribute("href") === #${current});
+      el.classList.toggle("active", el.getAttribute("href") === "#" + current);
     });
   });
 

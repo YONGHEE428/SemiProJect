@@ -254,7 +254,7 @@ public class ProductDao {
     	ResultSet rs = null;
     	
     	String sql = "select option_id from product_option where color = ? and size = ? and product_id = ?";
-    	
+
     	try {
 			pst=cn.prepareStatement(sql);
 			
