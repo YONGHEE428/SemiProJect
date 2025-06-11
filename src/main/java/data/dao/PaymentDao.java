@@ -270,4 +270,36 @@ public class PaymentDao {
         
         return list;
     }
+
+	// 반품창에서 써야하는 id값조회
+    public PaymentDto getPaymentByIdx(String idx) {
+        PaymentDto dto = null;
+        Connection conn = db.getConnection();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "SELECT p.*, m.hp FROM payment p JOIN member m ON p.member_num = m.num WHERE p.idx = ?";
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, idx);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                dto = new PaymentDto();
+                dto.setIdx(rs.getString("idx"));
+                dto.setImp_uid(rs.getString("imp_uid"));
+                dto.setMerchant_uid(rs.getString("merchant_uid"));
+                dto.setMember_num(rs.getInt("member_num"));
+                dto.setAmount(rs.getInt("amount"));
+                dto.setAddr(rs.getString("addr"));
+                dto.setDelivery_msg(rs.getString("delivery_msg"));
+                dto.setStatus(rs.getString("status"));
+                dto.setPaymentday(rs.getTimestamp("paymentday"));
+                dto.setHp(rs.getString("hp"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.dbClose(rs, pstmt, conn);
+        }
+        return dto;
+    }
 }
