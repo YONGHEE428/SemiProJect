@@ -1,3 +1,4 @@
+<%@page import="java.util.TimeZone"%>
 <%@page import="java.text.NumberFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="data.dto.OrderListDto"%>
@@ -24,6 +25,7 @@ if (order == null || payment == null) {
 
 NumberFormat nf = NumberFormat.getInstance();
 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
 
 // 합계, 배송비, 결제금액 계산
 int total = 0;
@@ -153,6 +155,7 @@ body {
 </style>
 </head>
 <body>
+
 	<div class="order-container">
 		<div class="mb-4 d-flex justify-content-between align-items-center">
 			<span class="order-title"><i class="bi bi-receipt"></i> 주문 상세</span>
@@ -170,15 +173,22 @@ body {
 			<div class="row mb-2">
 				<div class="col-4 text-secondary">주문일시</div>
 				<div class="col-8">
-					<%
-					if (order.getOrderDate() != null) {
-					%>
-					<%=sdf.format(order.getOrderDate())%>
-					<%
-					} else {
-					%>-<%
-					}
-					%>
+				
+					 <%
+					 
+			        if (order.getOrderDate() != null) {
+			            // 디버깅을 위해 Raw Date 객체와 KST 포맷팅 결과 모두 출력
+			            System.out.println("DEBUG: Raw orderDate from DTO: " + order.getOrderDate()); // 서버 콘솔에 출력
+			            System.out.println("DEBUG: Formatted KST date: " + sdf.format(order.getOrderDate())); // 서버 콘솔에 출력
+			            
+			        %>
+			        <%=sdf.format(order.getOrderDate())%>
+			        <%
+			        } else {
+			            System.out.println("DEBUG: orderDate is null."); // 서버 콘솔에 출력
+			        %>-<%
+			        }
+			        %>
 				</div>
 			</div>
 			<div class="row mb-2">
@@ -280,7 +290,7 @@ body {
 			</div>
 			<div class="row mb-2">
 				<div class="col-4 text-secondary">연락처</div>
-				<div class="col-8"></div>
+				<div class="col-8"><%=payment.getHp() %></div>
 			</div>
 			<div class="row mb-2">
 				<div class="col-4 text-secondary">주소</div>

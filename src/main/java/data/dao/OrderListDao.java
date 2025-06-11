@@ -63,17 +63,18 @@ public class OrderListDao {
 		return order;
 	}
 
-	//  주문 생성 (cart → order + order_sangpum 저장)
-	public boolean createOrder(int memberNum, List<CartListDto> itemList) {
-		String insertOrderSQL = "INSERT INTO orders (order_code, member_num, total_price) VALUES (?, ?, ?)";
-		String insertItemSQL = "INSERT INTO order_sangpum (order_id, product_id, option_id, cnt, price) VALUES (?, ?, ?, ?, ?)";
-		Connection conn = null;
-		PreparedStatement psOrder = null;
-		PreparedStatement psItem = null;
-		ResultSet rs = null;
-		try {
-			conn = db.getConnection();
-			conn.setAutoCommit(false);
+    // 4. 주문 생성 (cart → order + order_sangpum 저장)
+    public boolean createOrder(int memberNum, List<CartListDto> itemList, String merchantUid) {
+        String insertOrderSQL = "INSERT INTO orders (order_code, member_num, total_price) VALUES (?, ?, ?)";
+        String insertItemSQL = "INSERT INTO order_sangpum (order_id, product_id, option_id, cnt, price) VALUES (?, ?, ?, ?, ?)";
+        Connection conn = null;
+        PreparedStatement psOrder = null;
+        PreparedStatement psItem = null;
+        ResultSet rs = null;
+        try {
+            conn = db.getConnection();
+            conn.setAutoCommit(false);
+
 
 			// 1. 총 주문금액 계산
 			int total = 0;
@@ -84,36 +85,28 @@ public class OrderListDao {
 
 			int orderId = 0;
 
-			// 2. order_code를 null로 INSERT (주문코드는 아직 모름)
-			psOrder = conn.prepareStatement(insertOrderSQL, Statement.RETURN_GENERATED_KEYS);
-			psOrder.setString(1, null); // 임시로 null
-			psOrder.setInt(2, memberNum); // int로 설정
-			psOrder.setInt(3, total);
-			psOrder.executeUpdate();
+            // 2. 일단 order_code를 null로 INSERT (주문코드는 아직 모름)
+            psOrder = conn.prepareStatement(
+                insertOrderSQL,
+                Statement.RETURN_GENERATED_KEYS
+            );
+            psOrder.setString(1, merchantUid); // 임시로 null
+            psOrder.setInt(2, memberNum); // int로 설정
+            psOrder.setInt(3, total);
+            psOrder.executeUpdate();
 
-			rs = psOrder.getGeneratedKeys();
-			String orderCode = "";
-			if (rs.next()) {
-				orderId = rs.getInt(1);
+            rs = psOrder.getGeneratedKeys();
+            if (rs.next()) {
+                orderId = rs.getInt(1);
+            } else {
+                throw new SQLException("주문 ID를 가져오지 못했습니다.");
+            }
+            // 3. order_sangpum 테이블에 상품들 insert
+            psItem = conn.prepareStatement(insertItemSQL);
+            for (CartListDto item : itemList) {
+                int cnt = Integer.parseInt(item.getCnt());
+                int price = item.getPrice() * cnt; // 단가 * 수량
 
-				// 3. order_id 받아서 주문코드 생성
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-				String today = sdf.format(new java.util.Date());
-				orderCode = "ORD" + today + "-" + String.format("%05d", orderId);
-
-				// 4. 주문코드 update
-				PreparedStatement psUpdate = conn.prepareStatement("UPDATE orders SET order_code=? WHERE order_id=?");
-				psUpdate.setString(1, orderCode);
-				psUpdate.setInt(2, orderId);
-				psUpdate.executeUpdate();
-				psUpdate.close();
-			}
-
-			// 5. order_sangpum 테이블에 상품들 insert
-			psItem = conn.prepareStatement(insertItemSQL);
-			for (CartListDto item : itemList) {
-				int cnt = Integer.parseInt(item.getCnt());
-				int price = item.getPrice() * cnt;
 
 				psItem.setInt(1, orderId);
 				psItem.setInt(2, item.getProduct_id());
@@ -160,29 +153,31 @@ public class OrderListDao {
 		}
 	}
 
-	//  주문 전체목록 (관리자)
-	public List<OrderListDto> getAllOrders() {
-		List<OrderListDto> list = new ArrayList<>();
-		String sql = "SELECT o.*, m.name AS member_name FROM orders o JOIN member m ON o.member_num = m.num ORDER BY o.order_date DESC";
-		try (Connection conn = db.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			ResultSet rs = pstmt.executeQuery();
-			while (rs.next()) {
-				OrderListDto dto = new OrderListDto();
-				dto.setOrderId(rs.getInt("order_id"));
-				dto.setOrderCode(rs.getString("order_code"));
-				dto.setMemberNum(rs.getInt("member_num"));
-				dto.setMemberName(rs.getString("member_name"));
-				dto.setOrderDate(rs.getTimestamp("order_date"));
-				dto.setOrderStatus(rs.getString("order_status"));
-				dto.setTotalPrice(rs.getInt("total_price"));
-				dto.setItems(getOrderItemsByOrderId(rs.getInt("order_id")));
-				list.add(dto);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
+    // 5. 주문 전체목록 (관리자)
+    public List<OrderListDto> getAllOrders() {
+        List<OrderListDto> list = new ArrayList<>();
+        String sql = "SELECT o.*, m.name AS member_name FROM orders o JOIN member m ON o.member_num = m.num ORDER BY o.order_date DESC";
+        try (Connection conn = db.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                OrderListDto dto = new OrderListDto();
+                dto.setOrderId(rs.getInt("order_id"));
+                dto.setOrderCode(rs.getString("order_code"));
+                dto.setMemberNum(rs.getInt("member_num"));
+                dto.setMemberName(rs.getString("member_name"));
+                dto.setOrderDate(rs.getTimestamp("order_date"));
+                dto.setOrderStatus(rs.getString("order_status"));
+                dto.setTotalPrice(rs.getInt("total_price"));
+                dto.setItems(getOrderItemsByOrderId(rs.getInt("order_id")));
+                list.add(dto);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 
 	// 주문 삭제
 	public boolean deleteOrder(String orderCode) {
@@ -227,8 +222,10 @@ public class OrderListDao {
 			db.dbClose(pstmt, conn);
 		}
 
-		return success;
-	}
+        return success;
+    }
+   
+    
 
 	// 반품창에서 써야하는 id값 조회
 	public OrderListDto getOrderDetailByOrderId(int orderId) {
