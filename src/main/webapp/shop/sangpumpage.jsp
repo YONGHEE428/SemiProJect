@@ -330,6 +330,21 @@
     background: white;
     cursor: pointer;
 }
+.btn-black-custom {
+  background-color: black;
+  color: white;
+  border: none;
+  padding: 12px 0;
+  width: 100%;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 6px;
+  transition: background-color 0.3s;
+}
+
+.btn-black-custom:hover {
+  background-color: #333;
+}
   </style>
 </head>
 
@@ -345,8 +360,6 @@
   <div class="left-panel">
    <!-- 이미지 영역 -->
 <div class="img-container">
-  <button id="prevBtn" class="slide-btn" onclick="changeImage(-1)">‹</button>
-  <button id="nextBtn" class="slide-btn" onclick="changeImage(1)">›</button>
  <img id="productImage" src="<%= product.getMainImageUrl() %>" class="zoom-img" />
 </div>
 
@@ -354,7 +367,7 @@
       <div class="tab-menu">
         <a href="#desc" class="tab-item active" onclick="selectTab(this)">상품 설명</a>
         <a href="#reviews" class="tab-item" onclick="selectTab(this)">리뷰</a>
-        <a href="#qna" class="tab-item" onclick="selectTab(this)">문의 [0]</a>
+        <a href="#qna" class="tab-item" onclick="selectTab(this)">문의</a>
       </div>
     </div>
 
@@ -373,17 +386,17 @@
   <div><span class="tags">무료배송</span></div>
 <% } %>
     
-    <div class="d-flex align-items-center gap-4 mt-2">
-     <div class="product-title"><%= product.getProductName() %>&nbsp;&nbsp;&nbsp;</div>
-      <div class="item-icons">
-      <%if(checkwish ==true){ %>
-      	<i class ="bi bi-heart-fill" style="color: red;">&nbsp;<%=product.getLikeCount()%>&nbsp;&nbsp;</i>
-      	<%}else{ %>
-       <i class="bi bi-heart"></i>&nbsp;<%=product.getLikeCount()%>&nbsp;&nbsp;
-       <%} %>
-		<i class="bi bi-eye"></i>&nbsp;<%= product.getViewCount()%>
-      </div>
+    <div class="d-flex align-items-center gap-4 mt-2" >
+     <div class="product-title"><%= product.getProductName() %>&nbsp;&nbsp;&nbsp;<br></div>
     </div>
+    <div class="item-icons">
+      <%if(checkwish ==true){ %>
+      	<i class ="bi bi-heart-fill" style="color: red; font-style: normal; font-size:18px;">&nbsp;<%=product.getLikeCount()%>&nbsp;&nbsp;</i>
+      	<%}else{ %>
+       <i class="bi bi-heart" style="font-style: normal; font-size:18px;">&nbsp;<%=product.getLikeCount()%>&nbsp;&nbsp;</i>
+       <%} %>
+		<i class="bi bi-eye" style="font-size:18px; font-style: normal;">&nbsp;<%= product.getViewCount()%></i>
+      </div>
 
     <div class="mt-3">
       <span class="stars">⭐</span> 
@@ -484,7 +497,8 @@ document.addEventListener("DOMContentLoaded", updateTotalPrice);
 
 
 <div class="action-buttons">
-  <button id="addToCartBtn" class="btn btn-outline-primary">장바구니</button>
+  <button id="addToCartBtn" class="btn btn-black-custom">장바구니</button>
+<button class="btn btn-black-custom" onclick="location.href='../payment/payment.jsp'">바로구매</button>
 </div>
 
 <!-- 모달 -->
@@ -517,42 +531,40 @@ function updateOptionId() {
 document.getElementById("size").addEventListener("change", updateOptionId);
 document.getElementById("color").addEventListener("change", updateOptionId);
 
-document.getElementById("addToCartBtn").addEventListener("click", function () {
-    if (!isLoggedIn) {
-        alert("로그인 후 이용 가능합니다.");
-        window.location.href = "../login/loginform.jsp";
-        return;
-    }
-
-    const productId = document.getElementById("productId").value;
-    const optionId = document.getElementById("optionId").value;
+document.getElementById("addToCartBtn").addEventListener("click", function() {
+    const productId = <%= productId %>; // 제품 번호
     const size = document.getElementById("size").value;
     const color = document.getElementById("color").value;
     const quantity = document.getElementById("qty").textContent;
 
-    if (!size || !color || !optionId) {
+    if (!size || !color) {
         alert("옵션을 모두 선택해주세요.");
         return;
     }
 
-    fetch("addcart.jsp", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: product_id=${productId}&option_id=${optionId}&size=${size}&color=${color}&cnt=${quantity}
-    })
-    .then(response => {
-        if (response.redirected || response.ok) {
-            showModal();
-        } else {
-            alert("장바구니 추가 실패");
-        }
-    })
-    .catch(err => {
-        console.error(err);
-        alert("오류가 발생했습니다.");
-    });
+    // form 생성 및 전송
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = "shop/addcart.jsp";
+
+    // hidden input 추가
+    const fields = {
+        'product_id': productId,
+        'size': size,
+        'color': color,
+        'quantity': quantity
+    };
+
+    for (const [key, value] of Object.entries(fields)) {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = key;
+        input.value = value;
+        form.appendChild(input);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
 });
 
 function showModal() {
@@ -569,7 +581,7 @@ function continueShopping() {
     window.location.href = "../index.jsp?main=category/category.jsp";
 }
 </script>
-      <button class="btn btn-primary" onclick="location.href='../payment/payment.jsp'">바로구매</button>
+     
     </div>
 
     <ul class="menu-list">
@@ -615,13 +627,7 @@ function continueShopping() {
 
 <!-- Script -->
 <script>
-  const images = [
-    "<%= request.getContextPath() %>/image/top/f81.jpg",
-    "<%= request.getContextPath() %>/image/top/f82.jpg",
-    "<%= request.getContextPath() %>/image/top/f83.jpg",
-    "<%= request.getContextPath() %>/image/top/f84.jpg"
-  ];
-  
+ 
  
   function goToReviews() {
     const reviewsSection = document.getElementById("reviews");

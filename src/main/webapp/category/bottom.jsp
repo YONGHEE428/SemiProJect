@@ -69,6 +69,9 @@
 		    font-size: 14px;
 		    font-weight: bold;
 		    margin: 5px 0;
+		    white-space: nowrap;           /* 줄바꿈 방지 */
+	        overflow: hidden;              /* 넘친 텍스트 숨김 */
+	        text-overflow: ellipsis;       /* 말줄임 (...) 처리 */
 		}
         .product-price {
             font-weight: bold;
@@ -400,7 +403,7 @@ window.onscroll = function() {
   <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-header">
       <img src="SemiImg/footerLogo.png" width="20px;" class="rounded me-2" alt="...">
-      <strong class="me-auto">!알림</strong>
+      <strong class="me-auto">알림!</strong>
       <small>Now</small>
       <button type="button" class="btn-close" data-bs-dismiss="toast" 
       aria-label="Close"></button>

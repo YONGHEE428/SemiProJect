@@ -247,6 +247,34 @@ public class ProductDao {
         return new ArrayList<>(productMap.values());
     }
     
+    public int option_num(String color, String size, int productId) {
+    	int option_num = 0;
+    	Connection cn = db.getConnection();
+    	PreparedStatement pst = null;
+    	ResultSet rs = null;
+    	
+    	String sql = "selcet option_id from product_option where color = ? and size = ? and product_id = ?";
+    	
+    	try {
+			pst=cn.prepareStatement(sql);
+			
+			pst.setString(1, color);
+			pst.setString(2, size);
+			pst.setInt(3, productId);
+			
+			rs = pst.executeQuery();
+			if(rs.next()) {
+				option_num = rs.getInt("option_id");
+			}
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}finally {
+			db.dbClose(rs, pst, cn);
+		}
+    	return option_num;
+    }
+    
     //상위 6개 좋아요 기준으로출력
     public List<ProductDto> getTopLikedProducts() {
         Map<Integer, ProductDto> productMap = new LinkedHashMap<>();

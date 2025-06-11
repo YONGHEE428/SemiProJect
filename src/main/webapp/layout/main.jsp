@@ -176,7 +176,7 @@ function loadMoreItems() {
 	.eventImg > ul{
 		display: flex; 
 		gap : 100px;
-		padding-left: 50px;
+		padding-left: 70px;
 		padding-bottom:100px;
 	}
 	.eventImg> ul >li{
@@ -296,7 +296,10 @@ function loadMoreItems() {
 	}
 	.item-coment > .item-name{
 		font-size: 0.8em;
-		color: gray;
+		color: gray; 
+		white-space: nowrap;           /* 줄바꿈 방지 */
+        overflow: hidden;              /* 넘친 텍스트 숨김 */
+        text-overflow: ellipsis;       /* 말줄임 (...) 처리 */
 	}
 	.item-coment > .item-price{
 		margin-top: 10px;
@@ -323,7 +326,7 @@ function loadMoreItems() {
         <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
                 <img src="SemiImg/footerLogo.png" width="20px;" class="rounded me-2" alt="...">
-                <strong class="me-auto">!알림</strong>
+                <strong class="me-auto">알림!</strong>
                 <small>Now</small>
                 <button type="button" class="btn-close" data-bs-dismiss="toast"
                         aria-label="Close"></button>
@@ -451,7 +454,7 @@ function loadMoreItems() {
   
  <!-- 메인 아이템목록 -->
  <div class="main-items">
- <div class="main-item-conttent"><span><strong style="font-size: 1.7em;">We Love</strong><br><b>쌍용 픽</b></span><br></div>
+ <div class="main-item-conttent" style="padding-left: 20px;"><span><strong style="font-size: 1.7em;">We Love</strong><br><b>쌍용 픽</b></span><br></div>
 	 <ul>
 	 	
 	  </ul>
