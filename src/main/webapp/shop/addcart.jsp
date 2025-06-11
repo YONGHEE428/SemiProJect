@@ -42,7 +42,12 @@
     
     dao.InsertCartList(dto);  
 %>
-<body>
-	alert("장바구니에 추가되었습니다.")
+<script>
+    if(confirm("장바구니에 추가되었습니다. 이동하시겠습니까?")) {
+        location.href = "../index.jsp?main=cart/cartform.jsp";
+    } else {
+        history.back();
+    }
+</script>
 </body>
 </html>
