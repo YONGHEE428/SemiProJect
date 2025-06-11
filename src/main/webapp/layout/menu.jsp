@@ -64,7 +64,19 @@
 			$(".logo").click(function(){
 				sessionStorage.setItem("backimgHidden", "false");
 			})
+			
+			$("#input-search").keypress(function(e) {
+				if (e.which === 13) { // 엔터키가 눌렸을 때
+					e.preventDefault();
+					let searchText = $(this).val();
+					if(searchText.trim() !== "") {
+						location.href = "<%=root%>/index.jsp?main=search/searchResult.jsp&keyword=" + encodeURIComponent(searchText);
+					}
+				}
+			});
+			
 	});
+	
 	
 </script>
 <body>
@@ -137,25 +149,25 @@
 <!-- 검색창 팝업 -->
 <div class="searchpage">
   <button class="close-btn" style="margin-top: -3px; margin-right: 3px;"><i class="bi bi-x-lg" style="font-size: 25px;"></i></button>
-  <input type="text" class="form-control" placeholder="예: 가방, 신발 등" style="width: 95%;">
+  <input type="text" class="form-control" id="input-search" placeholder="예: 가방, 신발 등" style="width: 95%;">
   <div class="search-title">
   <label style="font-size: 0.8em;"><strong>인기 검색어</strong></label>
   </div>
   <div class="search-content">
   	<div class="search-content-item">
   		<ol>
-  		<li><a href="#"><strong>1 &nbsp;&nbsp;반바지</strong></a></li>
-  		<li><a href="#"><strong>2 &nbsp;&nbsp;반팔</strong></a></li>
-  		<li><a href="#"><strong>3 &nbsp;&nbsp;셔츠</strong></a></li>
-  		<li><a href="#"><strong>4 &nbsp;&nbsp;트레이닝바지</strong></a></li>
-  		<li><a href="#"><strong>5 &nbsp;&nbsp;모자</strong></a></li>
+  		<li><a href="index.jsp?main=search/searchResult.jsp&keyword=반팔"><strong>1 &nbsp;&nbsp;반팔</strong><span class="arrow" style="color: #E0E0E0;">▬</span></a></li>
+  		<li><a href="index.jsp?main=search/searchResult.jsp&keyword=버뮤다팬츠"><strong>2 &nbsp;&nbsp;버뮤다팬츠</strong><span class="arrow" style="color: #E0E0E0;">▬</span></a></li>
+  		<li><a href="index.jsp?main=search/searchResult.jsp&keyword=모자"><strong>3 &nbsp;&nbsp;모자</strong><span class="arrow" style="color: red;">▲</span></a></li>
+  		<li><a href="index.jsp?main=search/searchResult.jsp&keyword=샌들"><strong>4 &nbsp;&nbsp;샌들</strong><span class="arrow" style="color: blue;">▼</span></a></li>
+  		<li><a href="index.jsp?main=search/searchResult.jsp&keyword=반바지"><strong>5 &nbsp;&nbsp;반바지</strong><span class="arrow" style="color: #E0E0E0;">▬</span></a></li>
   		</ol>
   		<ol>
-  		<li><a href="#"><strong>1 &nbsp;&nbsp;반바지</strong></a></li>
-  		<li><a href="#"><strong>2 &nbsp;&nbsp;반팔</strong></a></li>
-  		<li><a href="#"><strong>3 &nbsp;&nbsp;셔츠</strong></a></li>
-  		<li><a href="#"><strong>4 &nbsp;&nbsp;트레이닝바지</strong></a></li>
-  		<li><a href="#"><strong>5 &nbsp;&nbsp;모자</strong></a></li>
+  		<li><a href="index.jsp?main=search/searchResult.jsp&keyword=바람막이"><strong>1 &nbsp;&nbsp;바람막이</strong><span class="arrow" style="color: #E0E0E0;">▬</span></a></li>
+  		<li><a href="index.jsp?main=search/searchResult.jsp&keyword=아디다스"><strong>2 &nbsp;&nbsp;아디다스</strong><span class="arrow" style="color: red;">▲</span></a></li>
+  		<li><a href="index.jsp?main=search/searchResult.jsp&keyword=청바지"><strong>3 &nbsp;&nbsp;청바지</strong><span class="arrow" style="color: red;">▲</span></a></li>
+  		<li><a href="index.jsp?main=search/searchResult.jsp&keyword=트레이닝바지"><strong>4 &nbsp;&nbsp;트레이닝바지</strong><span class="arrow" style="color: blue;">▼</span></a></li>
+  		<li><a href="index.jsp?main=search/searchResult.jsp&keyword=레인부츠"><strong>5 &nbsp;&nbsp;레인부츠</strong><span class="arrow" style="color: blue;">▼</span></a></li>
   		</ol>
   	</div>
   </div>
@@ -179,10 +191,10 @@
 	.search-content-item{
 		font-size: 0.5em;
 		 display: flex;
- 		 gap: 100px; 
+ 		 gap: 10px; 
 	}
 	.search-content-item >ol{
-		width: 30%;
+		width: 200px;
 
 			
 	}
@@ -195,7 +207,22 @@
     letter-spacing: -.0125rem;
     font-weight: 350;
     color: #000;
+    width: 200px;
 	}
+	.search-content-item a {
+	  position: relative;
+	  display: flex;
+	  justify-content: space-between;
+	  align-items: center;
+	  width: 100%;
+	  padding-right: 10px;
+	}
+	
+	.search-content-item .arrow {
+	  position: static;
+	  margin-left: auto;
+	}
+	
 	li > a:hover{
 	text-decoration: none;
 	}
