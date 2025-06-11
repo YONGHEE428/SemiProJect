@@ -246,33 +246,31 @@ body {
 	background: #333;
 }
 /* 상단바 */
- .mypage-content{
-    	height:60px;
-    	line-height:60px;
-    	top:150px;
-    	position:fixed;
-		width:70%;
-		min-height: 5px;
-		font-weight: bold;
-		text-align: center;
-		background-color: white;
-		transition: top 0.3s ease;
-		border-bottom: 1px solid gray;
-		margin-left: 260px;
-
-	}
+.mypage-content {
+	height: 60px;
+	line-height: 60px;
+	top: 150px;
+	position: fixed;
+	width: 70%;
+	min-height: 5px;
+	font-weight: bold;
+	text-align: center;
+	background-color: white;
+	transition: top 0.3s ease;
+	border-bottom: 1px solid gray;
+	margin-left: 260px;
+}
 
 .content-title>ul {
 	display: flex;
 	justify-content: center;
 	gap: 170px;
-	color : gray;
+	color: gray;
 }
 
 .content-title>ul>li>a {
-
 	text-decoration: none;
-	cursor: pointer;	
+	cursor: pointer;
 }
 
 .content-title>ul>li>a:hover {
@@ -293,20 +291,22 @@ body {
 }
 </style>
 <script type="text/javascript">
-	$(function(){
-	
-		window.addEventListener("scroll", function () {
-		    const mypage = document.querySelector(".mypage-content");
-		    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+	$(
+			function() {
 
-		    if (scrollTop > 50) {
-		      mypage.style.top = "100px";
-		    } else {
-		      mypage.style.top = "150px";
-		    }
-	  });
-	
-	})
+				window.addEventListener("scroll", function() {
+					const mypage = document.querySelector(".mypage-content");
+					const scrollTop = window.scrollY
+							|| document.documentElement.scrollTop;
+
+					if (scrollTop > 50) {
+						mypage.style.top = "100px";
+					} else {
+						mypage.style.top = "150px";
+					}
+				});
+
+			})
 </script>
 </head>
 <%
@@ -337,17 +337,21 @@ keyword = keyword.trim();
 %>
 <body>
 	<!-- 상단바 ... 생략 ... -->
-	
+
 	<div class="mypage-content">
-        <div class="content-title">
-            <ul>
-                <li><a onclick="location.href='index.jsp?main=category/catewish.jsp'">위시리스트</a></li>
-                <li><a onclick="location.href='index.jsp?main=cart/cartform.jsp'">장바구니</a></li>
-                <li><a onclick="location.href='index.jsp?main=orderlist/orderlistform.jsp'" style="color: black; border-bottom: 3px solid black;">구매내역</a></li>
-            </ul>
-        </div>
-    </div>
-	
+		<div class="content-title">
+			<ul>
+				<li><a
+					onclick="location.href='index.jsp?main=category/catewish.jsp'">위시리스트</a></li>
+				<li><a
+					onclick="location.href='index.jsp?main=cart/cartform.jsp'">장바구니</a></li>
+				<li><a
+					onclick="location.href='index.jsp?main=orderlist/orderlistform.jsp'"
+					style="color: black; border-bottom: 3px solid black;">구매내역</a></li>
+			</ul>
+		</div>
+	</div>
+
 	<div class="order-wrapper">
 		<div class="order-header">
 			<h2><%=name%>님의 주문목록
@@ -374,7 +378,7 @@ keyword = keyword.trim();
 				for (OrderListDto.OrderItem item : order.getItems()) {
 					String productName = item.getProductName();
 					if (keyword.isEmpty() || (productName != null && productName.toLowerCase().contains(keyword.toLowerCase()))) {
-						filteredItems.add(item);
+				filteredItems.add(item);
 					}
 				}
 				if (filteredItems.size() == 0)
@@ -397,13 +401,16 @@ keyword = keyword.trim();
 				<div class="order-item-box">
 					<div class="order-content-row">
 						<div class="order-thumb-box">
-							<img
+							<a href="index.jsp?main=shop/sangpumpage.jsp&product_id=<%=item.getProductId()%>">
+								<img
 								src="<%=item.getProductImage() != null ? item.getProductImage() : "https://via.placeholder.com/90x90.png?text=이미지"%>"
 								alt="상품이미지"
 								style="width: 80px; height: 80px; object-fit: cover;">
+							</a>
 						</div>
+
 						<div class="order-prod-info">
-							<div class="order-prod-title"><%=item.getProductName()%></div>
+							<div class="order-prod-title"> <a href="index.jsp?main=shop/sangpumpage.jsp&product_id=<%=item.getProductId()%>"> <%=item.getProductName()%> </a> </div>
 							<div class="order-prod-desc">
 								<%=item.getColor()%>
 								/
