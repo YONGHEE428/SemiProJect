@@ -1,8 +1,7 @@
-<<<<<<< HEAD
-=======
+
 <%@page import="data.dao.CartListDao"%>
 <%@page import="data.dto.CartListDto"%>
->>>>>>> 6cd55fb2480015ec0d1540f56cf7f0ff3686c6f3
+
 <%@page import="data.dao.ProductDao"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -33,7 +32,7 @@
     ProductDao pdao = new ProductDao();
     int option_id = pdao.option_num(color, size, product_id);
     System.out.println("제품넘버: " + product_id + "사이즈:" + size + "색상" + color + "갯수" + cnt + "옵션 넘버"+ option_id);
-<<<<<<< HEAD
+
    /*  // 3. DTO 구성
 =======
     // 3. DTO 구성
@@ -53,7 +52,7 @@
     // 5. 장바구니 페이지로 리디렉션
     //response.sendRedirect("cart.jsp");
 %>
-=======
+
     CartListDao dao = new CartListDao(); 
     
     dao.InsertCartList(dto);  
@@ -62,4 +61,4 @@
 	alert("장바구니에 추가되었습니다.")
 </body>
 </html>
->>>>>>> 6cd55fb2480015ec0d1540f56cf7f0ff3686c6f3
+
