@@ -27,18 +27,20 @@
 	String id = (String)session.getAttribute("myid");
      //2. 세션에서 member_id 가져오기
     if (id == null) {
-        // 로그인 안 된 경우 로그인 페이지로 이동
-        response.sendRedirect("login.jsp");
+        // 로그인 안 된 경우 alert 창을 보여주고 로그인 페이지로 이동
+%>
+        <script>
+            alert("로그인 후 이용 가능합니다.");
+            location.href = "../index.jsp?main=login/loginform.jsp";
+        </script>
+<%
         return;
     }
     ProductDao pdao = new ProductDao();
     int option_id = pdao.option_num(color, size, product_id);
     System.out.println("제품넘버: " + product_id + "사이즈:" + size + "색상" + color + "갯수" + cnt + "옵션 넘버"+ option_id);
 
-   /*  // 3. DTO 구성
-=======
-    // 3. DTO 구성
->>>>>>> 6cd55fb2480015ec0d1540f56cf7f0ff3686c6f3
+   // 3. DTO 구성
     CartListDto dto = new CartListDto();
     dto.setProduct_id(product_id);
     dto.setMember_id(id);
@@ -46,15 +48,6 @@
     dto.setCnt(cnt);
 
     // 4. DAO 호출
-<<<<<<< HEAD
-    CartListDao dao = new CartListDao();  */
-    
-    /*수정바람 dao.addCart(dto); */
-
-    // 5. 장바구니 페이지로 리디렉션
-    //response.sendRedirect("cart.jsp");
-%>
-
     CartListDao dao = new CartListDao(); 
     dao.InsertCartList(dto);  
 
