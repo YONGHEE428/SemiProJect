@@ -292,6 +292,7 @@ body {
 String memberId = (String) session.getAttribute("myid");
 String name = (String) session.getAttribute("name");
 
+// 로그인 체크 (변경 없음)
 if (memberId == null) {
 	String orderListPageUrl = request.getContextPath() + "/index.jsp?main=orderlist/orderlistform.jsp";
 	response.sendRedirect(request.getContextPath() + "/index.jsp?main=login/loginform.jsp&redirect="
@@ -299,16 +300,19 @@ if (memberId == null) {
 	return;
 }
 
+// ✅ MemberDao로 memberNum 얻기
 MemberDao memberDao = new MemberDao();
 int memberNum = memberDao.getMemberNumById(memberId);
 
+// ✅ 반드시 OrderListDao 사용해서 주문목록 뽑기!
 OrderListDao dao = new OrderListDao();
 List<OrderListDto> orderList = dao.getOrdersByMember(memberNum);
 
+// (검색어 필터링)
 String keyword = request.getParameter("keyword");
 if (keyword == null)
 	keyword = "";
-keyword = keyword.trim(); // 검색어 공백제거
+keyword = keyword.trim();
 %>
 <body>
 	<!-- 상단바 ... 생략 ... -->
@@ -339,11 +343,11 @@ keyword = keyword.trim(); // 검색어 공백제거
 				for (OrderListDto.OrderItem item : order.getItems()) {
 					String productName = item.getProductName();
 					if (keyword.isEmpty() || (productName != null && productName.toLowerCase().contains(keyword.toLowerCase()))) {
-				filteredItems.add(item);
+						filteredItems.add(item);
 					}
 				}
 				if (filteredItems.size() == 0)
-					continue; // 이 주문카드에 노출될 상품이 없으면 skip
+					continue;
 
 				hasResult = true;
 			%>
@@ -380,13 +384,10 @@ keyword = keyword.trim(); // 검색어 공백제거
 							<div class="order-prod-price-row">
 								<span class="order-prod-price"> <%=NumberFormat.getInstance().format(item.getPrice())%>원
 								</span>
-								<button class="cart-btn" onclick="alert('장바구니 담기 개발중!')">장바구니에
-									담기</button>
 							</div>
 						</div>
 
 						<div class="order-actions-col">
-							
 							<button class="btn btn-outline-secondary btn-sm"
 								onclick="location.href='orderlist/detailform.jsp?order_code=<%=order.getOrderCode()%>'">
 								주문상세</button>
