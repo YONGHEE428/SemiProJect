@@ -16,8 +16,10 @@ public class TakebackDto {
     private Date pickupDate;
     private String pickupRequest;
     private String takebackStatus;
-
-    // Getter/Setter
+    private int orderSangpumId;
+  
+    public int getOrderSangpumId() { return orderSangpumId; }
+    public void setOrderSangpumId(int orderSangpumId) { this.orderSangpumId = orderSangpumId; }
     public int getTakebackId() { return takebackId; }
     public void setTakebackId(int takebackId) { this.takebackId = takebackId; }
     public int getOrderId() { return orderId; }
