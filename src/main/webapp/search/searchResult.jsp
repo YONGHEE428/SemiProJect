@@ -145,7 +145,7 @@
                 } else if(keyword.contains("목걸이") || keyword.contains("모자") || keyword.contains("키링")) {
                     relatedKeyword = "악세서리";
                     relatedText = "악세서리 검색결과 보기";
-                }else if(keyword.contains("샌들") || keyword.contains("운동화") || keyword.contains("축구화")) {
+                }else if(keyword.contains("샌들") || keyword.contains("운동화") || keyword.contains("축구화") || keyword.contains("부츠")) {
                     relatedKeyword = "신발";
                     relatedText = "신발 검색결과 보기";
                 }
@@ -191,7 +191,7 @@ $(function() {
             url: "/SemiProject/data/searchItems.jsp",
             data: {
                 page: 1,
-                keyword: "<%=keyword%>"
+                keyword: "<%=relatedKeyword%>"
             },
             success: function(data) {
                 if (data.length === 0) {
