@@ -7,6 +7,7 @@ import java.util.*;
 import data.dto.CartListDto;
 import data.dto.OrderListDto;
 import data.dto.OrderListDto.OrderItem;
+import data.dto.PaymentDto;
 import db.copy.DBConnect;
 
 public class OrderListDao {
@@ -244,4 +245,22 @@ public class OrderListDao {
 
         return success;
     }
+    OrderListDao orderDao = new OrderListDao();
+    PaymentDao paymentDao = new PaymentDao();
+
+    // 주문 코드 기준으로 주문 + 결제 상세 조회
+    public Map<String, Object> getOrderAndPaymentDetail(String orderCode) {
+        Map<String, Object> result = new HashMap<>();
+
+        // 1. 주문 정보
+        OrderListDto order = orderDao.getOrderDetailByCode(orderCode);
+        result.put("order", order);
+
+        // 2. 결제 정보
+        PaymentDto payment = paymentDao.getPaymentByOrderCode(orderCode);
+        result.put("payment", payment);
+
+        return result;
+    }
+    
 }

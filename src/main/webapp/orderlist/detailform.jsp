@@ -272,6 +272,9 @@ body {
 		</div>
 
 		<!-- 배송 정보 -->
+		<%
+			
+		%>
 		<div>
 			<div class="section-title">배송 정보</div>
 			<div class="row mb-2">
@@ -280,7 +283,7 @@ body {
 			</div>
 			<div class="row mb-2">
 				<div class="col-4 text-secondary">연락처</div>
-				<div class="col-8"><%=payment.getHp()%></div>
+				<div class="col-8"></div>
 			</div>
 			<div class="row mb-2">
 				<div class="col-4 text-secondary">주소</div>

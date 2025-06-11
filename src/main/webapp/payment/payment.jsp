@@ -879,8 +879,7 @@ body {
 			alert("로그아웃 하셨습니다.");
 			location.href = "../login/logoutform.jsp";
 		}
-			console.log("Name:", "<%=name%>");
-		    console.log("Email:", "<%=email%>");
+			
 		    console.log("<%=member_num%>");
 		    console.log("JSP에서 전달된 totalPrice:", <%= totalPrice %>);
 		    console.log("JSP에서 전달된 member_num:", "<%= member_num %>");
