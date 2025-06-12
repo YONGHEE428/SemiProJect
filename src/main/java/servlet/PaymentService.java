@@ -1,16 +1,29 @@
 package servlet;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
 import com.siot.IamportRestClient.IamportClient;
+import com.siot.IamportRestClient.request.CancelData;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 
+import data.dao.OrderListDao;
 import data.dao.PaymentDao;
+import data.dao.ProductDao;
 import data.dto.PaymentDto;
+import db.copy.DBConnect;
 
 public class PaymentService {
+	DBConnect db=new DBConnect();
+
     private static final String API_KEY = "5774754460286138";
     private static final String API_SECRET = "M5bNRIC2dbTYZQuTSSjcvKWSw0Z1js7SCwRDeySAs7UQYLbxsGKnlZLvSRgZXI48tRwR4OpGRFLweift";
     private PaymentDao dao = new PaymentDao();
+    private OrderListDao orldao=new OrderListDao();
+    private ProductDao pdao=new ProductDao();
 
     public boolean processPayment(int memberNum, String impUid, String merchantUid, 
             int expectedAmount, String addr, String deliveryMsg) {
@@ -62,20 +75,6 @@ public class PaymentService {
         return dao.getPaymentByImpUid(impUid);
     }
     
+  
     
-    // 결제 취소 처리 (필요시)
-    public boolean cancelPayment(String impUid, String reason) {
-        IamportClient client = new IamportClient(API_KEY, API_SECRET);
-        try {
-            // 아임포트 결제 취소 API 호출
-            // IamportResponse<Payment> response = client.cancelPaymentByImpUid(new CancelData(impUid, true, reason));
-            
-            // DB에서 상태 업데이트
-            dao.updatePaymentStatus(impUid, "cancelled");
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 }

@@ -16,10 +16,11 @@ import data.dto.ReviewDTO;
 public class SubmitReviewServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-
+        
+        String options = request.getParameter("purchase_option_size") + " / " + request.getParameter("purchase_option_color");
         ReviewDTO dto = new ReviewDTO();
         dto.setMemberName(request.getParameter("member_name"));
-        dto.setPurchaseOption(request.getParameter("purchase_option"));
+        dto.setPurchaseOption(options);
         dto.setSatisfactionText(request.getParameter("satisfaction_text"));
         dto.setContent(request.getParameter("content"));
         dto.setSizeFit(request.getParameter("size_fit"));
@@ -50,7 +51,7 @@ public class SubmitReviewServlet extends HttpServlet {
         dao.insertReview(dto);
 
         // 저장 후 리디렉션
-        response.sendRedirect("../shop/sangpumpage.jsp?product_id=" + productId + "#reviews");
+        response.sendRedirect("../SemiProject/index.jsp?main=shop/sangpumpage.jsp&product_id=" + productId);
     }
 
     private int parseIntOrZero(String val) {
