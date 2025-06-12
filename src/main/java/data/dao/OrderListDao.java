@@ -254,7 +254,7 @@ public class OrderListDao {
 	private List<OrderItem> getOrderItemsByOrderId(int orderId) {
 	    List<OrderItem> items = new ArrayList<>();
 	    String sql = "SELECT s.order_sangpum_id, s.product_id, s.option_id, s.cnt, s.price, " +
-	                 "p.product_name, p.main_image_url, o.color, o.size " +
+	                 "p.product_name, p.main_image_url, o.color, o.size, s.status " + // ★ status 추가
 	                 "FROM order_sangpum s " +
 	                 "JOIN product p ON s.product_id = p.product_id " +
 	                 "JOIN product_option o ON s.option_id = o.option_id " +
@@ -264,7 +264,7 @@ public class OrderListDao {
 	        ResultSet rs = pstmt.executeQuery();
 	        while (rs.next()) {
 	            OrderItem item = new OrderItem();
-	            item.setOrderSangpumId(rs.getInt("order_sangpum_id")); 
+	            item.setOrderSangpumId(rs.getInt("order_sangpum_id"));
 	            item.setProductId(rs.getInt("product_id"));
 	            item.setOptionId(rs.getInt("option_id"));
 	            item.setCnt(rs.getInt("cnt"));
@@ -273,6 +273,7 @@ public class OrderListDao {
 	            item.setProductImage(rs.getString("main_image_url"));
 	            item.setColor(rs.getString("color"));
 	            item.setSize(rs.getString("size"));
+	            item.setStatus(rs.getString("status")); // ★ status 세팅
 	            items.add(item);
 	        }
 	    } catch (Exception e) {
@@ -280,4 +281,27 @@ public class OrderListDao {
 	    }
 	    return items;
 	}
+
+	// 주문상품 테이블 buyok를 2로 변경                    -반품처리 관련 takeback
+	public void updateBuyokToTakeback(int orderSangpumId) {
+	    String sql = "UPDATE order_sangpum SET buyok=2 WHERE order_sangpum_id=?";
+	    try (Connection conn = db.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setInt(1, orderSangpumId);
+	        pstmt.executeUpdate();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+
+	// 주문 테이블 order_status를 '반품접수'로 변경           -반품처리 관련 takeback
+	public void updateOrderStatusToTakeback(int orderId) {
+	    String sql = "UPDATE orders SET order_status='반품접수' WHERE order_id=?";
+	    try (Connection conn = db.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setInt(1, orderId);
+	        pstmt.executeUpdate();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+
 }
