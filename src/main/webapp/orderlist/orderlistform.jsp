@@ -316,7 +316,9 @@ body {
 
 System.out.println("[페이지명.jsp] session member_num = " + session.getAttribute("member_num"));
 
+
 String root = request.getContextPath();
+
 String memberId = (String) session.getAttribute("myid");
 String name = (String) session.getAttribute("name");
 

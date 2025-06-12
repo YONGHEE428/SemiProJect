@@ -19,25 +19,16 @@ public class InsertInquiryServlet extends HttpServlet {
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
 
-        // **디버그**: 실제 들어오는 파라미터 찍어보기
-        System.out.println("[InsertInquiry] Params → "
-            + "product_id=" + request.getParameter("product_id")
-            + ", title="      + request.getParameter("title")
-            + ", content="    + request.getParameter("content")
-            + ", is_private=" + request.getParameter("is_private")
-            + ", password="   + request.getParameter("password"));
-
         try {
             int productId = Integer.parseInt(request.getParameter("product_id"));
-            String title  = request.getParameter("title");
-            String content= request.getParameter("content");
+            String title   = request.getParameter("title");
+            String content = request.getParameter("content");
 
-            // ★ 체크박스 파라미터 존재 여부로 boolean 처리 ★
-            boolean isPrivate = request.getParameter("is_private") != null;
+            // ★ 라디오 버튼 값을 Boolean으로 파싱 ★
+            boolean isPrivate = Boolean.parseBoolean(request.getParameter("is_private"));
             System.out.println("[InsertInquiry] parsed isPrivate → " + isPrivate);
 
             String password = request.getParameter("password");
-            // 비밀글인데 비밀번호가 비어있으면 오류 처리
             if (isPrivate && (password == null || password.isEmpty())) {
                 request.setAttribute("errorMessage", "비밀글 비밀번호를 입력해주세요.");
                 request.getRequestDispatcher("/shop/error.jsp")

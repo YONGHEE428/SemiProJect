@@ -9,6 +9,8 @@
 <%@ page import="java.text.DecimalFormat" %>
 
 
+
+
 <%
 
     String idParam = request.getParameter("product_id");
@@ -431,26 +433,24 @@ section h2 {
     </jsp:include>
   </div>
 </section>
-<section id="qna" class="tab-section">
+
+ <section id="qna" class="tab-section">
   <h2>문의</h2>
-<div class="qna-write-area mb-3">
+  <div class="qna-write-area mb-3">
     <button type="button" onclick="openInquiryModal()">문의 작성</button>
   </div>
-
-    <!-- 모달 코드(include할 때는 jsp:include 써야 param 전달 가능) -->
-    <jsp:include page="/shop/writeInquiryModal.jsp" flush="true">
-  <jsp:param name="product_id" value="${product.productId}" />
-</jsp:include>
-  </div>
-
-  <!-- ② 문의 목록 include -->
+  <!-- 문의 목록 -->
   <div id="qna-list-container">
-    <jsp:include page="q&alist.jsp" flush="true">
-      <jsp:param name="product_id" 
-                 value="${product.productId}" />
+    <jsp:include page="/shop/q&alist.jsp" flush="true">
+      <jsp:param name="product_id" value="<%= product.getProductId() %>" />
     </jsp:include>
   </div>
 </section>
+<!-- 파라미터(product_id)와 함께 포함 -->
+    <jsp:include page="/shop/writeInquiryModal.jsp" flush="true">
+      <jsp:param name="product_id" value="<%= product.getProductId() %>" />
+    </jsp:include>
+  </div>
 </div>
 
   <!-- Right Panel: Info -->
@@ -539,25 +539,8 @@ section h2 {
 
     document.addEventListener("DOMContentLoaded", updateTotalPrice);
 
-function showLimitModal() {
-  document.getElementById("limitModal").style.display = "flex";
-}
-
-function closeLimitModal() {
-  document.getElementById("limitModal").style.display = "none";
-}
-
-document.addEventListener("DOMContentLoaded", updateTotalPrice);
 </script>
-    <div id="limitModal" class="modal" style="display: none;">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closeLimitModal()">×</span>
-    <h4>알림</h4>
-    <p>최대 구매 가능 수량은 5개입니다.</p>
-    <button onclick="closeLimitModal()" class="btn-black">확인</button>
-  </div>
-</div>
-
+   
     <div class="mt-2"><strong>총 가격:</strong> <span id="Price"></span></div>
 
     <div class="action-buttons">
@@ -639,7 +622,15 @@ document.addEventListener("DOMContentLoaded", updateTotalPrice);
   </div>
 </div>
 <script>
- 
+function openInquiryModal(){
+	  const modal = document.getElementById('inquiryModal');
+	  modal.style.display = 'flex';  // 중요: flex로 지정해야 가운데 정렬됨
+	}
+
+	function closeInquiryModal(){
+	  const modal = document.getElementById('inquiryModal');
+	  modal.style.display = 'none';
+	}
  
   function goToReviews() {
     const reviewsSection = document.getElementById("reviews");
