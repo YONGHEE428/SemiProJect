@@ -40,7 +40,7 @@ pageEncoding="UTF-8"%>
   <body>
     <div class="button-container">
       <a href=http://localhost:8080/SemiProject/sangpumRegist/productListAdmin.jsp class="admin-button">상품 관리</a>
-      <a href="#" class="admin-button">회원 관리</a>
+      <a href="../member/memberAdmin.jsp" class="admin-button">회원 관리</a>
     </div>
   </body>
 </html>
