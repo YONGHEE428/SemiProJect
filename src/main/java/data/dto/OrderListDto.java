@@ -123,7 +123,8 @@ public class OrderListDto {
 			this.memberName = memberName;
 		}
 		public String getStatus() { return status; }
-        public void setStatus(String status) { this.status = status; }      
+        public void setStatus(String status) { this.status = status; } 
+        
         public int getOrderSangpumId() {
             return orderSangpumId;
         }

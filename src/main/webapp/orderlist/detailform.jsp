@@ -58,6 +58,60 @@ body { background: #f8f9fa; }
 .order-title { font-size: 2rem; font-weight: bold; }
 .section-title { font-size: 1.2rem; font-weight: bold; margin-top: 30px; }
 .table th, .table td { vertical-align: middle; }
+.product-simple-box {
+	border: 1.5px solid #f1f1f5;
+	border-radius: 12px;
+	padding: 18px 22px;
+	background: #fafbfc;
+}
+.product-image {
+	width: 80px;
+	height: 80px;
+	border-radius: 8px;
+	object-fit: cover;
+	border: 1.5px solid #e3e3e3;
+	background: #fff;
+}
+.product-info-area {
+	min-width: 0;
+}
+.product-name {
+	font-size: 1.16rem;
+	font-weight: bold;
+	color: #141414;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.product-option {
+	font-size: 1.03rem;
+	color: #6b7280;
+}
+.product-meta {
+	font-size: 1.07rem;
+	font-weight: 500;
+	color: #222;
+	letter-spacing: 0.01em;
+	margin-top: 1px;
+}
+.price-strong {
+	color: #252525;
+	font-weight: bold;
+}
+.sum-strong {
+	color: #52423C;
+	font-weight: bold;
+}
+@media (max-width: 700px) {
+	.product-simple-box {
+		flex-direction: column;
+		padding: 12px 6vw;
+	}
+	.product-image {
+		margin-bottom: 8px;
+	}
+}
+
 </style>
 </head>
 <body>
@@ -94,37 +148,28 @@ body { background: #f8f9fa; }
 	</div>
 	<!-- 주문 상품 상세 (1개) -->
 	<div>
-		<div class="section-title">주문 상품</div>
-		<table class="table table-bordered">
-			<tr>
-				<th style="width: 90px;">이미지</th>
-				<td><img src="<%=item.getProductImage()%>" style="width:70px;height:70px;object-fit:cover;"></td>
-			</tr>
-			<tr>
-				<th>상품명</th>
-				<td><%=item.getProductName()%></td>
-			</tr>
-			<tr>
-				<th>색상/사이즈</th>
-				<td><%=item.getColor()%> / <%=item.getSize()%></td>
-			</tr>
-			<tr>
-				<th>수량</th>
-				<td><%=item.getCnt()%></td>
-			</tr>
-			<tr>
-				<th>단가</th>
-				<td><%=nf.format(item.getPrice())%>원</td>
-			</tr>
-			<tr>
-				<th>합계</th>
-				<td><%=nf.format(item.getPrice() * item.getCnt())%>원</td>
-			</tr>
-			<tr>
-				<th>상품상태</th>
-				<td><span class="badge <%=badgeClass%>"><%=status%></span></td>
-			</tr>
-		</table>
+	<div>
+	
+	<div class="section-title">주문 상품</div>
+<div class="product-simple-box d-flex align-items-center mb-4">
+    <!-- 이미지 -->
+    <img src="<%=item.getProductImage()%>" class="product-image me-4" alt="상품 이미지">
+    <!-- 상품 정보 -->
+    <div class="product-info-area flex-grow-1">
+        <div class="product-name mb-1"><%=item.getProductName()%></div>
+        <div class="product-option mb-1"><%=item.getColor()%> / <%=item.getSize()%></div>
+        <div class="product-meta">
+            수량: <b><%=item.getCnt()%></b>
+            &nbsp;|&nbsp; 단가: <b><span class="price-strong"><%=nf.format(item.getPrice())%>원</span></b>
+            &nbsp;|&nbsp; 총 금액: <b><span class="sum-strong"><%=nf.format(item.getPrice() * item.getCnt())%>원</span></b>
+        </div>
+    </div>
+</div>
+
+
+
+</div>
+
 	</div>
 	<!-- 배송 정보 -->
 	<div>
