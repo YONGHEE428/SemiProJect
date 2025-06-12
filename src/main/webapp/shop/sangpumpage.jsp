@@ -400,13 +400,21 @@ section h2 {
 </section>
 <section id="qna" class="tab-section">
   <h2>문의</h2>
-  <div class="qna-write-area mb-3">
-   <button type="button" onclick="openInquiryModal()">문의 작성</button>
-  <%-- <%@ include file="writeInquiryModal.jsp" %> --%>
+<div class="qna-write-area mb-3">
+    <button type="button" onclick="openInquiryModal()">문의 작성</button>
   </div>
+
+    <!-- 모달 코드(include할 때는 jsp:include 써야 param 전달 가능) -->
+    <jsp:include page="/shop/writeInquiryModal.jsp" flush="true">
+  <jsp:param name="product_id" value="${product.productId}" />
+</jsp:include>
+  </div>
+
+  <!-- ② 문의 목록 include -->
   <div id="qna-list-container">
     <jsp:include page="q&alist.jsp" flush="true">
-      <jsp:param name="product_id" value="<%= product.getProductId() %>" />
+      <jsp:param name="product_id" 
+                 value="${product.productId}" />
     </jsp:include>
   </div>
 </section>
