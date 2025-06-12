@@ -448,6 +448,7 @@ body {
 </script>
 </head>
 <%
+System.out.println("[페이지명.jsp] session member_num = " + session.getAttribute("member_num")); 
 String memberId = (String) session.getAttribute("myid"); //id받아오기
 if (memberId == null) {
    // 로그인 후 돌아올 현재 페이지 경로를 redirect 파라미터로 전달
@@ -460,6 +461,7 @@ if (memberId == null) {
 CartListDao cartDao = new CartListDao();
 List<CartListDto> cartItems = cartDao.getCartListByMember(memberId);
 String name = (String) session.getAttribute("name");
+
 %>
 <body>
 

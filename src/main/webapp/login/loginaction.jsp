@@ -33,6 +33,7 @@
 		
 		session.setAttribute("loginok", "yes");
 		session.setAttribute("num", dto.getNum());
+		session.setAttribute("member_num", dto.getNum());
 		session.setAttribute("myid", id);
 		session.setAttribute("name", name);
 		session.setAttribute("email", dto.getEmail());
