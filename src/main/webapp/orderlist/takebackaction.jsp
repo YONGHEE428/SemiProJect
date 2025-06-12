@@ -44,7 +44,12 @@ if(isInserted) {
     // 3. 주문상품 테이블 상태 변경 (반품접수로)
     dao.updateOrderSangpumStatus(dto.getOrderSangpumId(), "반품접수");
     // (buyok 값도 바꾸고 싶으면 orderListDao.updateBuyokToTakeback(dto.getOrderSangpumId()); 추가) 일단 보류 
-    out.print("<script>alert('반품 신청이 완료되었습니다.');location.href='index.jsp?main=orderlist/orderlistfrom.jsp';</script>");
+    %>
+   	<script>
+  		location.href = '<%=request.getContextPath()%>/index.jsp?main=orderlist/orderlistform.jsp';
+	</script>
+   <%
+
 } else {
     out.print("<script>alert('반품 db저장 실패 ! 관리자에게 문의하세요.');history.back();</script>");
 }
