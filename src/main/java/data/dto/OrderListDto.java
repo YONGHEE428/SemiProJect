@@ -77,8 +77,52 @@ public class OrderListDto {
         private String size;        // 옵션 사이즈
         private int orderSangpumId;
         private String status;
+        private int orderId;
+        private String orderCode;
+        private Timestamp orderDate;
+        private String orderStatus;
+        private int memberNum;
+        private String memberName;
         
-        public String getStatus() { return status; }
+        
+        
+        public int getOrderId() {
+			return orderId;
+		}
+		public void setOrderId(int orderId) {
+			this.orderId = orderId;
+		}
+		public String getOrderCode() {
+			return orderCode;
+		}
+		public void setOrderCode(String orderCode) {
+			this.orderCode = orderCode;
+		}
+		public Timestamp getOrderDate() {
+			return orderDate;
+		}
+		public void setOrderDate(Timestamp orderDate) {
+			this.orderDate = orderDate;
+		}
+		public String getOrderStatus() {
+			return orderStatus;
+		}
+		public void setOrderStatus(String orderStatus) {
+			this.orderStatus = orderStatus;
+		}
+		public int getMemberNum() {
+			return memberNum;
+		}
+		public void setMemberNum(int memberNum) {
+			this.memberNum = memberNum;
+		}
+		public String getMemberName() {
+			return memberName;
+		}
+		public void setMemberName(String memberName) {
+			this.memberName = memberName;
+		}
+		public String getStatus() { return status; }
         public void setStatus(String status) { this.status = status; }      
         public int getOrderSangpumId() {
             return orderSangpumId;
