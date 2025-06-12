@@ -76,10 +76,10 @@ public class ReviewDAO {
         String sql = """
             SELECT AVG(
                 CASE satisfaction_text
-                    WHEN '아주 좋아요' THEN 5
+                    WHEN '최고예요' THEN 5
                     WHEN '좋아요' THEN 4
-                    WHEN '보통이에요' THEN 3
-                    WHEN '그냥 그래요' THEN 2
+                    WHEN '괜찮아요' THEN 3
+                    WHEN '그저 그래요' THEN 2
                     WHEN '별로예요' THEN 1
                     ELSE 0
                 END
@@ -103,5 +103,43 @@ public class ReviewDAO {
         }
 
         return avg;
+    }
+
+    public String getReviewMemberName(String reviewId) {
+        String memberName = null;
+        String sql = "SELECT member_name FROM reviews WHERE id = ?";
+        
+        try (Connection conn = db.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, reviewId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    memberName = rs.getString("member_name");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return memberName;
+    }
+    
+    public boolean deleteReview(String reviewId) {
+        boolean success = false;
+        String sql = "DELETE FROM reviews WHERE id = ?";
+        
+        try (Connection conn = db.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, reviewId);
+            int result = pstmt.executeUpdate();
+            success = result > 0;
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return success;
     }
 }
