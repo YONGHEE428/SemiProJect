@@ -1,62 +1,90 @@
 package data.dao;
 
-import  java.io.IOException;
+import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import data.dao.Q_ADao;
 import data.dto.Q_ADto;
 
-@WebServlet(name="InsertInquiry", urlPatterns={"/InsertInquiryServlet"})
+@WebServlet(name = "InsertInquiry", urlPatterns = { "/InsertInquiryServlet" })
 public class InsertInquiryServlet extends HttpServlet {
-  @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
-    req.setCharacterEncoding("UTF-8");
+    private static final long serialVersionUID = 1L;
 
-    try {
-      // 1) 파라미터
-      int productId   = Integer.parseInt(req.getParameter("product_id"));
-      String title    = req.getParameter("title");
-      String content  = req.getParameter("content");
-      boolean isPrivate = Boolean.parseBoolean(req.getParameter("is_private"));
-      String password = req.getParameter("password");
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
 
-      // 2) 로그인한 사용자 아이디 세션에서 꺼내기
-      String userId = (String) req.getSession().getAttribute("myid");
-      if (userId == null) {
-        // 로그인 안 된 상태라면 에러 처리
-        resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "로그인이 필요합니다.");
-        return;
-      }
+        // **디버그**: 실제 들어오는 파라미터 찍어보기
+        System.out.println("[InsertInquiry] Params → "
+            + "product_id=" + request.getParameter("product_id")
+            + ", title="      + request.getParameter("title")
+            + ", content="    + request.getParameter("content")
+            + ", is_private=" + request.getParameter("is_private")
+            + ", password="   + request.getParameter("password"));
 
-      // 3) DTO 세팅
-      Q_ADto dto = new Q_ADto();
-      dto.setProductId(productId);
-      dto.setUserId(userId);
-      dto.setTitle(title);
-      dto.setContent(content);
-      dto.setPrivate(isPrivate);   // or dto.setIsPrivate(isPrivate);
-      dto.setPassword(password);
+        try {
+            int productId = Integer.parseInt(request.getParameter("product_id"));
+            String title  = request.getParameter("title");
+            String content= request.getParameter("content");
 
-      // 4) DAO 호출 — 여기서 addInquiry 호출
-      Q_ADao dao = new Q_ADao();
-      boolean success = dao.addInquiry(dto);
+            // ★ 체크박스 파라미터 존재 여부로 boolean 처리 ★
+            boolean isPrivate = request.getParameter("is_private") != null;
+            System.out.println("[InsertInquiry] parsed isPrivate → " + isPrivate);
 
-      // 5) 결과에 따라 리다이렉트 혹은 에러 페이지
-      if (success) {
-        resp.sendRedirect(req.getContextPath() + "/productDetail.jsp?product_id=" + productId);
-      } else {
-        req.setAttribute("errorMessage", "문의 등록에 실패했습니다.");
-        req.getRequestDispatcher("/error.jsp").forward(req, resp);
-      }
+            String password = request.getParameter("password");
+            // 비밀글인데 비밀번호가 비어있으면 오류 처리
+            if (isPrivate && (password == null || password.isEmpty())) {
+                request.setAttribute("errorMessage", "비밀글 비밀번호를 입력해주세요.");
+                request.getRequestDispatcher("/shop/error.jsp")
+                       .forward(request, response);
+                return;
+            }
 
-    } catch (Exception e) {
-      e.printStackTrace();
-      req.setAttribute("errorMessage", e.getMessage());
-      req.getRequestDispatcher("/error.jsp").forward(req, resp);
+            // 로그인 체크
+            String userId = (String) request.getSession().getAttribute("myid");
+            if (userId == null) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "로그인이 필요합니다.");
+                return;
+            }
+
+            // DTO 세팅
+            Q_ADto dto = new Q_ADto();
+            dto.setProductId(productId);
+            dto.setUserId(userId);
+            dto.setTitle(title);
+            dto.setContent(content);
+            dto.setPrivate(isPrivate);
+            dto.setPassword(password != null ? password : "");
+
+            // DAO 호출
+            Q_ADao dao = new Q_ADao();
+            boolean success = dao.addInquiry(dto);
+            System.out.println("[InsertInquiry] dao.addInquiry → " + success);
+
+            if (success) {
+                response.sendRedirect(request.getContextPath()
+                        + "/shop/sangpumpage.jsp?product_id=" + productId + "#qna");
+            } else {
+                request.setAttribute("errorMessage", "문의 등록에 실패했습니다.");
+                request.getRequestDispatcher("/shop/error.jsp")
+                       .forward(request, response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("errorMessage", "서버 오류: " + e.getMessage());
+            request.getRequestDispatcher("/shop/error.jsp")
+                   .forward(request, response);
+        }
     }
-  }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doPost(request, response);
+    }
 }

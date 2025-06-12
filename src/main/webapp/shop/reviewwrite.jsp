@@ -4,40 +4,47 @@
 <%@page import="data.dto.ProductOptionDto"%>
 <%@page import="java.util.*"%>
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="data.dao.OrderListDao" %>
+<%@ page import="data.dto.OrderListDto" %>
 <style>
 .modal-overlay {
+    display: none;
   position: fixed;
-  top: 50px; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 10000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
 }
 
-.modal-box {
-  width: 650px;
-  height: 700px;
-  background: white;
-  padding: 30px;
-  border-radius: 15px;
-  overflow-y: auto;
-  position: relative;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
-.close-btn {
-  position: absolute;
-  top: 20px; right: 25px;
-  font-size: 24px;
-  cursor: pointer;
-  color: #666;
-  transition: color 0.3s;
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: #333;
 }
 
-.close-btn:hover {
-  color: #000;
+.close-button:hover {
+    color: #666;
 }
 
 .review-title {
@@ -157,21 +164,21 @@ input[type="file"] {
 }
 
 /* 스크롤바 스타일링 */
-.modal-box::-webkit-scrollbar {
+.modal-content::-webkit-scrollbar {
   width: 8px;
 }
 
-.modal-box::-webkit-scrollbar-track {
+.modal-content::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 4px;
 }
 
-.modal-box::-webkit-scrollbar-thumb {
+.modal-content::-webkit-scrollbar-thumb {
   background: #888;
   border-radius: 4px;
 }
 
-.modal-box::-webkit-scrollbar-thumb:hover {
+.modal-content::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
 
@@ -254,13 +261,11 @@ input[type="file"] {
 
 .product-info {
   display: flex;
-  align-items: center;
-  padding: 20px;
-  background: #fff;
+  align-items: start;
+  margin-bottom: 20px;
+  padding: 15px;
   border: 1px solid #eee;
   border-radius: 8px;
-  margin: 5px 0 20px 0;
-  min-height: 100px;
 }
 
 .product-image {
@@ -268,7 +273,7 @@ input[type="file"] {
   height: 100px;
   object-fit: cover;
   border-radius: 4px;
-  margin-right: 20px;
+  margin-right: 15px;
 }
 
 .product-details {
@@ -276,45 +281,52 @@ input[type="file"] {
 }
 
 .product-category {
-  font-size: 0.9em;
   color: #666;
+  font-size: 0.9em;
   margin-bottom: 5px;
 }
 
 .product-name {
   font-size: 1.1em;
-  font-weight: 500;
-  color: #333;
+  margin-bottom: 5px;
 }
 
-.star-rating-container {
-  display: flex;
-  align-items: center;
-  gap: 15px;
+.Product-option {
+  color: #666;
+  font-size: 0.9em;
 }
 
 .star-rating {
-  display: flex;
-  gap: 5px;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    font-size: 24px;
 }
 
-.star-rating input[type="radio"] {
-  display: none;
+.star-rating input {
+    display: none;
 }
 
 .star-rating label {
-  cursor: pointer;
-  font-size: 24px;
-  color: #ddd;
+    color: #ccc;
+    cursor: pointer;
+    padding: 0 2px;
 }
 
 .star-rating input[type="radio"]:checked ~ label {
-  color: #ffd700;
+    color: #ffd700;
 }
 
 .rating-text {
-  font-size: 0.95em;
-  color: #333;
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 14px;
+    color: #666;
+}
+
+.star-rating-container {
+    display: flex;
+    align-items: center;
 }
 
 .option-group {
@@ -444,221 +456,193 @@ input[type="file"] {
 </style>
 
 <%
-String memberId = (String) session.getAttribute("myid");  
-boolean isLoggedIn = memberId != null;
+String loginok = (String)session.getAttribute("loginok");
+String myid = (String)session.getAttribute("myid");
+boolean isLoggedIn = loginok != null && myid != null;
 
 // 로그인 되었다면 이름 조회
 String memberName = "";
 if (isLoggedIn) {
     MemberDao mdao = new MemberDao();
-    memberName = mdao.getName(memberId); 
+    memberName = mdao.getName(myid); 
 }
 
 // 상품 정보 가져오기
-ProductDto productDto = null;
-List<ProductOptionDto> options = new ArrayList<>();
-try {
-    String productNumStr = request.getParameter("product_id");
-    if(productNumStr != null && !productNumStr.trim().isEmpty()) {
-        int productNum = Integer.parseInt(productNumStr);
-        if(productNum > 0) {
-            ProductDao productDao = new ProductDao();
-            productDto = productDao.getProductById(productNum);
-            options = productDao.getProductOptionsByProductId(productNum);
-        }
-    }
-} catch(Exception e) {
-    e.printStackTrace();
-}
+String orderId = request.getParameter("orderId");
+System.out.print(orderId);
 
-// 사이즈와 색상 옵션 추출
-Set<String> sizeSet = new LinkedHashSet<>();
-Set<String> colorSet = new LinkedHashSet<>();
-for (ProductOptionDto opt : options) {
-    sizeSet.add(opt.getSize());
-    colorSet.add(opt.getColor());
+ProductDto productDto = null;
+String orderColor = "";
+String orderSize = "";
+
+if(orderId != null) {
+    OrderListDao orderListDao = new OrderListDao();
+    Map<String, Object> orderInfo = orderListDao.getOrderProductInfo(orderId);
+    
+    if(!orderInfo.isEmpty()) {
+        String productId = (String)orderInfo.get("product_id");
+        int product_id = Integer.parseInt(productId);
+        orderColor = (String)orderInfo.get("color");
+        orderSize = (String)orderInfo.get("size");
+        
+        ProductDao productDao = new ProductDao();
+        productDto = productDao.getProductById(product_id);
+    }
 }
 %>
 
 <!-- 리뷰 작성 모달 -->
-<div id="reviewModal" class="modal-overlay" style="display: none;">
-  <div class="modal-box">
-    <span class="close-btn" onclick="closeReviewModal()">×</span>
-
-    <form id="reviewForm" action="${pageContext.request.contextPath}/SubmitReviewServlet.do" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
-      <input type="hidden" name="member_name" value="<%= memberName %>">
-      <input type="hidden" name="product_id" value="<%= request.getParameter("product_id") %>">
-
-      <div class="review-title">
-        <h5><%= memberName %> 고객님, 리뷰를 남겨주세요!</h5>
-        <p>지금 리뷰를 남기면 적립금 최대 <strong>1,500원</strong>!</p>
-      </div>
-      
-      <div class="review-main">
-        <h5><b>이 상품은 어떠셨나요?</b></h5><br>
-      </div>
-      
-      <div class="product-info">
-        <% if(productDto != null && productDto.getMainImageUrl() != null) { %>
-            <img src="<%=productDto.getMainImageUrl()%>" 
-                 class="product-image" alt="상품 이미지"
-                 onerror="this.src='${pageContext.request.contextPath}/images/default-product.jpg'">
-        <% } else { %>
-            <img src="${pageContext.request.contextPath}/images/default-product.jpg" 
-                 class="product-image" alt="상품 이미지 없음">
-        <% } %>
-        <div class="product-details">
-            <div class="product-category">
-                <%= productDto != null ? productDto.getCategory() : "카테고리 없음" %>
-            </div>
-            <div class="product-name">
-                <%= productDto != null ? productDto.getProductName() : "상품명 없음" %>
+<div class="modal-overlay" id="reviewModal">
+    <div class="modal-content">
+        <button type="button" class="close-button" onclick="closeModal()">&times;</button>
+        
+        <div class="review-title">
+            <h5><%= memberName %> 고객님, 리뷰를 남겨주세요!</h5>
+            <p>지금 리뷰를 남기면 적립금 최대 <strong>1,500원</strong>!</p>
+        </div>
+        
+        <div class="product-info">
+            <% if(productDto != null && productDto.getMainImageUrl() != null) { %>
+                <img src="<%=productDto.getMainImageUrl()%>" 
+                     class="product-image" alt="상품 이미지"
+                     onerror="this.src='${pageContext.request.contextPath}/images/default-product.jpg'">
+            <% } else { %>
+                <img src="${pageContext.request.contextPath}/images/default-product.jpg" 
+                     class="product-image" alt="상품 이미지 없음">
+            <% } %>
+            <div class="product-details">
+                <div class="product-category">
+                    <h5><%= productDto != null ? productDto.getCategory() : "카테고리 없음" %></h5>
+                </div>
+                <div class="product-name">
+                    <b><%= productDto != null ? productDto.getProductName() : "상품명 없음" %></b>
+                </div>
+                <div class="Product-option">
+                    구매 옵션: <%= orderColor %> / <%= orderSize %>
+                </div>
             </div>
         </div>
-      </div>
 
-      <div class="form-group">
-        <label>만족도</label>
-        <div class="star-rating-container">
-          <div class="star-rating">
-            <input type="radio" name="satisfaction_text" value="별로예요" id="rate1" required>
-            <label for="rate1">★</label>
-            <input type="radio" name="satisfaction_text" value="그저 그래요" id="rate2">
-            <label for="rate2">★</label>
-            <input type="radio" name="satisfaction_text" value="괜찮아요" id="rate3">
-            <label for="rate3">★</label>
-            <input type="radio" name="satisfaction_text" value="좋아요" id="rate4">
-            <label for="rate4">★</label>
-            <input type="radio" name="satisfaction_text" value="최고예요" id="rate5">
-            <label for="rate5">★</label>
-          </div>
-          <div class="rating-text" id="rating-text"></div>
-        </div>
-      </div>
-       
-      <div class="section-divider"></div>
-       
-      <div class="review-main">
-        <h5><b>어떤 점이 좋았나요?</b></h5><br>
-      </div>
-	   
-      <div class="form-group">
-        <label>본문 입력</label>
-        <textarea name="content" placeholder="상품에 대한 솔직한 리뷰를 남겨주세요. (최소 5자 이상)" required minlength="5"></textarea>
-      </div>
-      
-      <div class="form-group">
-        <label>사진 첨부</label>
-        <div class="photo-upload" onclick="document.getElementById('photo-input').click()">
-          <div class="upload-icon">+</div>
-          <p class="upload-text">
-            이미지 파일을 끌어다 놓거나 클릭해서 업로드하세요
-          </p>
-          <input type="file" id="photo-input" name="photo" accept="image/*" onchange="handlePhotoChange(this)">
-          <div class="preview-container" id="preview-container">
-            <img class="preview-image" id="preview-image" src="" alt="미리보기">
-            <div class="remove-image" onclick="removeImage(event)">×</div>
-          </div>
-        </div>
-      </div>
+        <form action="<%=request.getContextPath()%>/SubmitReviewServlet.do" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="order_id" value="<%=orderId%>">
+            <input type="hidden" name="product_id" value="<%=productDto != null ? productDto.getProductId() : ""%>">
+            <input type="hidden" name="member_name" value="<%=memberName%>">
+            <input type="hidden" name="purchase_option_color" value="<%=orderColor%>">
+            <input type="hidden" name="purchase_option_size" value="<%=orderSize%>">
 
-      <div class="form-group">
-        <label>구매 옵션</label>
-        <div class="option-group">
-          <div class="size-options">
-            <span class="option-title">사이즈:</span>
-            <div class="radio-group">
-              <% for(String size : sizeSet) { %>
-                <label>
-                  <input type="radio" name="purchase_option_size" value="<%=size%>" required>
-                  <span><%=size%></span>
-                </label>
-              <% } %>
+            <div class="review-main">
+                <h5><b>이 상품은 어떠셨나요?</b></h5><br>
             </div>
-          </div>
-          <div class="color-options">
-            <span class="option-title">색상:</span>
-            <div class="radio-group">
-              <% for(String color : colorSet) { %>
-                <label>
-                  <input type="radio" name="purchase_option_color" value="<%=color%>" required>
-                  <span><%=color%></span>
-                </label>
-              <% } %>
+
+            <div class="form-group">
+                <label>만족도</label>
+                <div class="star-rating-container">
+                    <div class="star-rating">
+                        <input type="radio" name="satisfaction_text" value="최고예요" id="rate1" required>
+                        <label for="rate1">★</label>
+                        <input type="radio" name="satisfaction_text" value="좋아요" id="rate2">
+                        <label for="rate2">★</label>
+                        <input type="radio" name="satisfaction_text" value="괜찮아요" id="rate3">
+                        <label for="rate3">★</label>
+                        <input type="radio" name="satisfaction_text" value="그저 그래요" id="rate4">
+                        <label for="rate4">★</label>
+                        <input type="radio" name="satisfaction_text" value="별로에요" id="rate5">
+                        <label for="rate5">★</label>
+                    </div>
+                    <div class="rating-text" id="rating-text"></div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="form-group">
-        <label>사이즈 어때요?</label>
-        <div class="radio-group">
-          <label><input type="radio" name="size_fit" value="많이 작아요" required> 많이 작아요</label>
-          <label><input type="radio" name="size_fit" value="조금 작아요"> 조금 작아요</label>
-          <label><input type="radio" name="size_fit" value="잘 맞아요"> 잘 맞아요</label>
-          <label><input type="radio" name="size_fit" value="조금 커요"> 조금 커요</label>
-          <label><input type="radio" name="size_fit" value="많이 커요"> 많이 커요</label>
-        </div>
-      </div>
+            <div class="section-divider"></div>
 
-      <div class="form-group">
-        <label>사이즈 한줄평</label>
-        <input type="text" name="size_comment" placeholder="사이즈에 대한 의견을 한 줄로 남겨주세요">
-      </div>
+            <div class="review-main">
+                <h5><b>어떤 점이 좋았나요?</b></h5><br>
+            </div>
 
-      <div class="section-divider"></div>
+            <div class="form-group">
+                <label>본문 입력</label>
+                <textarea name="content" placeholder="상품에 대한 솔직한 리뷰를 남겨주세요. (최소 5자 이상)" required minlength="5"></textarea>
+            </div>
 
-      <div class="review-main">
-        <h5><b>나의 정보를 입력해주세요!</b></h5><br>
-      </div>
+            <div class="form-group">
+                <label>사진 첨부</label>
+                <div class="photo-upload" onclick="document.getElementById('photo-input').click()">
+                    <div class="upload-icon">+</div>
+                    <p class="upload-text">
+                        이미지 파일을 끌어다 놓거나 클릭해서 업로드하세요
+                    </p>
+                    <input type="file" id="photo-input" name="photo" accept="image/*" onchange="handlePhotoChange(this)">
+                    <div class="preview-container" id="preview-container">
+                        <img class="preview-image" id="preview-image" src="" alt="미리보기">
+                        <div class="remove-image" onclick="removeImage(event)">×</div>
+                    </div>
+                </div>
+            </div>
 
-      <div class="size-input-group">
-        <div class="size-input-box">
-          <label>키</label>
-          <input type="number" name="height" placeholder="키를 입력해주세요" required min="100" max="250">
-          <span class="unit">cm</span>
-        </div>
+            <div class="form-group">
+                <label>사이즈 어때요?</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="size_fit" value="많이 작아요" required> 많이 작아요</label>
+                    <label><input type="radio" name="size_fit" value="조금 작아요"> 조금 작아요</label>
+                    <label><input type="radio" name="size_fit" value="잘 맞아요"> 잘 맞아요</label>
+                    <label><input type="radio" name="size_fit" value="조금 커요"> 조금 커요</label>
+                    <label><input type="radio" name="size_fit" value="많이 커요"> 많이 커요</label>
+                </div>
+            </div>
 
-        <div class="size-input-box">
-          <label>몸무게</label>
-          <input type="number" name="weight" placeholder="몸무게를 입력해주세요" required min="30" max="200">
-          <span class="unit">kg</span>
-        </div>
-      </div>
+            <div class="section-divider"></div>
 
-      <div class="usual-size-group">
-        <div class="size-select-box">
-          <label>평소 사이즈 - 상의</label>
-          <select name="usual_size_top" required>
-            <option value="">상의 사이즈를 선택해주세요</option>
-            <option value="XS">XS</option>
-            <option value="S">S</option>
-            <option value="M">M</option>
-            <option value="L">L</option>
-            <option value="XL">XL</option>
-            <option value="XXL">XXL</option>
-          </select>
-        </div>
+            <div class="review-main">
+                <h5><b>나의 정보를 입력해주세요!</b></h5><br>
+            </div>
 
-        <div class="size-select-box">
-          <label>평소 사이즈 - 하의</label>
-          <select name="usual_size_bottom" required>
-            <option value="">하의 사이즈를 선택해주세요</option>
-            <option value="XS">XS</option>
-            <option value="S">S</option>
-            <option value="M">M</option>
-            <option value="L">L</option>
-            <option value="XL">XL</option>
-            <option value="XXL">XXL</option>
-          </select>
-        </div>
-      </div>
+            <div class="size-input-group">
+                <div class="size-input-box">
+                    <label>키</label>
+                    <input type="number" name="height" placeholder="키를 입력해주세요" required min="100" max="250">
+                    <span class="unit">cm</span>
+                </div>
 
-      <button type="submit" class="submit-btn">리뷰 작성하고 적립금 받기</button>
-    </form>
-    
-  </div>
+                <div class="size-input-box">
+                    <label>몸무게</label>
+                    <input type="number" name="weight" placeholder="몸무게를 입력해주세요" required min="30" max="200">
+                    <span class="unit">kg</span>
+                </div>
+            </div>
+
+            <div class="usual-size-group">
+                <div class="size-select-box">
+                    <label>평소 사이즈 - 상의</label>
+                    <select name="usual_size_top" required>
+                        <option value="">상의 사이즈를 선택해주세요</option>
+                        <option value="XS">XS</option>
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                        <option value="XXL">XXL</option>
+                    </select>
+                </div>
+
+                <div class="size-select-box">
+                    <label>평소 사이즈 - 하의</label>
+                    <select name="usual_size_bottom" required>
+                        <option value="">하의 사이즈를 선택해주세요</option>
+                        <option value="XS">XS</option>
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                        <option value="XXL">XXL</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">리뷰 작성하고 적립금 받기</button>
+        </form>
+    </div>
 </div>
+
 <script>
   const isLoggedIn = <%= isLoggedIn %>;
   const modal = document.getElementById("reviewModal");
@@ -666,21 +650,21 @@ for (ProductOptionDto opt : options) {
   function openReviewModal() {
     if (!isLoggedIn) {
       if (confirm("로그인이 필요한 서비스입니다. 로그인 하시겠습니까?")) {
-        window.location.href = '<%=request.getContextPath()%>/login.jsp';
+        window.location.href = '<%=request.getContextPath()%>/index.jsp?main=login/loginform.jsp';
       }
       return;
     }
-    modal.style.display = "flex";
+    modal.style.display = "block";
   }
   
-  function closeReviewModal() {
+  function closeModal() {
     modal.style.display = "none";
   }
 
   // 모달 바깥 영역 클릭 시 닫기
   window.onclick = function(event) {
     if (event.target == modal) {
-      closeReviewModal();
+      closeModal();
     }
   }
 
@@ -722,228 +706,24 @@ for (ProductOptionDto opt : options) {
   }
 
   // 별점 텍스트 표시
-  document.querySelectorAll('.star-rating input[type="radio"]').forEach(radio => {
+  document.querySelectorAll('input[name="satisfaction_text"]').forEach(function(radio) {
     radio.addEventListener('change', function() {
-      const ratingText = document.getElementById('rating-text');
-      ratingText.textContent = this.value;
-      
-      // 클릭한 별과 그 이전 별들만 색상 변경
-      const labels = document.querySelectorAll('.star-rating label');
-      labels.forEach(label => label.style.color = '#ddd');
-      
-      const clickedIndex = Array.from(radio.parentElement.children)
-        .indexOf(radio) / 2;
-      
-      for(let i = 0; i <= clickedIndex; i++) {
-        labels[i].style.color = '#ffd700';
-      }
+        document.getElementById('rating-text').textContent = this.value;
     });
   });
 
-  // 구매 옵션 선택 시 hidden input 업데이트
-  document.querySelectorAll('input[name="purchase_option_size"], input[name="purchase_option_color"]').forEach(input => {
-    input.addEventListener('change', function() {
-        const selectedSize = document.querySelector('input[name="purchase_option_size"]:checked')?.value || '';
-        const selectedColor = document.querySelector('input[name="purchase_option_color"]:checked')?.value || '';
-        
-        if(selectedSize && selectedColor) {
-            const purchaseOption = `${selectedSize} / ${selectedColor}`;
-            const hiddenInput = document.createElement('input');
-            hiddenInput.type = 'hidden';
-            hiddenInput.name = 'purchase_option';
-            hiddenInput.value = purchaseOption;
-            
-            // 기존 hidden input이 있다면 제거
-            const existingInput = document.querySelector('input[name="purchase_option"]');
-            if(existingInput) existingInput.remove();
-            
-            document.getElementById('reviewForm').appendChild(hiddenInput);
+  $(document).ready(function() {
+    // 폼 제출 전 검증
+    $("form").submit(function(event) {
+        // 로그인 체크
+        if (!"<%=isLoggedIn%>" === "true") {
+            if (confirm("로그인이 필요한 서비스입니다. 로그인 하시겠습니까?")) {
+                window.location.href = '<%=request.getContextPath()%>/index.jsp?main=login/loginform.jsp';
+            }
+            event.preventDefault();
+            return false;
         }
-    });
-  });
-
-  function validateForm() {
-    let isValid = true;
-    const form = document.getElementById('reviewForm');
-    
-    // 만족도 체크
-    const satisfaction = form.querySelector('input[name="satisfaction_text"]:checked');
-    const satisfactionGroup = form.querySelector('.star-rating').closest('.form-group');
-    if (!satisfaction) {
-      showError(satisfactionGroup, '만족도를 선택해주세요.');
-      isValid = false;
-    } else {
-      hideError(satisfactionGroup);
-    }
-
-    // 본문 체크
-    const content = form.querySelector('textarea[name="content"]');
-    const contentGroup = content.closest('.form-group');
-    if (!content.value.trim()) {
-      showError(contentGroup, '리뷰 내용을 입력해주세요.');
-      isValid = false;
-    } else if (content.value.trim().length < 10) {
-      showError(contentGroup, '리뷰 내용을 10자 이상 입력해주세요.');
-      isValid = false;
-    } else {
-      hideError(contentGroup);
-    }
-
-    // 구매 옵션 체크
-    const sizeOption = form.querySelector('input[name="purchase_option_size"]:checked');
-    const colorOption = form.querySelector('input[name="purchase_option_color"]:checked');
-    const optionGroup = form.querySelector('.option-group').closest('.form-group');
-    if (!sizeOption || !colorOption) {
-      showError(optionGroup, '사이즈와 색상을 모두 선택해주세요.');
-      isValid = false;
-    } else {
-      hideError(optionGroup);
-    }
-
-    // 사이즈 평가 체크
-    const sizeFit = form.querySelector('input[name="size_fit"]:checked');
-    const sizeFitGroup = form.querySelector('input[name="size_fit"]').closest('.form-group');
-    if (!sizeFit) {
-      showError(sizeFitGroup, '사이즈 평가를 선택해주세요.');
-      isValid = false;
-    } else {
-      hideError(sizeFitGroup);
-    }
-
-    // 키 체크
-    const height = form.querySelector('input[name="height"]');
-    const heightGroup = height.closest('.form-group');
-    if (!height.value.trim()) {
-      showError(heightGroup, '키를 입력해주세요.');
-      isValid = false;
-    } else if (isNaN(height.value) || height.value < 100 || height.value > 250) {
-      showError(heightGroup, '올바른 키를 입력해주세요. (100-250cm)');
-      isValid = false;
-    } else {
-      hideError(heightGroup);
-    }
-
-    // 몸무게 체크
-    const weight = form.querySelector('input[name="weight"]');
-    const weightGroup = weight.closest('.form-group');
-    if (!weight.value.trim()) {
-      showError(weightGroup, '몸무게를 입력해주세요.');
-      isValid = false;
-    } else if (isNaN(weight.value) || weight.value < 30 || weight.value > 200) {
-      showError(weightGroup, '올바른 몸무게를 입력해주세요. (30-200kg)');
-      isValid = false;
-    } else {
-      hideError(weightGroup);
-    }
-
-    // 평소 사이즈 체크
-    const usualSize = form.querySelector('input[name="usual_size_top"]:checked');
-    const usualSizeGroup = form.querySelector('input[name="usual_size_top"]').closest('.form-group');
-    if (!usualSize) {
-      showError(usualSizeGroup, '평소 사이즈를 선택해주세요.');
-      isValid = false;
-    } else {
-      hideError(usualSizeGroup);
-    }
-
-    return isValid;
-  }
-
-  function showError(element, message) {
-    element.classList.add('error');
-    let errorDiv = element.querySelector('.error-message');
-    if (!errorDiv) {
-      errorDiv = document.createElement('div');
-      errorDiv.className = 'error-message';
-      element.appendChild(errorDiv);
-    }
-    errorDiv.textContent = message;
-  }
-
-  function hideError(element) {
-    element.classList.remove('error');
-    const errorDiv = element.querySelector('.error-message');
-    if (errorDiv) {
-      errorDiv.style.display = 'none';
-    }
-  }
-
-  // 실시간 유효성 검사를 위한 이벤트 리스너 추가
-  document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('reviewForm');
-    
-    // 텍스트 입력 필드에 대한 실시간 검사
-    form.querySelector('textarea[name="content"]').addEventListener('input', function() {
-      const contentGroup = this.closest('.form-group');
-      if (!this.value.trim()) {
-        showError(contentGroup, '리뷰 내용을 입력해주세요.');
-      } else if (this.value.trim().length < 10) {
-        showError(contentGroup, '리뷰 내용을 10자 이상 입력해주세요.');
-      } else {
-        hideError(contentGroup);
-      }
-    });
-
-    // 숫자 입력 필드에 대한 실시간 검사
-    form.querySelector('input[name="height"]').addEventListener('input', function() {
-      const heightGroup = this.closest('.form-group');
-      if (!this.value.trim()) {
-        showError(heightGroup, '키를 입력해주세요.');
-      } else if (isNaN(this.value) || this.value < 100 || this.value > 250) {
-        showError(heightGroup, '올바른 키를 입력해주세요. (100-250cm)');
-      } else {
-        hideError(heightGroup);
-      }
-    });
-
-    form.querySelector('input[name="weight"]').addEventListener('input', function() {
-      const weightGroup = this.closest('.form-group');
-      if (!this.value.trim()) {
-        showError(weightGroup, '몸무게를 입력해주세요.');
-      } else if (isNaN(this.value) || this.value < 30 || this.value > 200) {
-        showError(weightGroup, '올바른 몸무게를 입력해주세요. (30-200kg)');
-      } else {
-        hideError(weightGroup);
-      }
-    });
-
-    // 라디오 버튼 그룹에 대한 실시간 검사
-    const radioGroups = {
-      'satisfaction_text': '만족도를 선택해주세요.',
-      'size_fit': '사이즈 평가를 선택해주세요.',
-      'usual_size_top': '평소 사이즈를 선택해주세요.'
-    };
-
-    Object.entries(radioGroups).forEach(([name, message]) => {
-      const radios = form.querySelectorAll(`input[name="${name}"]`);
-      radios.forEach(radio => {
-        radio.addEventListener('change', function() {
-          const group = this.closest('.form-group');
-          if (form.querySelector(`input[name="${name}"]:checked`)) {
-            hideError(group);
-          } else {
-            showError(group, message);
-          }
-        });
-      });
-    });
-
-    // 구매 옵션 실시간 검사
-    ['purchase_option_size', 'purchase_option_color'].forEach(name => {
-      const radios = form.querySelectorAll(`input[name="${name}"]`);
-      radios.forEach(radio => {
-        radio.addEventListener('change', function() {
-          const optionGroup = form.querySelector('.option-group').closest('.form-group');
-          const sizeChecked = form.querySelector('input[name="purchase_option_size"]:checked');
-          const colorChecked = form.querySelector('input[name="purchase_option_color"]:checked');
-          
-          if (sizeChecked && colorChecked) {
-            hideError(optionGroup);
-          } else {
-            showError(optionGroup, '사이즈와 색상을 모두 선택해주세요.');
-          }
-        });
-      });
+        return true;
     });
   });
 </script>

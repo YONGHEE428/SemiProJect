@@ -171,7 +171,39 @@ public class MemberDao {
 		
 		return list;
 	}
-	
+
+    // 역할(role)에 따른 회원 목록 반환
+    public List<MemberDto> getAllMembersByRole(String role) {
+        List<MemberDto> list = new Vector<>();
+        Connection conn = db.getConnection();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "SELECT * FROM member WHERE role = ? ORDER BY id";
+
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, role);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                MemberDto dto = new MemberDto();
+                dto.setNum(rs.getString("num"));
+                dto.setName(rs.getString("name"));
+                dto.setId(rs.getString("id"));
+                dto.setEmail(rs.getString("email"));
+                dto.setBirth(rs.getString("birth"));
+                dto.setHp(rs.getString("hp"));
+                // 필요한 다른 필드도 설정
+                list.add(dto);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            db.dbClose(rs, pstmt, conn);
+        }
+        return list;
+    }
+
 	//num에 대한 dto반환
 	public MemberDto getData(String num)
 	{
@@ -340,44 +372,6 @@ public class MemberDao {
 		}
 
 	}
-	public List<MemberDto> getAllMembersByRole(String role) {
-        List<MemberDto> list = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
 
-        String sql = "SELECT num, name, id, email, hp, birth, role FROM member WHERE role = ? ORDER BY num ASC";
-
-        try {
-            conn =db.getConnection(); // DbConnection.getConnection() 또는 프로젝트의 실제 연결 메서드 사용
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, role);
-            rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                MemberDto dto = new MemberDto();
-                dto.setNum(rs.getString("num"));
-                dto.setName(rs.getString("name"));
-                dto.setId(rs.getString("id"));
-                dto.setEmail(rs.getString("email"));
-                dto.setHp(rs.getString("hp"));
-                dto.setBirth(rs.getString("birth"));
-                dto.setRole(rs.getString("role"));
-                list.add(dto);
-            }
-        } catch (SQLException e) {
-            System.err.println("Error fetching members by role: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            // 자원 닫기
-            try {
-                if (rs != null) rs.close();
-                if (pstmt != null) pstmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                System.err.println("Error closing resources: " + e.getMessage());
-            }
-        }
-        return list;
-    }
 }
+

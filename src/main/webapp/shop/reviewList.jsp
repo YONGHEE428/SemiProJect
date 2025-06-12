@@ -111,13 +111,10 @@ function deleteReview(reviewId) {
                 <p class="mt-2"><%= dto.getContent() %></p>
 
                 <div class="small text-muted">
-                    사이즈: <%= dto.getSizeFit() %> ,
-                    키: <%= dto.getHeight() %> ,
-                    몸무게: <%= dto.getWeight() %> ,
-                    평소사이즈: <%= dto.getUsualSize() %>
-                    <% if (dto.getSizeComment() != null && !dto.getSizeComment().isEmpty()) { %>
-                        , 한줄평: "<%= dto.getSizeComment() %>"
-                    <% } %>
+                    <b>사이즈:</b> <%= dto.getSizeFit() %> ,
+                    <b>키:</b> <%= dto.getHeight() %> ,
+                    <b>몸무게:</b> <%= dto.getWeight() %> ,
+                    <b>평소사이즈:</b> <%= dto.getUsualSize() %>
                 </div>
 
                 <% if (dto.getPhotoPath() != null && !dto.getPhotoPath().isEmpty()) { %>

@@ -21,6 +21,7 @@
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <title>주문 목록</title>
 <style>
 body {
@@ -448,11 +449,8 @@ PaymentDao paymentDao = new PaymentDao();
 			                    onclick="location.href='orderlist/detailform.jsp?order_code=<%=order.getOrderCode()%>'">
 			                    주문상세
 			                </button>
-			                <jsp:include page="../shop/reviewwrite.jsp">
-			                    <jsp:param name="product_id" value="<%=item.getProductId()%>" />
-			                </jsp:include>
-			                <button type="button" class="btn btn-outline-secondary btn-sm modern-btn" 
-			                    onclick="openReviewModal()">리뷰 작성</button>
+			                 
+								<button type="button" class="btn btn-outline-info btn-sm" onclick="openReviewModal('<%=order.getOrderId()%>')">리뷰작성</button>
 			                <a href="orderlist/takeback.jsp?order_id=<%=order.getOrderId()%>&payment_idx=<%=payment.getIdx()%>&order_sangpum_id=<%=item.getOrderSangpumId()%>"
 			                   class="btn btn-outline-danger btn-sm">반품신청</a>
 			            </div>
@@ -483,5 +481,21 @@ PaymentDao paymentDao = new PaymentDao();
 			%>
 		</div>
 	</div>
+
+	<script>
+	function openReviewModal(orderId) {
+	    // 기존 모달 컨테이너가 있다면 제거
+	    $("#reviewModalContainer").remove();
+	    
+	    // 모달 컨테이너 생성
+	    $("body").append("<div id='reviewModalContainer'></div>");
+	    
+	    // reviewwrite.jsp 로드
+	    $("#reviewModalContainer").load("<%=request.getContextPath()%>/shop/reviewwrite.jsp?orderId=" + orderId, function() {
+	        // 로드 완료 후 모달 표시
+	        $("#reviewModal").show();
+	    });
+	}
+	</script>
 </body>
 </html>

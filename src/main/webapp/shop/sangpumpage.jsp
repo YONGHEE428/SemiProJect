@@ -95,7 +95,7 @@
       left: -10px;
       position: relative;
       width: 700px;
-      background: white;	
+      background: white;
     }
 
     .right-panel { 
@@ -179,16 +179,9 @@
     .highlight { font-weight: bold; }
 
     .action-buttons {
-      margin-top: 20px;
+      margin-top: 15px;
       display: flex;
       gap: 10px;
-    }
-
-    .action-buttons button {
-      flex: 1;
-      padding: 15px 0;
-      font-size: 16px;
-      font-weight: 500;
     }
 
     .price-info {
@@ -362,32 +355,6 @@ section h2 {
   font-size: 20px;
   font-weight: bold;
 }
-
-.modern-btn {
-  background-color: black;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  font-size: 15px;
-  font-weight: 500;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.modern-btn:hover {
-  background-color: #333;
-}
-
-.modern-btn.outline {
-  background-color: white;
-  color: black;
-  border: 1px solid black;
-}
-
-.modern-btn.outline:hover {
-  background-color: #f5f5f5;
-}
   </style>
 </head>
 
@@ -421,10 +388,6 @@ section h2 {
 </section>
 <section id="reviews" class="tab-section">
   <h2>리뷰</h2>
-  <div class="review-write-area mb-3">
-    <jsp:include page="reviewwrite.jsp" flush="true" />
-    <button type="button" class="modern-btn" onclick="openReviewModal()">리뷰 작성</button>
-  </div>
   <div id="review-list-container">
     <jsp:include page="reviewList.jsp" flush="true">
       <jsp:param name="product_id" value="<%= product.getProductId() %>" />
@@ -553,8 +516,8 @@ document.addEventListener("DOMContentLoaded", updateTotalPrice);
     <div class="mt-2"><strong>총 가격:</strong> <span id="Price"></span></div>
 
     <div class="action-buttons">
-      <button id="addToCartBtn" class="modern-btn outline">장바구니</button>
-      <button id="buyNowBtn" class="modern-btn">바로구매</button>
+      <button id="addToCartBtn" class="btn btn-outline-primary">장바구니</button>
+      <button id="buyNowBtn" class="btn btn-primary">바로구매</button>
     </div>
     <script>
     // 장바구니 추가 함수
