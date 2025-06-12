@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -339,4 +340,44 @@ public class MemberDao {
 		}
 
 	}
+	public List<MemberDto> getAllMembersByRole(String role) {
+        List<MemberDto> list = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        String sql = "SELECT num, name, id, email, hp, birth, role FROM member WHERE role = ? ORDER BY num ASC";
+
+        try {
+            conn =db.getConnection(); // DbConnection.getConnection() 또는 프로젝트의 실제 연결 메서드 사용
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, role);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                MemberDto dto = new MemberDto();
+                dto.setNum(rs.getString("num"));
+                dto.setName(rs.getString("name"));
+                dto.setId(rs.getString("id"));
+                dto.setEmail(rs.getString("email"));
+                dto.setHp(rs.getString("hp"));
+                dto.setBirth(rs.getString("birth"));
+                dto.setRole(rs.getString("role"));
+                list.add(dto);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching members by role: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            // 자원 닫기
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+        return list;
+    }
 }

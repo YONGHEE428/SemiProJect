@@ -93,8 +93,7 @@
   display: block;
 }
 
-.form-group.error input,
-.form-group.error textarea {
+.form-group.error input{
   border-color: #dc3545;
 }
 
@@ -367,15 +366,80 @@ input[type="file"] {
   font-weight: 500;
 }
 
-/* 브라우저 기본 유효성 검사 메시지 스타일링 */
-input:invalid, textarea:invalid {
-    border-color: #dc3545;
+
+/* 필수 입력 필드 라벨 스타일 제거 */
+.required-label::after {
+    content: none;
 }
 
-/* 필수 입력 필드 라벨 스타일 */
-.required-label::after {
-    content: " *";
-    color: #dc3545;
+/* 키/몸무게 입력 스타일 */
+.size-input-group {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.size-input-box {
+  flex: 1;
+  position: relative;
+}
+
+.size-input-box input {
+  width: 100%;
+  padding: 12px 35px 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: all 0.3s;
+}
+
+.size-input-box input:focus {
+  border-color: #333;
+  outline: none;
+}
+
+.size-input-box .unit {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+  font-size: 14px;
+}
+
+/* 평소 사이즈 선택 스타일 */
+.usual-size-group {
+  margin-bottom: 30px;
+}
+
+.size-select-box {
+  margin-bottom: 15px;
+}
+
+.size-select-box select {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 16px;
+  cursor: pointer;
+}
+
+.size-select-box select:focus {
+  border-color: #333;
+  outline: none;
+}
+
+.size-select-box label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: bold;
 }
 </style>
 
@@ -395,7 +459,6 @@ ProductDto productDto = null;
 List<ProductOptionDto> options = new ArrayList<>();
 try {
     String productNumStr = request.getParameter("product_id");
-    System.out.println(productNumStr);
     if(productNumStr != null && !productNumStr.trim().isEmpty()) {
         int productNum = Integer.parseInt(productNumStr);
         if(productNum > 0) {
@@ -455,7 +518,7 @@ for (ProductOptionDto opt : options) {
       </div>
 
       <div class="form-group">
-        <label class="required-label">만족도</label>
+        <label>만족도</label>
         <div class="star-rating-container">
           <div class="star-rating">
             <input type="radio" name="satisfaction_text" value="별로예요" id="rate1" required>
@@ -480,7 +543,7 @@ for (ProductOptionDto opt : options) {
       </div>
 	   
       <div class="form-group">
-        <label class="required-label">본문 입력</label>
+        <label>본문 입력</label>
         <textarea name="content" placeholder="상품에 대한 솔직한 리뷰를 남겨주세요. (최소 5자 이상)" required minlength="5"></textarea>
       </div>
       
@@ -500,10 +563,10 @@ for (ProductOptionDto opt : options) {
       </div>
 
       <div class="form-group">
-        <label class="required-label">구매 옵션</label>
+        <label>구매 옵션</label>
         <div class="option-group">
           <div class="size-options">
-            <span class="option-title"><b>사이즈:</b></span>
+            <span class="option-title">사이즈:</span>
             <div class="radio-group">
               <% for(String size : sizeSet) { %>
                 <label>
@@ -514,7 +577,7 @@ for (ProductOptionDto opt : options) {
             </div>
           </div>
           <div class="color-options">
-            <span class="option-title"><b>색상:</b></span>
+            <span class="option-title">색상:</span>
             <div class="radio-group">
               <% for(String color : colorSet) { %>
                 <label>
@@ -528,7 +591,7 @@ for (ProductOptionDto opt : options) {
       </div>
 
       <div class="form-group">
-        <label class="required-label">사이즈 어때요?</label>
+        <label>사이즈 어때요?</label>
         <div class="radio-group">
           <label><input type="radio" name="size_fit" value="많이 작아요" required> 많이 작아요</label>
           <label><input type="radio" name="size_fit" value="조금 작아요"> 조금 작아요</label>
@@ -548,25 +611,49 @@ for (ProductOptionDto opt : options) {
       <div class="review-main">
         <h5><b>나의 정보를 입력해주세요!</b></h5><br>
       </div>
-      <div class="form-group">
-        <label class="required-label">키</label>
-        <input type="number" name="height" placeholder="cm" required min="100" max="250">
-      </div>
 
-      <div class="form-group">
-        <label class="required-label">몸무게</label>
-        <input type="number" name="weight" placeholder="kg" required min="30" max="200">
-      </div>
+      <div class="size-input-group">
+        <div class="size-input-box">
+          <label>키</label>
+          <input type="number" name="height" placeholder="키를 입력해주세요" required min="100" max="250">
+          <span class="unit">cm</span>
+        </div>
 
-      <div class="form-group">
-        <label class="required-label">평소 사이즈 – 상의</label>
-        <div class="radio-group">
-          <label><input type="radio" name="usual_size" value="S" required> S</label>
-          <label><input type="radio" name="usual_size" value="M"> M</label>
-          <label><input type="radio" name="usual_size" value="L"> L</label>
-          <label><input type="radio" name="usual_size" value="XL"> XL</label>
+        <div class="size-input-box">
+          <label>몸무게</label>
+          <input type="number" name="weight" placeholder="몸무게를 입력해주세요" required min="30" max="200">
+          <span class="unit">kg</span>
         </div>
       </div>
+
+      <div class="usual-size-group">
+        <div class="size-select-box">
+          <label>평소 사이즈 - 상의</label>
+          <select name="usual_size_top" required>
+            <option value="">상의 사이즈를 선택해주세요</option>
+            <option value="XS">XS</option>
+            <option value="S">S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+            <option value="XXL">XXL</option>
+          </select>
+        </div>
+
+        <div class="size-select-box">
+          <label>평소 사이즈 - 하의</label>
+          <select name="usual_size_bottom" required>
+            <option value="">하의 사이즈를 선택해주세요</option>
+            <option value="XS">XS</option>
+            <option value="S">S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+            <option value="XXL">XXL</option>
+          </select>
+        </div>
+      </div>
+
       <button type="submit" class="submit-btn">리뷰 작성하고 적립금 받기</button>
     </form>
     
@@ -750,8 +837,8 @@ for (ProductOptionDto opt : options) {
     }
 
     // 평소 사이즈 체크
-    const usualSize = form.querySelector('input[name="usual_size"]:checked');
-    const usualSizeGroup = form.querySelector('input[name="usual_size"]').closest('.form-group');
+    const usualSize = form.querySelector('input[name="usual_size_top"]:checked');
+    const usualSizeGroup = form.querySelector('input[name="usual_size_top"]').closest('.form-group');
     if (!usualSize) {
       showError(usualSizeGroup, '평소 사이즈를 선택해주세요.');
       isValid = false;
@@ -824,7 +911,7 @@ for (ProductOptionDto opt : options) {
     const radioGroups = {
       'satisfaction_text': '만족도를 선택해주세요.',
       'size_fit': '사이즈 평가를 선택해주세요.',
-      'usual_size': '평소 사이즈를 선택해주세요.'
+      'usual_size_top': '평소 사이즈를 선택해주세요.'
     };
 
     Object.entries(radioGroups).forEach(([name, message]) => {

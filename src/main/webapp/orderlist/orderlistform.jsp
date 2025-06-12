@@ -448,7 +448,11 @@ PaymentDao paymentDao = new PaymentDao();
 			                    onclick="location.href='orderlist/detailform.jsp?order_code=<%=order.getOrderCode()%>'">
 			                    주문상세
 			                </button>
-			                <button class="btn btn-outline-secondary btn-sm">리뷰작성</button>
+			                <jsp:include page="../shop/reviewwrite.jsp">
+			                    <jsp:param name="product_id" value="<%=item.getProductId()%>" />
+			                </jsp:include>
+			                <button type="button" class="btn btn-outline-secondary btn-sm modern-btn" 
+			                    onclick="openReviewModal()">리뷰 작성</button>
 			                <a href="orderlist/takeback.jsp?order_id=<%=order.getOrderId()%>&payment_idx=<%=payment.getIdx()%>&order_sangpum_id=<%=item.getOrderSangpumId()%>"
 			                   class="btn btn-outline-danger btn-sm">반품신청</a>
 			            </div>
