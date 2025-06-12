@@ -38,6 +38,51 @@ public class OrderListDao {
 		}
 		return orderList;
 	}
+	// order_sangpum_id로 단일 상품 상세 정보 조회 (주문+상품+옵션+회원)
+	public OrderListDto.OrderItem getOrderItemDetailById(int orderSangpumId) {
+	    OrderListDto.OrderItem item = null;
+	    String sql = "SELECT s.*, o.order_code, o.order_date, o.order_status, o.member_num, m.name AS member_name, " +
+	            "p.product_name, p.main_image_url, po.color, po.size " +
+	            "FROM order_sangpum s " +
+	            "JOIN orders o ON s.order_id = o.order_id " +
+	            "JOIN member m ON o.member_num = m.num " +
+	            "JOIN product p ON s.product_id = p.product_id " +
+	            "JOIN product_option po ON s.option_id = po.option_id " +
+	            "WHERE s.order_sangpum_id = ?";
+	    try (Connection conn = db.getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setInt(1, orderSangpumId);
+	        ResultSet rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            item = new OrderListDto.OrderItem();
+	            item.setOrderSangpumId(rs.getInt("order_sangpum_id"));
+	            item.setProductId(rs.getInt("product_id"));
+	            item.setOptionId(rs.getInt("option_id"));
+	            item.setCnt(rs.getInt("cnt"));
+	            item.setPrice(rs.getInt("price"));
+	            item.setStatus(rs.getString("status"));
+
+	            // 상품 및 주문 정보
+	            item.setProductName(rs.getString("product_name"));
+	            item.setProductImage(rs.getString("main_image_url"));
+	            item.setColor(rs.getString("color"));
+	            item.setSize(rs.getString("size"));
+
+	            // 아래는 주문 및 회원 정보도 추가로 넣어둔다 (필요하면)
+	            OrderListDto order = new OrderListDto();
+	            item.setOrderId(rs.getInt("order_id"));
+	            item.setOrderCode(rs.getString("order_code"));
+	            item.setOrderDate(rs.getTimestamp("order_date"));
+	            item.setOrderStatus(rs.getString("order_status"));
+	            item.setMemberNum(rs.getInt("member_num"));
+	            item.setMemberName(rs.getString("member_name"));
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return item;
+	}
+
 
 	//주문상세 조회 (order_code 기준)
 	public OrderListDto getOrderDetailByCode(String orderCode) {
