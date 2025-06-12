@@ -433,13 +433,21 @@ section h2 {
 </section>
 <section id="qna" class="tab-section">
   <h2>문의</h2>
-  <div class="qna-write-area mb-3">
-   <button type="button" onclick="openInquiryModal()">문의 작성</button>
-  <%-- <%@ include file="writeInquiryModal.jsp" %> --%>
+<div class="qna-write-area mb-3">
+    <button type="button" onclick="openInquiryModal()">문의 작성</button>
   </div>
+
+    <!-- 모달 코드(include할 때는 jsp:include 써야 param 전달 가능) -->
+    <jsp:include page="/shop/writeInquiryModal.jsp" flush="true">
+  <jsp:param name="product_id" value="${product.productId}" />
+</jsp:include>
+  </div>
+
+  <!-- ② 문의 목록 include -->
   <div id="qna-list-container">
     <jsp:include page="q&alist.jsp" flush="true">
-      <jsp:param name="product_id" value="<%= product.getProductId() %>" />
+      <jsp:param name="product_id" 
+                 value="${product.productId}" />
     </jsp:include>
   </div>
 </section>
@@ -553,9 +561,12 @@ document.addEventListener("DOMContentLoaded", updateTotalPrice);
     <div class="mt-2"><strong>총 가격:</strong> <span id="Price"></span></div>
 
     <div class="action-buttons">
+
+
       <button id="addToCartBtn" class="modern-btn outline">장바구니</button>
       <button id="buyNowBtn" class="modern-btn">바로구매</button>
     </div>
+
     <script>
     // 장바구니 추가 함수
     function addToCart(redirect) {
@@ -603,11 +614,13 @@ document.addEventListener("DOMContentLoaded", updateTotalPrice);
         addToCart();
     });
 
+
     // 바로구매 버튼 클릭 이벤트
     document.getElementById("buyNowBtn").addEventListener("click", function() {
         addToCart('payment');
     });
     </script>
+
 
     <!-- 오른쪽 하단에 있는 메뉴 -->
     <jsp:include page="guide.jsp" />
