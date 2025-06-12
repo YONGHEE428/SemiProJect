@@ -3,13 +3,27 @@
 <div id="inquiryModal" class="modal-overlay" style="display:none;">
   <div class="modal-box">
     <span class="close-btn" onclick="closeInquiryModal()">×</span>
-    <!-- 실제 입력 폼은 writeInquiryModal.jsp 에서 include -->
-    <jsp:include page="/shop/writeInquiryModal.jsp" flush="true">
-      <jsp:param name="product_id" value="${param.product_id}" />
-    </jsp:include>
-  </div>
+  
 </div>
+<form action="${pageContext.request.contextPath}/InsertInquiryServlet" method="post">
+  <!-- ★★ 여기가 빠져 있으면 servlet 에서 product_id가 null 됩니다 ★★ -->
+  <input type="hidden" name="product_id" value="${param.product_id}" />
 
+  <label>제목:</label>
+  <input type="text" name="title" required /><br/>
+
+  <label>내용:</label>
+  <textarea name="content" required></textarea><br/>
+
+  <label>공개여부:</label>
+  <input type="radio" name="is_private" value="false" checked />공개
+  <input type="radio" name="is_private" value="true" />비공개<br/>
+
+  <label>비밀번호(비밀글인 경우):</label>
+  <input type="password" name="password" /><br/>
+
+  <button type="submit">문의 등록</button>
+</form>
 <style>
 .modal-overlay {
   position: fixed; top: 0; left: 0;
