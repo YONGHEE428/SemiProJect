@@ -1,3 +1,4 @@
+<%@page import="data.dao.MemberDao"%>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <style>
 .modal-overlay {
@@ -42,12 +43,16 @@
 
 
 <%
-    String memberName = (String) session.getAttribute("myname");
-    boolean isLoggedIn = (memberName != null);
-%>
+String memberId = (String) session.getAttribute("");  
+boolean isLoggedIn = memberId != null;
 
-<!-- 리뷰 작성 버튼 -->
-<button onclick="openReviewModal()">리뷰 작성</button>
+// 로그인 되었다면 이름 조회
+String memberName = "";
+if (isLoggedIn) {
+    MemberDao mdao = new MemberDao();
+    memberName = mdao.getName(memberId); 
+}
+%>
 
 <!-- 리뷰 작성 모달 -->
 <div id="reviewModal" class="modal-overlay" style="display: none;">
@@ -56,6 +61,7 @@
 
     <form id="reviewForm" action="${pageContext.request.contextPath}/SubmitReviewServlet.do" method="post" enctype="multipart/form-data">
       <input type="hidden" name="member_name" value="<%= memberName %>">
+       <input type="hidden" name="product_id" value="<%= request.getParameter("product_id") %>">
 
       <h5><%= memberName %> 고객님, 리뷰를 남겨주세요!</h5>
       <p>지금 리뷰를 남기면 적립금 최대 <strong>1,500원</strong>!</p>
@@ -114,18 +120,19 @@
   function openReviewModal() {
     document.getElementById("reviewModal").style.display = "flex";
   }
-
   function closeReviewModal() {
     document.getElementById("reviewModal").style.display = "none";
   }
 
   function handleReviewClick() {
     if (!isLoggedIn) {
+      // 로그인 안 됐으면 confirm 이후에 로그인 페이지로 이동
       if (confirm("로그인이 필요한 서비스입니다. 로그인 하시겠습니까?")) {
+        window.location.href = '<%=request.getContextPath()%>/login.jsp';
       }
-    } else {
-      document.getElementById("reviewForm").submit();
+      return;   // 반드시 return 해 줘야 아래 submit 이 안 됩니다
     }
+    // 로그인 돼 있으면 정상 제출
+    document.getElementById("reviewForm").submit();
   }
 </script>
-

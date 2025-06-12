@@ -1,3 +1,4 @@
+<%@page import="java.util.TimeZone"%>
 <%@page import="java.text.NumberFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="data.dto.OrderListDto"%>
@@ -24,6 +25,7 @@ if (order == null || payment == null) {
 
 NumberFormat nf = NumberFormat.getInstance();
 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
 
 // 주문 상태별 컬러 설정
 String status = order.getOrderStatus();
@@ -108,6 +110,7 @@ body {
 </style>
 </head>
 <body>
+
 	<div class="order-container">
 		<div class="mb-4 d-flex justify-content-between align-items-center">
 			<span class="order-title"><i class="bi bi-receipt"></i> 주문 상세</span>
@@ -123,6 +126,7 @@ body {
 			<div class="row mb-2">
 				<div class="col-4 text-secondary">주문일시</div>
 				<div class="col-8">
+
 					<% if (order.getOrderDate() != null) { %>
 					<%=sdf.format(order.getOrderDate())%>
 					<%} else { %> - <% } %>
@@ -219,6 +223,9 @@ body {
 			</table>
 		</div>
 		<!-- 배송 정보 -->
+		<%
+			
+		%>
 		<div>
 			<div class="section-title">배송 정보</div>
 			<div class="row mb-2">
@@ -227,7 +234,7 @@ body {
 			</div>
 			<div class="row mb-2">
 				<div class="col-4 text-secondary">연락처</div>
-				<div class="col-8"><%=payment.getHp()%></div>
+				<div class="col-8"><%=payment.getHp() %></div>
 			</div>
 			<div class="row mb-2">
 				<div class="col-4 text-secondary">주소</div>

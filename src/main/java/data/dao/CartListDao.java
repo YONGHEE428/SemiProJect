@@ -72,7 +72,33 @@ public class CartListDao {
 		}
 		return list;
 	}
-
+	
+	// 1-2. 바로구매상품 가져오기
+	public int getLatestCartIdx(String memberId) {
+	    int idx = 0;
+	    Connection conn = db.getConnection();
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    
+	    String sql = "SELECT idx FROM cartlist WHERE member_id=? ORDER BY idx DESC LIMIT 1";
+	    
+	    try {
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, memberId);
+	        rs = pstmt.executeQuery();
+	        
+	        if(rs.next()) {
+	            idx = rs.getInt("idx");
+	        }
+	    } catch(SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        db.dbClose(rs, pstmt, conn);
+	    }
+	    
+	    return idx;
+	}
+	
 	// 2. 수량 변경
 	public void updateCnt(int idx, int cnt) {
 		String sql = "UPDATE shop.cartlist SET cnt = ? WHERE idx = ?";
@@ -349,6 +375,6 @@ public class CartListDao {
 			db.dbClose(pstmt, conn);
 		}
 	}
-
+	
 }
 

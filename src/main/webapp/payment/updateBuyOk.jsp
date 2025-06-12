@@ -42,7 +42,7 @@
     String hp = request.getParameter("hp");                 // 연락처
     String status = "paid";                                 // 결제 상태 (성공 시 'paid'로 고정)
     String member_Id = request.getParameter("member_Id");   // member_Id (session에서 가져온 "myid")
-
+	
     // member_num 파라미터 처리 (가장 중요한 부분)
     String memberNumParam = request.getParameter("member_num");
     Integer member_num = null;
@@ -104,7 +104,7 @@
     }
 
     // 실제 주문 생성! (orders/order_sangpum에 INSERT)
-    boolean orderSuccess = orderDao.createOrder(member_num, orderItems);
+    boolean orderSuccess = orderDao.createOrder(member_num, orderItems,merchant_uid);
 
     if (!orderSuccess) {
         response.getWriter().write("error:주문 생성 실패(orders)");
@@ -114,7 +114,7 @@
     // -------------------------------------------------------------
     // 3. 결제 정보 저장 (Payment 테이블 insert)
     // -------------------------------------------------------------
-    PaymentDto pdto = new PaymentDto();
+    /* PaymentDto pdto = new PaymentDto();
     pdto.setImp_uid(imp_uid);
     pdto.setMerchant_uid(merchant_uid);
     pdto.setMember_num(member_num);
@@ -126,7 +126,7 @@
 
     PaymentDao pdao = new PaymentDao();
     pdao.insertPayment(pdto);
-    System.out.println("updateBuyOk.jsp: 결제 정보가 payment 테이블에 성공적으로 저장되었습니다.");
+    System.out.println("updateBuyOk.jsp: 결제 정보가 payment 테이블에 성공적으로 저장되었습니다."); */
 
     // -------------------------------------------------------------
     // 4. 장바구니 구매 처리 (buyok=1 등 기존 코드)
