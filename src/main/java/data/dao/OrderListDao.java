@@ -63,17 +63,18 @@ public class OrderListDao {
 		return order;
 	}
 
-	//  주문 생성 (cart → order + order_sangpum 저장)
-	public boolean createOrder(int memberNum, List<CartListDto> itemList) {
-		String insertOrderSQL = "INSERT INTO orders (order_code, member_num, total_price) VALUES (?, ?, ?)";
-		String insertItemSQL = "INSERT INTO order_sangpum (order_id, product_id, option_id, cnt, price) VALUES (?, ?, ?, ?, ?)";
-		Connection conn = null;
-		PreparedStatement psOrder = null;
-		PreparedStatement psItem = null;
-		ResultSet rs = null;
-		try {
-			conn = db.getConnection();
-			conn.setAutoCommit(false);
+    // 4. 주문 생성 (cart → order + order_sangpum 저장)
+    public boolean createOrder(int memberNum, List<CartListDto> itemList, String merchantUid) {
+        String insertOrderSQL = "INSERT INTO orders (order_code, member_num, total_price) VALUES (?, ?, ?)";
+        String insertItemSQL = "INSERT INTO order_sangpum (order_id, product_id, option_id, cnt, price) VALUES (?, ?, ?, ?, ?)";
+        Connection conn = null;
+        PreparedStatement psOrder = null;
+        PreparedStatement psItem = null;
+        ResultSet rs = null;
+        try {
+            conn = db.getConnection();
+            conn.setAutoCommit(false);
+
 
 			// 1. 총 주문금액 계산
 			int total = 0;
@@ -84,36 +85,28 @@ public class OrderListDao {
 
 			int orderId = 0;
 
-			// 2. order_code를 null로 INSERT (주문코드는 아직 모름)
-			psOrder = conn.prepareStatement(insertOrderSQL, Statement.RETURN_GENERATED_KEYS);
-			psOrder.setString(1, null); // 임시로 null
-			psOrder.setInt(2, memberNum); // int로 설정
-			psOrder.setInt(3, total);
-			psOrder.executeUpdate();
+            // 2. 일단 order_code를 null로 INSERT (주문코드는 아직 모름)
+            psOrder = conn.prepareStatement(
+                insertOrderSQL,
+                Statement.RETURN_GENERATED_KEYS
+            );
+            psOrder.setString(1, merchantUid); // 임시로 null
+            psOrder.setInt(2, memberNum); // int로 설정
+            psOrder.setInt(3, total);
+            psOrder.executeUpdate();
 
-			rs = psOrder.getGeneratedKeys();
-			String orderCode = "";
-			if (rs.next()) {
-				orderId = rs.getInt(1);
+            rs = psOrder.getGeneratedKeys();
+            if (rs.next()) {
+                orderId = rs.getInt(1);
+            } else {
+                throw new SQLException("주문 ID를 가져오지 못했습니다.");
+            }
+            // 3. order_sangpum 테이블에 상품들 insert
+            psItem = conn.prepareStatement(insertItemSQL);
+            for (CartListDto item : itemList) {
+                int cnt = Integer.parseInt(item.getCnt());
+                int price = item.getPrice() * cnt; // 단가 * 수량
 
-				// 3. order_id 받아서 주문코드 생성
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-				String today = sdf.format(new java.util.Date());
-				orderCode = "ORD" + today + "-" + String.format("%05d", orderId);
-
-				// 4. 주문코드 update
-				PreparedStatement psUpdate = conn.prepareStatement("UPDATE orders SET order_code=? WHERE order_id=?");
-				psUpdate.setString(1, orderCode);
-				psUpdate.setInt(2, orderId);
-				psUpdate.executeUpdate();
-				psUpdate.close();
-			}
-
-			// 5. order_sangpum 테이블에 상품들 insert
-			psItem = conn.prepareStatement(insertItemSQL);
-			for (CartListDto item : itemList) {
-				int cnt = Integer.parseInt(item.getCnt());
-				int price = item.getPrice() * cnt;
 
 				psItem.setInt(1, orderId);
 				psItem.setInt(2, item.getProduct_id());
@@ -160,29 +153,31 @@ public class OrderListDao {
 		}
 	}
 
-	//  주문 전체목록 (관리자)
-	public List<OrderListDto> getAllOrders() {
-		List<OrderListDto> list = new ArrayList<>();
-		String sql = "SELECT o.*, m.name AS member_name FROM orders o JOIN member m ON o.member_num = m.num ORDER BY o.order_date DESC";
-		try (Connection conn = db.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			ResultSet rs = pstmt.executeQuery();
-			while (rs.next()) {
-				OrderListDto dto = new OrderListDto();
-				dto.setOrderId(rs.getInt("order_id"));
-				dto.setOrderCode(rs.getString("order_code"));
-				dto.setMemberNum(rs.getInt("member_num"));
-				dto.setMemberName(rs.getString("member_name"));
-				dto.setOrderDate(rs.getTimestamp("order_date"));
-				dto.setOrderStatus(rs.getString("order_status"));
-				dto.setTotalPrice(rs.getInt("total_price"));
-				dto.setItems(getOrderItemsByOrderId(rs.getInt("order_id")));
-				list.add(dto);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
+    // 5. 주문 전체목록 (관리자)
+    public List<OrderListDto> getAllOrders() {
+        List<OrderListDto> list = new ArrayList<>();
+        String sql = "SELECT o.*, m.name AS member_name FROM orders o JOIN member m ON o.member_num = m.num ORDER BY o.order_date DESC";
+        try (Connection conn = db.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                OrderListDto dto = new OrderListDto();
+                dto.setOrderId(rs.getInt("order_id"));
+                dto.setOrderCode(rs.getString("order_code"));
+                dto.setMemberNum(rs.getInt("member_num"));
+                dto.setMemberName(rs.getString("member_name"));
+                dto.setOrderDate(rs.getTimestamp("order_date"));
+                dto.setOrderStatus(rs.getString("order_status"));
+                dto.setTotalPrice(rs.getInt("total_price"));
+                dto.setItems(getOrderItemsByOrderId(rs.getInt("order_id")));
+                list.add(dto);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 
 	// 주문 삭제
 	public boolean deleteOrder(String orderCode) {
@@ -227,8 +222,10 @@ public class OrderListDao {
 			db.dbClose(pstmt, conn);
 		}
 
-		return success;
-	}
+        return success;
+    }
+   
+    
 
 	// 반품창에서 써야하는 id값 조회
 	public OrderListDto getOrderDetailByOrderId(int orderId) {
@@ -257,7 +254,7 @@ public class OrderListDao {
 	private List<OrderItem> getOrderItemsByOrderId(int orderId) {
 	    List<OrderItem> items = new ArrayList<>();
 	    String sql = "SELECT s.order_sangpum_id, s.product_id, s.option_id, s.cnt, s.price, " +
-	                 "p.product_name, p.main_image_url, o.color, o.size " +
+	                 "p.product_name, p.main_image_url, o.color, o.size, s.status " + // ★ status 추가
 	                 "FROM order_sangpum s " +
 	                 "JOIN product p ON s.product_id = p.product_id " +
 	                 "JOIN product_option o ON s.option_id = o.option_id " +
@@ -267,7 +264,7 @@ public class OrderListDao {
 	        ResultSet rs = pstmt.executeQuery();
 	        while (rs.next()) {
 	            OrderItem item = new OrderItem();
-	            item.setOrderSangpumId(rs.getInt("order_sangpum_id")); 
+	            item.setOrderSangpumId(rs.getInt("order_sangpum_id"));
 	            item.setProductId(rs.getInt("product_id"));
 	            item.setOptionId(rs.getInt("option_id"));
 	            item.setCnt(rs.getInt("cnt"));
@@ -276,12 +273,36 @@ public class OrderListDao {
 	            item.setProductImage(rs.getString("main_image_url"));
 	            item.setColor(rs.getString("color"));
 	            item.setSize(rs.getString("size"));
+	            item.setStatus(rs.getString("status")); // ★ status 세팅
 	            items.add(item);
 	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
 	    return items;
+	}
+
+
+	// 주문상품 테이블 buyok를 2로 변경                    -반품처리 관련 takeback
+	public void updateBuyokToTakeback(int orderSangpumId) {
+	    String sql = "UPDATE order_sangpum SET buyok=2 WHERE order_sangpum_id=?";
+	    try (Connection conn = db.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setInt(1, orderSangpumId);
+	        pstmt.executeUpdate();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+
+	// 주문 테이블 order_status를 '반품접수'로 변경           -반품처리 관련 takeback
+	public void updateOrderStatusToTakeback(int orderId) {
+	    String sql = "UPDATE orders SET order_status='반품접수' WHERE order_id=?";
+	    try (Connection conn = db.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setInt(1, orderId);
+	        pstmt.executeUpdate();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 	}
 
 }

@@ -1,3 +1,5 @@
+<%@page import="java.util.UUID"%>
+<%@page import="java.text.SimpleDateFormat"%>
 <%@page import="data.dto.MemberDto"%>
 <%@page import="data.dao.MemberDao"%>
 <%@page import="data.dao.CartListDao"%>
@@ -20,8 +22,10 @@
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
 	rel="stylesheet">
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+<!-- <link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"> -->
+	<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <!-- 다음 주소창api -->
 <script
@@ -709,7 +713,7 @@ body {
 					<div class="mt-2">카드결제</div>
 				</button>
 				<button class="btn payment-method-btn" name="pay">
-					<i class="bi bi-n-circle fs-4"></i>
+					  <i class="bi bi-bag fs-4"></i>
 					<div class="mt-2">네이버페이</div>
 				</button>
 				<button class="btn payment-method-btn" name="pay">
@@ -742,6 +746,9 @@ body {
 				<div class="total-amount">
 					<span>총 결제금액</span> <span><%=NumberFormat.getInstance().format(totalPrice)%>원</span>
 				</div>
+				<!-- 금액 계산 -->
+				<input type="hidden" id="finalCalculatedAmount" value="<%=totalPrice%>">
+				
 			</div>
 
 			<input type="hidden" id="selectedPay" name="selectedPay" readonly>
@@ -899,6 +906,8 @@ body {
     			// 할인 금액 초기화
     			$('#coupon-discount').text('0원');
     			$('.total-amount span:last').text('<%= NumberFormat.getInstance().format(totalPrice) %>원');
+                $('#finalCalculatedAmount').val(originalTotalPrice); // hidden 필드도 초기화
+
     			$('#usecoupon').text('선택안함');
     		});
             
@@ -923,51 +932,53 @@ body {
     				// 쿠폰 선택 텍스트 업데이트
     				var couponName = couponType === 'welcome' ? '회원가입 감사 쿠폰' : '6월 생일자 축하 쿠폰';
     				$('#usecoupon').text(couponName + ' (' + discount + '% 할인)');
+    				// 중요: 최종 결제 금액을 hidden 필드나 전역 변수에 저장하여 `payrequest`에서 접근할 수 있도록 합니다.
+                    // hidden input 필드 추가
+                    $('#finalCalculatedAmount').val(finalAmount);
     			} else {
     				// 선택된 쿠폰이 없을 때
     				$('#coupon-discount').text('0원');
     				$('.total-amount span:last').text('<%= NumberFormat.getInstance().format(totalPrice) %>원');
     				$('#usecoupon').text('선택안함');
+    				$('#finalCalculatedAmount').val(<%= totalPrice %>)
     			}
     			
     			// 모달 닫기
     			$('#couponModal').modal('hide');
     		});
 		});
+<%
+// 1. 서버에서 미리 주문 ID 또는 임시 주문 코드 생성
+//    이 로직은 PaymentService나 OrderService 같은 곳에서 처리하는 것이 좋습니다.
+//    여기서는 예시를 위해 간단히 표현하지만, 실제로는 DB 트랜잭션과 연결되어야 합니다.
+//    만약 비회원 주문도 처리해야 한다면, memberNum 대신 세션 ID나 다른 고유값으로 임시 주문을 먼저 생성해야 합니다.
 
-        function generateOrderNumber() {
-        	   /* 문자열의 길이를 2로 만들고 길이가 2보다 짧으면 왼쪽에 0을 채운다 */
-            const pad = (n) => String(n).padStart(2, '0');
-            
-            const now = new Date();
-            const year = String(now.getFullYear());
-            const month = pad(now.getMonth() + 1);
-            const day = pad(now.getDate());
+// 임시 주문 코드 생성 (이 코드를 Imp_uid로 사용)
+// 실제로는 createOrder 메소드를 호출하여 order_code를 받아와야 합니다.
+// 예시: String preGeneratedMerchantUid = new OrderService().generatePreOrderCode(member_num);
+// 현재 `createOrder`는 카트 상품 목록을 받으므로, 이 시점에 바로 `createOrder`를 호출하기 어려울 수 있습니다.
+// 따라서, 여기서는 클라이언트 UUID를 기반으로 임시 merchant_uid를 생성하고,
+// 검증 단계에서 실제 order_code를 서버에서 생성하여 매핑하는 방식을 고려해볼 수 있습니다.
+// 그러나 가장 견고한 방법은 서버에서 order_code를 먼저 생성하고 클라이언트에 전달하는 것입니다.
 
-            const fullUuid = crypto.randomUUID(); 
-            
-            // 2. UUID에서 하이픈을 모두 제거하여 순수 문자열로 만듭니다. (예: "abcdef123456...")
-            const uuidWithoutHyphens = fullUuid.replace(/-/g, '');
+// 서버에서 주문번호 미리 생성하는 로직 (예시)
+// DTO를 사용하여 미리 주문 데이터를 만들거나, 간단한 임시 주문번호 생성 로직을 추가합니다.
+// 여기서는 기존 generateOrderNumber()와 유사하게 JSP에서 생성하되, 서버에서 관리될 고유성을 더 확보하도록 합니다.
 
-            // 3. 순수 문자열의 앞 6자리만 추출합니다.
-            //    **경고**: 이 방법은 고유성 충돌 가능성을 크게 높입니다.
-            //    특히 많은 결제가 발생할 경우 중복될 위험이 존재합니다.
-            //    결제 시스템의 merchant_uid는 고유해야 하므로, 이 방식은 신중하게 사용해야 합니다.
-            const shortUniqueId = uuidWithoutHyphens.substring(0, 6);
-            // ---
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+	String today = sdf.format(new java.util.Date());
+// 실제 운영에서는 UUID.randomUUID() 대신 서버에서 관리되는 시퀀스 또는 DB를 통한 고유 ID 생성 방식이 권장됩니다.
+//UUID는 일반적으로 32개의 16진수 문자로 구성되며, 하이픈으로 구분되어 5개의 그룹으로 나뉘어져요.
+//예시: 550e8400-e29b-41d4-a716-446655440000
+	String preGeneratedMerchantUid = "ORD" + today + "-" + UUID.randomUUID().toString().substring(0, 6).toUpperCase();
 
-            // 서버의 "ORD" + YYYYMMDD + "-" + ID 형식과 유사하게 만듭니다.
-            // 여기서는 ID 부분에 단축된 UUID를 사용합니다.
-            const merchantUid = "ORD" + year + month + day + "-" + shortUniqueId;
-            
-            console.log("최종 생성된 merchant_uid (단축된 UUID 기반):", merchantUid);
-
-            return merchantUid;
-        }
 	
+%>
+      
+const preGeneratedMerchantUid = "<%= preGeneratedMerchantUid %>";
+console.log("미리 생성된 상점 주문번호:", preGeneratedMerchantUid);
 		// 결제 요청
 		function payrequest() {
-		    const newMerchantUid = generateOrderNumber();
 			const selectedPay = $("#selectedPay").val();
 			if (!selectedPay) {
 				alert("결제 수단을 선택해주세요.");
@@ -977,9 +988,10 @@ body {
 			
 		    const memberNum = "<%= member_num %>"; // JSP에서 가져온 member_num을 JavaScript로 넘겨줍니다.
 		    console.log("1b. memberNum 확인: TYPE -", typeof memberNum, ", VALUE -", memberNum); // String, "2" 뜨는지 다시 확인
+		    
 			switch (selectedPay) {
 			case "카드결제":
-				cardPay(newMerchantUid, memberNum);
+				cardPay(preGeneratedMerchantUid, memberNum);
 				break;
 			case "네이버페이":
 				naverPay();
@@ -998,16 +1010,16 @@ body {
 			}
 		}
 		// 카드결제
-		function cardPay(newMerchantUid, memberNum) {
+		function cardPay(merchantUid, memberNum) {
 		    console.log("memberNum:", memberNum); // 이 메시지가 뜨는지 확인
-
+		    const finalAmountForPay = parseInt($("#finalCalculatedAmount").val());
 			/* 콘솔 */
 			console.log({
 			    pg: "kicc",
 			    pay_method: "card",
-			    merchant_uid: newMerchantUid,
+			    merchant_uid: merchantUid,
 			    name: '결제테스트',
-			    amount: <%= totalPrice %>, 
+			    amount: finalAmountForPay, 
 			    buyer_email: $("#email").val(),
 			    buyer_name: $("#name").val(),
 			    buyer_tel: $("#hp").val(),
@@ -1021,9 +1033,9 @@ body {
 			IMP.request_pay({
 				pg: "kicc",
 				pay_method: "card",
-				merchant_uid: newMerchantUid,
+				merchant_uid: merchantUid,
 				name: '결제테스트',
-				amount: <%=totalPrice%>,  // 실제 계산된 금액으로 변경
+				amount: finalAmountForPay,  // 실제 계산된 금액으로 변경
 				buyer_email: $("#email").val(),
 			    buyer_name: $("#name").val(),
 			    buyer_tel: $("#hp").val(),

@@ -324,17 +324,37 @@ body {
                let idx = item.data("idx");
 
                $.ajax({
-                  url : "cart/updatecartcnt.jsp",
+                  url : "updatecartcnt.jsp",
                   type : "POST",
                   data : {
                      idx : idx,
                      cnt : val
                   },
-                  success : function() {
-                     console.log("수량 업데이트 완료");
+                  success : function(response) {
+                     console.log("수량 업데이트 완료", response);
+                     // 서버에서 반환된 실제 수량으로 업데이트
+                     input.val(response.actualCnt);
+
+                     // 항목 총액 다시 계산
+                     let newPrice = parseInt(item.find(".item-unit-price").data("price"));
+                     let newItemTotal = newPrice * response.actualCnt;
+                     item.find(".item-total-price").text(newItemTotal.toLocaleString() + "원");
+
+                     // 전체 요약 다시 계산
+                     updateSummary();
+
+                     // 메시지 처리
+                     if (response.message === "limited_by_stock") {
+                        alert("재고 수량이 부족하여 요청하신 수량으로 조정되었습니다.");
+                     } else if (response.message === "min_count_one") {
+                        alert("최소 수량은 1개입니다. 수량이 1개로 조정되었습니다.");
+                     } else if (response.message.startsWith("error")) {
+                         alert("수량 변경 중 오류가 발생했습니다: " + response.message);
+                     }
                   },
-                  error : function() {
-                     alert("수량 변경 실패");
+                  error : function(xhr, status, error) {
+                     alert("수량 변경 실패: " + xhr.responseText);
+                     console.error("수량 변경 실패", status, error, xhr.responseText);
                   }
                });
             });
@@ -428,6 +448,7 @@ body {
 </script>
 </head>
 <%
+System.out.println("[페이지명.jsp] session member_num = " + session.getAttribute("member_num")); 
 String memberId = (String) session.getAttribute("myid"); //id받아오기
 if (memberId == null) {
    // 로그인 후 돌아올 현재 페이지 경로를 redirect 파라미터로 전달
@@ -440,6 +461,7 @@ if (memberId == null) {
 CartListDao cartDao = new CartListDao();
 List<CartListDto> cartItems = cartDao.getCartListByMember(memberId);
 String name = (String) session.getAttribute("name");
+
 %>
 <body>
 

@@ -1,13 +1,14 @@
+<%@page import="java.util.TimeZone"%>
 <%@page import="java.text.NumberFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="data.dto.OrderListDto"%>
 <%@page import="data.dao.OrderListDao"%>
 <%@page import="data.dto.PaymentDto"%>
 <%@page import="data.dao.PaymentDao"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
+System.out.println("[페이지명.jsp] session member_num = " + session.getAttribute("member_num"));
+
 String orderCode = request.getParameter("order_code"); // URL에서 주문번호 받기
 
 OrderListDao orderDao = new OrderListDao();
@@ -24,6 +25,17 @@ if (order == null || payment == null) {
 
 NumberFormat nf = NumberFormat.getInstance();
 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+
+// 주문 상태별 컬러 설정
+String status = order.getOrderStatus();
+String badgeClass = "bg-secondary";
+if ("주문접수".equals(status)) badgeClass = "bg-info";
+else if ("결제완료".equals(status)) badgeClass = "bg-success";
+else if ("배송중".equals(status)) badgeClass = "bg-primary";
+else if ("배송완료".equals(status)) badgeClass = "bg-secondary";
+else if ("반품접수".equals(status)) badgeClass = "bg-danger";
+else if ("구매확정".equals(status)) badgeClass = "bg-warning text-dark"; // 노랑
 
 // 합계, 배송비, 결제금액 계산
 int total = 0;
@@ -34,23 +46,17 @@ int deliveryFee = (total >= 100000) ? 0 : 3000;
 int totalPay = total + deliveryFee;
 %>
 <!DOCTYPE html>
-
 <html>
 <head>
 <meta charset="UTF-8">
 <title>주문 상세</title>
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-	rel="stylesheet">
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
-	rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <style>
 body {
 	background: #f8f9fa;
 }
-
 .order-container {
 	max-width: 800px;
 	margin: 40px auto;
@@ -59,106 +65,56 @@ body {
 	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
 	padding: 30px;
 }
-
-.order-title {
-	font-size: 2rem;
-	font-weight: bold;
-}
-
-.section-title {
-	font-size: 1.2rem;
-	font-weight: bold;
-	margin-top: 30px;
-}
-
-.table th, .table td {
-	vertical-align: middle;
-}
-
+.order-title { font-size: 2rem; font-weight: bold; }
+.section-title { font-size: 1.2rem; font-weight: bold; margin-top: 30px; }
+.table th, .table td { vertical-align: middle; }
 .order-delete-btn {
-	border: 1px solid #d66;
-	background: #fff;
-	color: #c44;
-	border-radius: 5px;
-	font-size: 0.97rem;
-	padding: 4px 13px;
+	border: 1px solid #d66; background: #fff; color: #c44;
+	border-radius: 5px; font-size: 0.97rem; padding: 4px 13px;
 	transition: background .2s;
 }
-
-.order-delete-btn:hover {
-	background: #ffe7e7;
-}
+.order-delete-btn:hover { background: #ffe7e7; }
 /* 주문 상품 테이블 심플/모던 */
 .table.order-product-table {
 	background: #fff;
 	border-radius: 12px;
 	box-shadow: 0 2px 10px rgba(40, 40, 50, 0.04);
-	overflow: hidden;
-	margin-bottom: 0;
+	overflow: hidden; margin-bottom: 0;
 }
-
 .table.order-product-table th, .table.order-product-table td {
-	border: none;
-	padding: 14px 10px;
-	font-size: 1.01rem;
-	vertical-align: middle;
-	background: none;
+	border: none; padding: 14px 10px; font-size: 1.01rem;
+	vertical-align: middle; background: none;
 }
-
 .table.order-product-table th {
 	background: #f9f9fa;
-	font-weight: 600;
-	color: #252525;
+	font-weight: 600; color: #252525;
 }
-
 .table.order-product-table tbody tr:not(:last-child) {
 	border-bottom: 1px solid #f1f2f5;
 }
-
 .table.order-product-table img {
-	border-radius: 7px;
-	width: 58px;
-	height: 58px;
-	object-fit: cover;
-	border: 1px solid #eee;
-	background: #fafbfc;
+	border-radius: 7px; width: 58px; height: 58px; object-fit: cover;
+	border: 1px solid #eee; background: #fafbfc;
 }
-
-.table.order-product-table tfoot tr th, .table.order-product-table tfoot tr td
-	{
-	background: #fafafc;
-	font-size: 1.09rem;
-	font-weight: 600;
-	border-top: 2px solid #ededed;
-	color: #444;
-	padding-top: 14px;
-	padding-bottom: 14px;
+.table.order-product-table tfoot tr th, .table.order-product-table tfoot tr td {
+	background: #fafafc; font-size: 1.09rem; font-weight: 600;
+	border-top: 2px solid #ededed; color: #444;
+	padding-top: 14px; padding-bottom: 14px;
 }
-
 .table.order-product-table tfoot td.text-danger {
 	color: #e2673d !important;
-	font-size: 1.16rem;
-	text-align: right;
-	font-weight: bold;
+	font-size: 1.16rem; text-align: right; font-weight: bold;
 }
-
-.table.order-product-table tfoot td.text-right {
-	text-align: right;
-}
-.table.order-product-table td,
-.table.order-product-table th {
-    white-space: nowrap;
-}
-
+.table.order-product-table tfoot td.text-right { text-align: right; }
+.table.order-product-table td, .table.order-product-table th { white-space: nowrap; }
 </style>
 </head>
 <body>
+
 	<div class="order-container">
 		<div class="mb-4 d-flex justify-content-between align-items-center">
 			<span class="order-title"><i class="bi bi-receipt"></i> 주문 상세</span>
-			<a href="javascript:window.history.back()"
-				class="btn btn-outline-secondary btn-sm"><i class="bi bi-list"></i>
-				주문목록</a>
+			<a href="javascript:window.history.back()" class="btn btn-outline-secondary btn-sm"><i class="bi bi-list"></i> 주문목록</a>
 		</div>
 		<!-- 주문 기본 정보 -->
 		<div>
@@ -170,15 +126,10 @@ body {
 			<div class="row mb-2">
 				<div class="col-4 text-secondary">주문일시</div>
 				<div class="col-8">
-					<%
-					if (order.getOrderDate() != null) {
-					%>
+
+					<% if (order.getOrderDate() != null) { %>
 					<%=sdf.format(order.getOrderDate())%>
-					<%
-					} else {
-					%>-<%
-					}
-					%>
+					<%} else { %> - <% } %>
 				</div>
 			</div>
 			<div class="row mb-2">
@@ -188,11 +139,10 @@ body {
 			<div class="row mb-2">
 				<div class="col-4 text-secondary">주문상태</div>
 				<div class="col-8">
-					<span class="badge bg-info"><%=order.getOrderStatus()%></span>
+					<span class="badge <%=badgeClass%>"><%=status%></span>
 				</div>
 			</div>
 		</div>
-
 		<!-- 상품 목록 -->
 		<div>
 			<div class="section-title">주문 상품</div>
@@ -204,44 +154,48 @@ body {
 						<th style="width: 60px;">수량</th>
 						<th style="width: 90px;">가격</th>
 						<th style="width: 110px;">합계</th>
+						<th style="width: 100px;">상태</th>
 					</tr>
 				</thead>
 				<tbody>
 					<%
 					if (order.getItems() != null && !order.getItems().isEmpty()) {
 						for (OrderListDto.OrderItem item : order.getItems()) {
+							String itemStatus = item.getStatus();
+							String itemBadgeClass = "bg-secondary";
+							if ("주문접수".equals(itemStatus)) itemBadgeClass = "bg-info";
+							else if ("결제완료".equals(itemStatus)) itemBadgeClass = "bg-success";
+							else if ("반품접수".equals(itemStatus)) itemBadgeClass = "bg-danger";
+							else if ("배송중".equals(itemStatus)) itemBadgeClass = "bg-primary";
+							else if ("배송완료".equals(itemStatus)) itemBadgeClass = "bg-secondary";
+							else if ("구매확정".equals(itemStatus)) itemBadgeClass = "bg-warning text-dark";
 					%>
 					<tr>
-						<td><img src="<%=item.getProductImage()%>"
-							alt="<%=item.getProductName()%>"></td>
+						<td><img src="<%=item.getProductImage()%>" alt="<%=item.getProductName()%>"></td>
 						<td>
 							<div style="font-weight: 500;"><%=item.getProductName()%></div>
 							<div style="color: #888; font-size: .95em;">
-								<%
-								if (item.getColor() != null && !item.getColor().isEmpty()) {
-								%>색상:
-								<%=item.getColor()%>
-								<%
-								}
-								if (item.getSize() != null && !item.getSize().isEmpty()) {
-								%>
-								/ 사이즈:
-								<%=item.getSize()%>
-								<%
-								}
-								%>
+								<% if (item.getColor() != null && !item.getColor().isEmpty()) { %>
+									색상: <%=item.getColor()%>
+								<% } %>
+								<% if (item.getSize() != null && !item.getSize().isEmpty()) { %>
+									/ 사이즈: <%=item.getSize()%>
+								<% } %>
 							</div>
 						</td>
 						<td><%=item.getCnt()%></td>
 						<td><%=nf.format(item.getPrice())%>원</td>
 						<td><%=nf.format(item.getPrice() * item.getCnt())%>원</td>
+						<td>
+							<span class="badge <%=itemBadgeClass%>"><%=itemStatus%></span>
+						</td>
 					</tr>
 					<%
-					}
+						}
 					} else {
 					%>
 					<tr>
-						<td colspan="5" class="text-center">주문 상품 정보가 없습니다.</td>
+						<td colspan="6" class="text-center">주문 상품 정보가 없습니다.</td>
 					</tr>
 					<%
 					}
@@ -263,11 +217,11 @@ body {
 								</span>
 							</div>
 						</td>
+						<td></td>
 					</tr>
 				</tfoot>
 			</table>
 		</div>
-
 		<!-- 배송 정보 -->
 		<%
 			
@@ -280,7 +234,7 @@ body {
 			</div>
 			<div class="row mb-2">
 				<div class="col-4 text-secondary">연락처</div>
-				<div class="col-8"></div>
+				<div class="col-8"><%=payment.getHp() %></div>
 			</div>
 			<div class="row mb-2">
 				<div class="col-4 text-secondary">주소</div>
@@ -291,7 +245,6 @@ body {
 				<div class="col-8"><%=payment.getDelivery_msg()%></div>
 			</div>
 		</div>
-
 		<!-- 결제 정보 -->
 		<div>
 			<div class="section-title">결제 정보</div>
@@ -305,12 +258,6 @@ body {
 					<span class="badge bg-success"><%=payment.getStatus()%></span>
 				</div>
 			</div>
-		</div>
-		<!-- 하단 버튼 -->
-		<div class="mt-4 text-end">
-			<button class="order-delete-btn"
-				onclick="if(confirm('정말로 이 주문을 삭제하시겠습니까?')) { location.href='deleteorder.jsp?order_code=<%=order.getOrderCode()%>' }">주문내역
-				삭제</button>
 		</div>
 	</div>
 </body>
