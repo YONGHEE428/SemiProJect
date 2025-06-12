@@ -2,6 +2,7 @@ package servlet;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public class PaymentService {
     private ProductDao pdao=new ProductDao();
 
     public boolean processPayment(int memberNum, String impUid, String merchantUid, 
-            int expectedAmount, String addr, String deliveryMsg) {
+            int expectedAmount, String addr, String deliveryMsg, String buyerEmail, String buyerName, String hp) {
     	//1. 토큰발급->내부적으로 https://api.iamport.kr/users/getToken API를 호출 자동발급 
         IamportClient client = new IamportClient(API_KEY, API_SECRET);
         
@@ -49,7 +50,17 @@ public class PaymentService {
                 dto.setAddr(addr);
                 dto.setDelivery_msg(deliveryMsg);
                 dto.setStatus("paid");
-
+                dto.setBuyer_email(buyerEmail);
+                dto.setBuyer_name(buyerName);
+                dto.setHp(hp); // PaymentDto에 hp 설정
+                // Cancelled_amount와 Last_refund_date는 초기값을 여기서 설정
+                // 결제 성공 시 초기 환불 금액은 0, 최종 환불 일자는 null
+                dto.setCancelled_amount(0);
+                dto.setLast_refund_date(null);
+                
+                // --- paymentday 설정 추가 ---
+                dto.setPaymentday(new Timestamp(System.currentTimeMillis()));
+                // --- 추가 끝 ---
                 dao.insertPayment(dto);
                 return true;
             } else {

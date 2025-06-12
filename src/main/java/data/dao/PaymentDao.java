@@ -44,6 +44,10 @@ public class PaymentDao {
                 dto.setStatus(rs.getString("status"));
                 dto.setPaymentday(rs.getTimestamp("paymentday"));
                 dto.setHp(rs.getString("hp"));
+                dto.setBuyer_email(rs.getString("buyer_email")); // buyer_email 필드
+                dto.setBuyer_name(rs.getString("buyer_name"));   // buyer_name 필드
+                dto.setPaymentday(rs.getTimestamp("paymentday"));
+                dto.setLast_refund_date(rs.getTimestamp("last_refund_date"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -59,8 +63,8 @@ public class PaymentDao {
         Connection conn = db.getConnection();
         PreparedStatement pstmt = null;
         
-        String sql = "INSERT INTO payment (imp_uid, merchant_uid, member_num, amount, addr, delivery_msg, status, paymentday, cancelled_amount, last_refund_date)"
-        		+ " VALUES (?,?,?,?,?,?,?,?,?,?)"; // <-- SQL 쿼리 수정!
+        String sql = "INSERT INTO payment (imp_uid, merchant_uid, member_num, amount, cancelled_amount, addr, delivery_msg, status, hp, buyer_email, buyer_name, paymentday, last_refund_date) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; 
         
         try {
         	 pstmt = conn.prepareStatement(sql);
@@ -68,20 +72,15 @@ public class PaymentDao {
              pstmt.setString(2, dto.getMerchant_uid());
              pstmt.setInt(3, dto.getMember_num());
              pstmt.setInt(4, dto.getAmount());
-             pstmt.setString(5, dto.getAddr());
-             pstmt.setString(6, dto.getDelivery_msg());
-             pstmt.setString(7, dto.getStatus());
-             
-             // paymentday 설정
-             java.sql.Timestamp paymentTimestamp = new java.sql.Timestamp(System.currentTimeMillis());
-             pstmt.setTimestamp(8, paymentTimestamp); 
-
-             // 환불된 값 cancelled_amount 컬럼 값 설정 (초기값 0)
-             pstmt.setInt(9, dto.getCancelled_amount()); // DTO에 해당 Getter/Setter가 있어야 합니다. (초기에는 0)
-
-             // 새로 추가된 last_refund_date 컬럼 값 설정 (초기값 NULL)
-             // DTO에서 last_refund_date가 null인 경우 null로 설정
-             pstmt.setTimestamp(10, dto.getLast_refund_date()); // DTO에 해당 Getter/Setter가 있어야 합니다. (초기에는 null)
+             pstmt.setInt(5, dto.getCancelled_amount()); // cancelled_amount 설정
+             pstmt.setString(6, dto.getAddr());
+             pstmt.setString(7, dto.getDelivery_msg());
+             pstmt.setString(8, dto.getStatus());
+             pstmt.setString(9, dto.getHp());               // hp 값 설정
+             pstmt.setString(10, dto.getBuyer_email());     // buyer_email 설정
+             pstmt.setString(11, dto.getBuyer_name());      // buyer_name 설정
+             pstmt.setTimestamp(12, dto.getPaymentday());   // paymentday 설정
+             pstmt.setTimestamp(13, dto.getLast_refund_date()); // last_refund_date 설정
              
              pstmt.execute();
         } catch (SQLException e) {
@@ -279,34 +278,86 @@ public class PaymentDao {
     }
 
 	// 반품창에서 써야하는 id값조회
-    public PaymentDto getPaymentByIdx(String idx) {
+    public PaymentDto getPaymentByIdx(int idx) throws SQLException { 
+    	Connection conn=db.getConnection();
+    	
         PaymentDto dto = null;
-        Connection conn = db.getConnection();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         String sql = "SELECT p.*, m.hp FROM payment p JOIN member m ON p.member_num = m.num WHERE p.idx = ?";
         try {
             pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, idx);
+            pstmt.setInt(1, idx);
             rs = pstmt.executeQuery();
             if (rs.next()) {
                 dto = new PaymentDto();
-                dto.setIdx(rs.getString("idx"));
+                // idx가 String이라면 rs.getString("idx") 유지, 아니면 rs.getInt("idx")
+                dto.setIdx(rs.getString("idx")); // Dto의 idx가 String인 경우
+                // dto.setIdx(String.valueOf(rs.getInt("idx"))); // Dto의 idx가 String이고 DB가 int인 경우
                 dto.setImp_uid(rs.getString("imp_uid"));
                 dto.setMerchant_uid(rs.getString("merchant_uid"));
                 dto.setMember_num(rs.getInt("member_num"));
                 dto.setAmount(rs.getInt("amount"));
+                dto.setCancelled_amount(rs.getInt("cancelled_amount")); // 추가된 필드 설정
                 dto.setAddr(rs.getString("addr"));
                 dto.setDelivery_msg(rs.getString("delivery_msg"));
                 dto.setStatus(rs.getString("status"));
                 dto.setPaymentday(rs.getTimestamp("paymentday"));
+                dto.setLast_refund_date(rs.getTimestamp("last_refund_date")); // 추가된 필드 설정
                 dto.setHp(rs.getString("hp"));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         } finally {
-            db.dbClose(rs, pstmt, conn);
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+            // Connection은 여기서 닫지 않음
         }
         return dto;
     }
+    
+    // 환불 처리 시 payment 테이블의 cancelled_amount와 status, last_refund_date 업데이트
+    public void updatePaymentForRefund(int paymentIdx, int newCancelledAmount, String newPaymentStatus, Connection conn) throws SQLException {
+        PreparedStatement pstmt = null;
+        String sql = "UPDATE payment SET cancelled_amount = ?, last_refund_date = CURRENT_TIMESTAMP, status = ? WHERE idx = ?";
+
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, newCancelledAmount);
+            pstmt.setString(2, newPaymentStatus);
+            pstmt.setInt(3, paymentIdx);
+            pstmt.executeUpdate();
+        } finally {
+            if (pstmt != null) {
+                pstmt.close();
+            }
+            // Connection은 여기서 닫지 않음
+        }
+    }
+    //member_num별 가장 최근 결제주소 조회 메서드
+    public PaymentDto getLatestPaymentDetailsByMemberNum(int memberNum) {
+    	Connection conn=db.getConnection();
+    	PreparedStatement pstmt=null;
+    	ResultSet rs=null;
+    	PaymentDto dto=null;
+    	
+    	String sql= "SELECT addr " +
+                "FROM payment " +
+                "WHERE member_num = ? " +
+                "ORDER BY paymentday DESC " +
+                "LIMIT 1"; // 가장 최신 1건만 가져오기
+    	try {
+			pstmt=conn.prepareStatement(sql);
+			pstmt.setInt(1, memberNum);
+			rs=pstmt.executeQuery();
+			
+			if(rs.next()) {
+				dto=new PaymentDto();
+				dto.setAddr(rs.getString("addr"));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}db.dbClose(rs, pstmt, conn);
+    	return dto;
+    }
+    
 }

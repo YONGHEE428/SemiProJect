@@ -1,3 +1,5 @@
+<%@page import="data.dao.PaymentDao"%>
+<%@page import="data.dto.PaymentDto"%>
 <%@page import="java.util.UUID"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="data.dto.MemberDto"%>
@@ -535,6 +537,29 @@ body {
 	        System.err.println("세션 'num' 값이 유효한 숫자가 아닙니다: " + memberNumStr);
 	    }
 	}
+		PaymentDto pdto=null;
+		String recentPostcode = "";
+		String recentMainAddress = "";
+		String recentDtlAddress = "";
+		 if (member_num != null) {
+		        PaymentDao pdao = new PaymentDao();
+		        pdto = pdao.getLatestPaymentDetailsByMemberNum(member_num.intValue());
+		        
+		        if (pdto != null) {
+		            String recentAddr = pdto.getAddr() != null ? pdto.getAddr() : "";
+		            String[] addrParts = recentAddr.split(",", 3);
+		            
+		            if (addrParts.length > 0) {
+		                recentPostcode = addrParts[0].trim(); // 첫 번째 부분은 우편번호
+		            }
+		            if (addrParts.length > 1) {
+		                recentMainAddress = addrParts[1].trim(); // 두 번째 부분은 기본 주소
+		            }
+		            if (addrParts.length > 2) {
+		                recentDtlAddress = addrParts[2].trim(); // 세 번째 부분은 상세 주소
+		            }
+		        }
+		    }
 	%>
 	<header>
 		<div class="top-header">
@@ -638,6 +663,10 @@ body {
 								id="canceladdress">
 								<i class="bi bi-x-lg"></i> 취소
 							</button>
+							<div class="form-check">
+								<input type="checkbox" class="form-check-input" id="sameaddr">
+								<label class="form-check-label" for="sameaddress">최근 배송지</label>
+							</div>
 						</div>
 					</div>
 					<!-- 우편번호 -->
@@ -857,11 +886,29 @@ body {
 
             // 주소 초기화
             $("#canceladdress").click(function(){
-                $("#userPostCode").val("");
+                
                 $("#userAddress").val("");
                 $("#userDtlAddress").val("").prop("readonly", true);
             });
-
+            
+            const recentPostcode = "<%= recentPostcode %>";
+            const recentMainAddr = "<%= recentMainAddress %>";
+            const recentDtlAddr = "<%= recentDtlAddress %>";
+            //최근배송지 클릭
+            $("#sameaddr").click(function(){
+            	if($(this).is(":checked")){
+            		$("#userPostCode").val(recentPostcode);
+                	$("#userAddress").val(recentMainAddr);
+                	 $("#userDtlAddress").val(recentDtlAddr);
+						} else {
+							$("#userPostCode").val("");
+							$("#userAddress").val("");
+			                $("#userDtlAddress").val("").prop("readonly", true);
+						}
+					});
+            		
+           
+            
             // 회원정보 동일
             $("#sameinfo").click(function(){
                 if($(this).is(":checked")){
@@ -1023,8 +1070,8 @@ console.log("미리 생성된 상점 주문번호:", preGeneratedMerchantUid);
 			    buyer_email: $("#email").val(),
 			    buyer_name: $("#name").val(),
 			    buyer_tel: $("#hp").val(),
-			    buyer_addr: $("#userAddress").val()+$("#userDtlAddress").val(),
-			    buyer_postcode: $("#userPostCode").val()				
+			    buyer_addr: $("#userAddress").val()+","+$("#userDtlAddress").val()+","+$("#userPostCode").val()
+			    				
 			});
 		    
 			var IMP = window.IMP;
@@ -1039,9 +1086,7 @@ console.log("미리 생성된 상점 주문번호:", preGeneratedMerchantUid);
 				buyer_email: $("#email").val(),
 			    buyer_name: $("#name").val(),
 			    buyer_tel: $("#hp").val(),
-				buyer_addr: $("#userAddress").val()+$("#userDtlAddress").val(),
-				buyer_postcode: $("#userPostCode").val(),
-
+				buyer_addr: $("#userPostCode").val()+","+$("#userAddress").val()+","+$("#userDtlAddress").val(),
 			}, function(rsp) {
 
 			    if (rsp.success) {
@@ -1059,14 +1104,15 @@ console.log("미리 생성된 상점 주문번호:", preGeneratedMerchantUid);
 			                "merchant_uid": rsp.merchant_uid, // 상점 주문번호
 			                "amount": rsp.paid_amount,        // 실제 결제된 금액
 			                "addr": rsp.buyer_addr,           // 구매자 주소
-			                "delivery_msg": deliveryMessage   // 배송 메시지
+			                "delivery_msg": deliveryMessage,   // 배송 메시지
+			                "buyer_email": rsp.buyer_email,   // 구매자 이메일 파라미터 추가
+			                "buyer_name": rsp.buyer_name,      // 구매자 이름 파라미터 추가
+			                "hp": rsp.buyer_tel
 			            },
 			            success: function(verifyResponse) {
 			                if (verifyResponse.status === "success") {
 			                	// 서버에서 전달받은 memberNum을 추출
 		                        // PaymentVerifyServlet에서 success 시 memberNum을 응답에 포함하도록 수정했음
-		                        const verifiedMemberNum = verifyResponse.memberNum;
-			                	
 			                    // 2단계: 결제 검증 성공 후 주문 처리
 			                    processOrder(rsp, deliveryMessage,memberNum);
 			                } else {
