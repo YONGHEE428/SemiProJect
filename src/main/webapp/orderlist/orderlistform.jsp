@@ -21,6 +21,7 @@
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <title>주문 목록</title>
 <style>
 body {
@@ -314,10 +315,7 @@ body {
 <%
 System.out.println("[페이지명.jsp] session member_num = " + session.getAttribute("member_num"));
 
-
-
 String root = request.getContextPath();
-
 String memberId = (String) session.getAttribute("myid");
 String name = (String) session.getAttribute("name");
 
@@ -396,7 +394,6 @@ PaymentDao paymentDao = new PaymentDao();
 				String dateStr = sdf.format(order.getOrderDate());
 			%>
 			<div class="order-box">
-
 				<div class="order-header-bar">
 					<span class="order-status-label"> 주문내역 / <%=sdf.format(order.getOrderDate())%>
 					</span>
@@ -461,7 +458,7 @@ PaymentDao paymentDao = new PaymentDao();
 							<%
 							if (!"반품접수".equals(status)) {
 							%>
-							<button class="btn btn-outline-secondary btn-sm">리뷰작성</button>
+							<button type="button" class="btn btn-outline-info btn-sm" onclick="openReviewModal('<%=order.getOrderId()%>')">리뷰작성</button>
 							<a
 								href="orderlist/takeback.jsp?order_id=<%=order.getOrderId()%>&payment_idx=<%=payment.getIdx()%>&order_sangpum_id=<%=item.getOrderSangpumId()%>"
 								class="btn btn-outline-danger btn-sm">반품신청</a>
@@ -476,7 +473,6 @@ PaymentDao paymentDao = new PaymentDao();
 				<%
 				}
 				%>
-
 			</div>
 			<%
 			}
@@ -497,5 +493,21 @@ PaymentDao paymentDao = new PaymentDao();
 		%>
 	</div>
 	</div>
+
+	<script>
+	function openReviewModal(orderId) {
+	    // 기존 모달 컨테이너가 있다면 제거
+	    $("#reviewModalContainer").remove();
+	    
+	    // 모달 컨테이너 생성
+	    $("body").append("<div id='reviewModalContainer'></div>");
+	    
+	    // reviewwrite.jsp 로드
+	    $("#reviewModalContainer").load("<%=request.getContextPath()%>/shop/reviewwrite.jsp?orderId=" + orderId, function() {
+	        // 로드 완료 후 모달 표시
+	        $("#reviewModal").show();
+	    });
+	}
+	</script>
 </body>
 </html>

@@ -350,4 +350,34 @@ public class OrderListDao {
 	    }
 	}
 
+	public Map<String, Object> getOrderProductInfo(String orderId) {
+	    Map<String, Object> orderInfo = new HashMap<>();
+	    Connection conn = db.getConnection();
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    
+	    String sql = "SELECT s.order_sangpum_id, s.product_id, s.option_id, o.color, o.size " +
+	                "FROM order_sangpum s " +
+	                "JOIN product_option o ON s.option_id = o.option_id " +
+	                "WHERE s.order_id=?";
+	    
+	    try {
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, orderId);
+	        rs = pstmt.executeQuery();
+	        
+	        if(rs.next()) {
+	            orderInfo.put("product_id", rs.getString("product_id"));
+	            orderInfo.put("color", rs.getString("color"));
+	            orderInfo.put("size", rs.getString("size"));
+	        }
+	    } catch(SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        db.dbClose(rs, pstmt, conn);
+	    }
+	    
+	    return orderInfo;
+	}
+
 }
