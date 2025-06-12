@@ -111,7 +111,6 @@ body { background: #f8f9fa; }
 		margin-bottom: 8px;
 	}
 }
-
 </style>
 </head>
 <body>
@@ -139,24 +138,47 @@ body { background: #f8f9fa; }
 			<div class="col-4 text-secondary">주문자</div>
 			<div class="col-8"><%=item.getMemberName()%></div>
 		</div>
+		<div class="row mb-2">
+			<div class="col-4 text-secondary">주문상태</div>
+			<div class="col-8">
+				<span class="badge <%=badgeClass%>"><%=status%></span>
+			</div>
+		</div>
+	</div>
 
-		<!-- 배송 정보 -->
-		<%
-			
-		%>
-		<div>
-			<div class="section-title">배송 정보</div>
-			<div class="row mb-2">
-				<div class="col-4 text-secondary">수령인</div>
-				<div class="col-8"><%=payment.getBuyer_name()%></div>
+	<!-- 주문 상품 상세 (1개) -->
+	<div>
+		<div class="section-title">주문 상품</div>
+		<div class="product-simple-box d-flex align-items-center mb-4">
+			<!-- 이미지 -->
+			<img src="<%=item.getProductImage()%>" class="product-image me-4" alt="상품 이미지">
+			<!-- 상품 정보 -->
+			<div class="product-info-area flex-grow-1">
+				<div class="product-name mb-1"><%=item.getProductName()%></div>
+				<div class="product-option mb-1"><%=item.getColor()%> / <%=item.getSize()%></div>
+				<div class="product-meta">
+					수량: <b><%=item.getCnt()%></b>
+					&nbsp;|&nbsp; 단가: <b><span class="price-strong"><%=nf.format(item.getPrice())%>원</span></b>
+					&nbsp;|&nbsp; 총 금액: <b><span class="sum-strong"><%=nf.format(item.getPrice() * item.getCnt())%>원</span></b>
+				</div>
 			</div>
-			<div class="row mb-2">
-				<div class="col-4 text-secondary">연락처</div>
-				<div class="col-8"><%=payment.getHp() %></div>
-			</div>
-			<div class="row mb-2">
-				<div class="col-4 text-secondary">주소</div>
-				<div class="col-8">
+		</div>
+	</div>
+
+	<!-- 배송 정보 -->
+	<div>
+		<div class="section-title">배송 정보</div>
+		<div class="row mb-2">
+			<div class="col-4 text-secondary">수령인</div>
+			<div class="col-8"><%=payment.getBuyer_name()%></div>
+		</div>
+		<div class="row mb-2">
+			<div class="col-4 text-secondary">연락처</div>
+			<div class="col-8"><%=payment.getHp() %></div>
+		</div>
+		<div class="row mb-2">
+			<div class="col-4 text-secondary">주소</div>
+			<div class="col-8">
 				<%
 					// --- 주소 포맷팅 로직 시작 ---
 					String fullAddress = payment.getAddr();
@@ -181,80 +203,15 @@ body { background: #f8f9fa; }
 						out.print("-"); // 주소 정보가 없을 경우
 					}
 					// --- 주소 포맷팅 로직 끝 ---
-					%>
-				</div>
+				%>
 			</div>
-			<div class="row mb-2">
-				<div class="col-4 text-secondary">배송메시지</div>
-				<div class="col-8"><%=payment.getDelivery_msg()%></div>
-			</div>
-		</div>
-		<!-- 결제 정보 -->
-		<div>
-			<div class="section-title">결제 정보</div>
-			<div class="row mb-2">
-				<div class="col-4 text-secondary">결제수단</div>
-				<div class="col-8">신용카드</div>
-			</div>
-			<div class="row mb-2">
-				<div class="col-4 text-secondary">결제상태</div>
-				<div class="col-8">
-					<span class="badge bg-success"><%=payment.getStatus()%></span>
-				</div>
-
-		<div class="row mb-2">
-			<div class="col-4 text-secondary">주문상태</div>
-			<div class="col-8">
-				<span class="badge <%=badgeClass%>"><%=status%></span>
-
-			</div>
-		</div>
-	</div>
-	<!-- 주문 상품 상세 (1개) -->
-	<div>
-	<div>
-	
-	<div class="section-title">주문 상품</div>
-<div class="product-simple-box d-flex align-items-center mb-4">
-    <!-- 이미지 -->
-    <img src="<%=item.getProductImage()%>" class="product-image me-4" alt="상품 이미지">
-    <!-- 상품 정보 -->
-    <div class="product-info-area flex-grow-1">
-        <div class="product-name mb-1"><%=item.getProductName()%></div>
-        <div class="product-option mb-1"><%=item.getColor()%> / <%=item.getSize()%></div>
-        <div class="product-meta">
-            수량: <b><%=item.getCnt()%></b>
-            &nbsp;|&nbsp; 단가: <b><span class="price-strong"><%=nf.format(item.getPrice())%>원</span></b>
-            &nbsp;|&nbsp; 총 금액: <b><span class="sum-strong"><%=nf.format(item.getPrice() * item.getCnt())%>원</span></b>
-        </div>
-    </div>
-</div>
-
-
-
-</div>
-
-	</div>
-	<!-- 배송 정보 -->
-	<div>
-		<div class="section-title">배송 정보</div>
-		<div class="row mb-2">
-			<div class="col-4 text-secondary">수령인</div>
-			<div class="col-8"><%=item.getMemberName()%></div>
-		</div>
-		<div class="row mb-2">
-			<div class="col-4 text-secondary">연락처</div>
-			<div class="col-8"><%=payment.getHp() %></div>
-		</div>
-		<div class="row mb-2">
-			<div class="col-4 text-secondary">주소</div>
-			<div class="col-8"><%=payment.getAddr()%></div>
 		</div>
 		<div class="row mb-2">
 			<div class="col-4 text-secondary">배송메시지</div>
 			<div class="col-8"><%=payment.getDelivery_msg()%></div>
 		</div>
 	</div>
+
 	<!-- 결제 정보 -->
 	<div>
 		<div class="section-title">결제 정보</div>
@@ -268,6 +225,7 @@ body { background: #f8f9fa; }
 				<span class="badge bg-success"><%=payment.getStatus()%></span>
 			</div>
 		</div>
+		
 	</div>
 </div>
 </body>
