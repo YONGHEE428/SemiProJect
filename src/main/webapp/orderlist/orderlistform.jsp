@@ -316,7 +316,7 @@ body {
 
 System.out.println("[페이지명.jsp] session member_num = " + session.getAttribute("member_num"));
 
-
+String root = request.getContextPath();
 String memberId = (String) session.getAttribute("myid");
 String name = (String) session.getAttribute("name");
 
@@ -394,6 +394,7 @@ PaymentDao paymentDao = new PaymentDao();
 			    String dateStr = sdf.format(order.getOrderDate());
 			%>
 			<div class="order-box">
+
 			    <div class="order-header-bar">
 			        <span class="order-status-label">
 			            <%=order.getOrderStatus()%> / <%=sdf.format(order.getOrderDate())%>
@@ -456,6 +457,7 @@ PaymentDao paymentDao = new PaymentDao();
 			    <%
 			        }
 			    %>
+
 			</div>
 			<%
 			}
