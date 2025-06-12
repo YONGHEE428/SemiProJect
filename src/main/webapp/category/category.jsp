@@ -272,7 +272,8 @@ $(function () {
                         "</div>" +
                         "</div>";
                         //item.productId 포함하면 빨간색으로 하트 색상 변경
-                        if (productIds.includes(item.productId)) {
+                        // ✨ 널 체크 추가: productIds와 item.productId가 유효한지 확인
+                        if (productIds && Array.isArray(productIds) && item.productId != null && productIds.includes(item.productId)) {
                             const heartIcon = el.querySelector(".heart");
                             if (heartIcon) {
                                 heartIcon.classList.remove("bi-heart");
@@ -332,7 +333,7 @@ $(function () {
                             "</div>" +
                             "</div>" +
                             "</div>";
-                            if (productIds.includes(item.productId)) {
+                            if (productIds && Array.isArray(productIds) && item.productId != null && productIds.includes(item.productId)) {
                                 const heartIcon = el.querySelector(".heart");
                                 if (heartIcon) {
                                     heartIcon.classList.remove("bi-heart");
