@@ -21,6 +21,7 @@
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <title>주문 목록</title>
 <style>
 body {
@@ -312,13 +313,9 @@ body {
 </script>
 </head>
 <%
-
-
 System.out.println("[페이지명.jsp] session member_num = " + session.getAttribute("member_num"));
 
-
 String root = request.getContextPath();
-
 String memberId = (String) session.getAttribute("myid");
 String name = (String) session.getAttribute("name");
 
@@ -337,7 +334,8 @@ OrderListDao dao = new OrderListDao();
 List<OrderListDto> orderList = dao.getOrdersByMember(memberNum);
 
 String keyword = request.getParameter("keyword");
-if (keyword == null) keyword = "";
+if (keyword == null)
+	keyword = "";
 keyword = keyword.trim();
 
 PaymentDao paymentDao = new PaymentDao();
@@ -379,107 +377,137 @@ PaymentDao paymentDao = new PaymentDao();
 		<div class="order-list-section">
 			<%
 			boolean hasResult = false;
-			
-			for (OrderListDto order : orderList) {
-			    List<OrderListDto.OrderItem> filteredItems = new ArrayList<>();
-			    for (OrderListDto.OrderItem item : order.getItems()) {
-			        String productName = item.getProductName();
-			        if (keyword.isEmpty() || (productName != null && productName.toLowerCase().contains(keyword.toLowerCase()))) {
-			            filteredItems.add(item);
-			        }
-			    }
-			    if (filteredItems.size() == 0)
-			        continue;
 
-			    hasResult = true;
-			    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-			    String dateStr = sdf.format(order.getOrderDate());
+			for (OrderListDto order : orderList) {
+				List<OrderListDto.OrderItem> filteredItems = new ArrayList<>();
+				for (OrderListDto.OrderItem item : order.getItems()) {
+					String productName = item.getProductName();
+					if (keyword.isEmpty() || (productName != null && productName.toLowerCase().contains(keyword.toLowerCase()))) {
+				filteredItems.add(item);
+					}
+				}
+				if (filteredItems.size() == 0)
+					continue;
+
+				hasResult = true;
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+				String dateStr = sdf.format(order.getOrderDate());
 			%>
 			<div class="order-box">
+				<div class="order-header-bar">
+					<span class="order-status-label"> 주문내역 / <%=sdf.format(order.getOrderDate())%>
+					</span>
+				</div>
+				<%
+				for (OrderListDto.OrderItem item : filteredItems) {
+					data.dto.PaymentDto payment = paymentDao.getPaymentByOrderCode(order.getOrderCode());
+					// 상태별 컬러 배지 클래스 결정
+					String status = item.getStatus();
+					String badgeClass = "bg-secondary";
+					if ("주문접수".equals(status))
+						badgeClass = "bg-info";
+					else if ("결제완료".equals(status))
+						badgeClass = "bg-success";
+					else if ("반품접수".equals(status))
+						badgeClass = "bg-danger";
+					else if ("배송중".equals(status))
+						badgeClass = "bg-primary";
+					else if ("배송완료".equals(status))
+						badgeClass = "bg-secondary";
+					else if ("구매확정".equals(status))
+						badgeClass = "bg-warning text-dark";
+				%>
+				<div class="order-item-box">
+					<div class="order-content-row">
+						<div class="order-thumb-box">
+							<a
+								href="index.jsp?main=shop/sangpumpage.jsp&product_id=<%=item.getProductId()%>">
+								<img
+								src="<%=item.getProductImage() != null ? item.getProductImage() : "https://via.placeholder.com/90x90.png?text=이미지"%>"
+								alt="상품이미지"
+								style="width: 80px; height: 80px; object-fit: cover;">
+							</a>
+						</div>
+						<div class="order-prod-info">
+							<div class="order-prod-title">
+								<a
+									href="index.jsp?main=shop/sangpumpage.jsp&product_id=<%=item.getProductId()%>">
+									<%=item.getProductName()%>
+								</a>
+							</div>
+							<div class="order-prod-desc">
+								<%=item.getColor()%>
+								/
+								<%=item.getSize()%>
+								<span style="margin-left: 12px; font-size: 0.98em; color: #888;">
+									수량: <%=item.getCnt()%>
+								</span>
+							</div>
+							<div class="order-prod-price-row">
+								<span class="order-prod-price"> <%=NumberFormat.getInstance().format(item.getPrice())%>원
+								</span>
+								<!-- 상태 컬러 강조 (badge) -->
+								<span class="badge <%=badgeClass%>"> <%=status%>
+								</span>
+							</div>
+						</div>
+						<div class="order-actions-col">
+							<button class="btn btn-outline-secondary btn-sm"
+								onclick="location.href='orderlist/detailform.jsp?order_sangpum_id=<%=item.getOrderSangpumId()%>'">
+								주문상세</button>
+							<%
+							if (!"반품접수".equals(status)) {
+							%>
+							<button type="button" class="btn btn-outline-info btn-sm" onclick="openReviewModal('<%=order.getOrderId()%>')">리뷰작성</button>
+							<a
+								href="orderlist/takeback.jsp?order_id=<%=order.getOrderId()%>&payment_idx=<%=payment.getIdx()%>&order_sangpum_id=<%=item.getOrderSangpumId()%>"
+								class="btn btn-outline-danger btn-sm">반품신청</a>
+							<%
+							}
+							%>
+						</div>
 
-			    <div class="order-header-bar">
-			        <span class="order-status-label">
-			            <%=order.getOrderStatus()%> / <%=sdf.format(order.getOrderDate())%>
-			        </span>
-			    </div>
-			    <%
-			    for (OrderListDto.OrderItem item : filteredItems) {
-			        data.dto.PaymentDto payment = paymentDao.getPaymentByOrderCode(order.getOrderCode());
-			        // 상태별 컬러 배지 클래스 결정
-			        String status = item.getStatus();
-			        String badgeClass = "bg-secondary";
-			        if ("주문접수".equals(status)) badgeClass = "bg-info";
-			        else if ("결제완료".equals(status)) badgeClass = "bg-success";
-			        else if ("반품접수".equals(status)) badgeClass = "bg-danger";
-			        else if ("배송중".equals(status)) badgeClass = "bg-primary";
-			        else if ("배송완료".equals(status)) badgeClass = "bg-secondary";
-			        else if ("구매확정".equals(status)) badgeClass = "bg-warning text-dark";
-			    %>
-			    <div class="order-item-box">
-			        <div class="order-content-row">
-			            <div class="order-thumb-box">
-			                <a href="index.jsp?main=shop/sangpumpage.jsp&product_id=<%=item.getProductId()%>">
-			                    <img src="<%=item.getProductImage() != null ? item.getProductImage() : "https://via.placeholder.com/90x90.png?text=이미지"%>"
-			                         alt="상품이미지" style="width: 80px; height: 80px; object-fit: cover;">
-			                </a>
-			            </div>
-			            <div class="order-prod-info">
-			                <div class="order-prod-title">
-			                    <a href="index.jsp?main=shop/sangpumpage.jsp&product_id=<%=item.getProductId()%>">
-			                        <%=item.getProductName()%>
-			                    </a>
-			                </div>
-			                <div class="order-prod-desc">
-			                    <%=item.getColor()%> / <%=item.getSize()%>
-			                    <span style="margin-left: 12px; font-size: 0.98em; color: #888;">
-			                        수량: <%=item.getCnt()%>
-			                    </span>
-			                </div>
-			                <div class="order-prod-price-row">
-			                    <span class="order-prod-price">
-			                        <%=NumberFormat.getInstance().format(item.getPrice())%>원
-			                    </span>
-			                    <!-- 상태 컬러 강조 (badge) -->
-			                    <span class="badge <%=badgeClass%>">
-			                        <%= status %>
-			                    </span>
-			                </div>
-			            </div>
-			            <div class="order-actions-col">
-			                <button class="btn btn-outline-secondary btn-sm"
-			                    onclick="location.href='orderlist/detailform.jsp?order_code=<%=order.getOrderCode()%>'">
-			                    주문상세
-			                </button>
-			                <button class="btn btn-outline-secondary btn-sm">리뷰작성</button>
-			                <a href="orderlist/takeback.jsp?order_id=<%=order.getOrderId()%>&payment_idx=<%=payment.getIdx()%>&order_sangpum_id=<%=item.getOrderSangpumId()%>"
-			                   class="btn btn-outline-danger btn-sm">반품신청</a>
-			            </div>
-			        </div>
-			    </div>
-			    <%
-			        }
-			    %>
 
-			</div>
-			<%
-			}
-			%>
-			</div>
-			<%
-			
-			if (!hasResult) {
-			%>
-			<div class="empty-order">
-				<i class="bi bi-box"></i>
-				<p>주문 내역이 없습니다.</p>
-				<p>새로운 상품을 구매해보세요.</p>
-				<a href="<%=root%>/index.jsp?main=category/category.jsp" class="continue-shopping">쇼핑
-					계속하기</a>
+					</div>
+				</div>
+				<%
+				}
+				%>
 			</div>
 			<%
 			}
 			%>
 		</div>
+		<%
+		if (!hasResult) {
+		%>
+		<div class="empty-order">
+			<i class="bi bi-box"></i>
+			<p>주문 내역이 없습니다.</p>
+			<p>새로운 상품을 구매해보세요.</p>
+			<a href="<%=root%>/index.jsp?main=category/category.jsp"
+				class="continue-shopping">쇼핑 계속하기</a>
+		</div>
+		<%
+		}
+		%>
 	</div>
+	</div>
+
+	<script>
+	function openReviewModal(orderId) {
+	    // 기존 모달 컨테이너가 있다면 제거
+	    $("#reviewModalContainer").remove();
+	    
+	    // 모달 컨테이너 생성
+	    $("body").append("<div id='reviewModalContainer'></div>");
+	    
+	    // reviewwrite.jsp 로드
+	    $("#reviewModalContainer").load("<%=request.getContextPath()%>/shop/reviewwrite.jsp?orderId=" + orderId, function() {
+	        // 로드 완료 후 모달 표시
+	        $("#reviewModal").show();
+	    });
+	}
+	</script>
 </body>
 </html>

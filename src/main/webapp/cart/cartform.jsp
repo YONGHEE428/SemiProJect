@@ -324,7 +324,7 @@ body {
                let idx = item.data("idx");
 
                $.ajax({
-                  url : "updatecartcnt.jsp",
+                  url : "cart/updatecartcnt.jsp",
                   type : "POST",
                   data : {
                      idx : idx,
