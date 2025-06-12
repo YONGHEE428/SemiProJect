@@ -18,6 +18,8 @@ public class SubmitReviewServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         
         String options = request.getParameter("purchase_option_size") + " / " + request.getParameter("purchase_option_color");
+        String UserSize = "상의: " + request.getParameter("usual_size_top") + " / 하의: " + request.getParameter("usual_size_bottom");
+        
         ReviewDTO dto = new ReviewDTO();
         dto.setMemberName(request.getParameter("member_name"));
         dto.setPurchaseOption(options);
@@ -27,7 +29,7 @@ public class SubmitReviewServlet extends HttpServlet {
         dto.setSizeComment(request.getParameter("size_comment"));
         dto.setHeight(parseIntOrZero(request.getParameter("height")));
         dto.setWeight(parseIntOrZero(request.getParameter("weight")));
-        dto.setUsualSize(request.getParameter("usual_size"));
+        dto.setUsualSize(UserSize);
 
         // product_id도 받아야 함 (파라미터든 hidden input이든)
         int productId = Integer.parseInt(request.getParameter("product_id"));
