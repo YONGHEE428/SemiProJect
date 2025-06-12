@@ -312,6 +312,10 @@ body {
 </script>
 </head>
 <%
+
+
+System.out.println("[페이지명.jsp] session member_num = " + session.getAttribute("member_num"));
+
 String root = request.getContextPath();
 String memberId = (String) session.getAttribute("myid");
 String name = (String) session.getAttribute("name");
@@ -370,91 +374,97 @@ PaymentDao paymentDao = new PaymentDao();
 				class="btn btn-outline-secondary">전체보기</a>
 		</form>
 
-		<!-- 기간 선택 버튼 ... 생략 ... -->
-
 		<div class="order-list-section">
 			<%
 			boolean hasResult = false;
+			
 			for (OrderListDto order : orderList) {
-				List<OrderListDto.OrderItem> filteredItems = new ArrayList<>();
-				for (OrderListDto.OrderItem item : order.getItems()) {
-					String productName = item.getProductName();
-					if (keyword.isEmpty() || (productName != null && productName.toLowerCase().contains(keyword.toLowerCase()))) {
-				filteredItems.add(item);
-					}
-				}
-				if (filteredItems.size() == 0)
-					continue;
+			    List<OrderListDto.OrderItem> filteredItems = new ArrayList<>();
+			    for (OrderListDto.OrderItem item : order.getItems()) {
+			        String productName = item.getProductName();
+			        if (keyword.isEmpty() || (productName != null && productName.toLowerCase().contains(keyword.toLowerCase()))) {
+			            filteredItems.add(item);
+			        }
+			    }
+			    if (filteredItems.size() == 0)
+			        continue;
 
-				hasResult = true;
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-				//주문일시가 order.getOrderDate() 라고 할 때
-				String dateStr = sdf.format(order.getOrderDate());
+			    hasResult = true;
+			    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			    String dateStr = sdf.format(order.getOrderDate());
 			%>
 			<div class="order-box">
-				<div class="order-header-bar">
-					<span class="order-status-label"> <%=order.getOrderStatus()%>
-						/ <%=sdf.format(order.getOrderDate())%>
 
-					</span>
-					<button class="order-delete-btn"
-						onclick="if(confirm('정말로 이 주문을 삭제하시겠습니까?')) { location.href='deleteorder.jsp?order_code=<%=order.getOrderCode()%>' }">주문내역
-						삭제</button>
-				</div>
-				<%
-				for (OrderListDto.OrderItem item : filteredItems) {
-					
-				    data.dto.PaymentDto payment = paymentDao.getPaymentByOrderCode(order.getOrderCode());
-				%>
-				<div class="order-item-box">
-					<div class="order-content-row">
-						<div class="order-thumb-box">
-							<a
-								href="index.jsp?main=shop/sangpumpage.jsp&product_id=<%=item.getProductId()%>">
-								<img
-								src="<%=item.getProductImage() != null ? item.getProductImage() : "https://via.placeholder.com/90x90.png?text=이미지"%>"
-								alt="상품이미지"
-								style="width: 80px; height: 80px; object-fit: cover;">
-							</a>
-						</div>
+			    <div class="order-header-bar">
+			        <span class="order-status-label">
+			            <%=order.getOrderStatus()%> / <%=sdf.format(order.getOrderDate())%>
+			        </span>
+			    </div>
+			    <%
+			    for (OrderListDto.OrderItem item : filteredItems) {
+			        data.dto.PaymentDto payment = paymentDao.getPaymentByOrderCode(order.getOrderCode());
+			        // 상태별 컬러 배지 클래스 결정
+			        String status = item.getStatus();
+			        String badgeClass = "bg-secondary";
+			        if ("주문접수".equals(status)) badgeClass = "bg-info";
+			        else if ("결제완료".equals(status)) badgeClass = "bg-success";
+			        else if ("반품접수".equals(status)) badgeClass = "bg-danger";
+			        else if ("배송중".equals(status)) badgeClass = "bg-primary";
+			        else if ("배송완료".equals(status)) badgeClass = "bg-secondary";
+			        else if ("구매확정".equals(status)) badgeClass = "bg-warning text-dark";
+			    %>
+			    <div class="order-item-box">
+			        <div class="order-content-row">
+			            <div class="order-thumb-box">
+			                <a href="index.jsp?main=shop/sangpumpage.jsp&product_id=<%=item.getProductId()%>">
+			                    <img src="<%=item.getProductImage() != null ? item.getProductImage() : "https://via.placeholder.com/90x90.png?text=이미지"%>"
+			                         alt="상품이미지" style="width: 80px; height: 80px; object-fit: cover;">
+			                </a>
+			            </div>
+			            <div class="order-prod-info">
+			                <div class="order-prod-title">
+			                    <a href="index.jsp?main=shop/sangpumpage.jsp&product_id=<%=item.getProductId()%>">
+			                        <%=item.getProductName()%>
+			                    </a>
+			                </div>
+			                <div class="order-prod-desc">
+			                    <%=item.getColor()%> / <%=item.getSize()%>
+			                    <span style="margin-left: 12px; font-size: 0.98em; color: #888;">
+			                        수량: <%=item.getCnt()%>
+			                    </span>
+			                </div>
+			                <div class="order-prod-price-row">
+			                    <span class="order-prod-price">
+			                        <%=NumberFormat.getInstance().format(item.getPrice())%>원
+			                    </span>
+			                    <!-- 상태 컬러 강조 (badge) -->
+			                    <span class="badge <%=badgeClass%>">
+			                        <%= status %>
+			                    </span>
+			                </div>
+			            </div>
+			            <div class="order-actions-col">
+			                <button class="btn btn-outline-secondary btn-sm"
+			                    onclick="location.href='orderlist/detailform.jsp?order_code=<%=order.getOrderCode()%>'">
+			                    주문상세
+			                </button>
+			                <button class="btn btn-outline-secondary btn-sm">리뷰작성</button>
+			                <a href="orderlist/takeback.jsp?order_id=<%=order.getOrderId()%>&payment_idx=<%=payment.getIdx()%>&order_sangpum_id=<%=item.getOrderSangpumId()%>"
+			                   class="btn btn-outline-danger btn-sm">반품신청</a>
+			            </div>
+			        </div>
+			    </div>
+			    <%
+			        }
+			    %>
 
-						<div class="order-prod-info">
-							<div class="order-prod-title">
-								<a
-									href="index.jsp?main=shop/sangpumpage.jsp&product_id=<%=item.getProductId()%>">
-									<%=item.getProductName()%>
-								</a>
-							</div>
-							<div class="order-prod-desc">
-								<%=item.getColor()%>
-								/
-								<%=item.getSize()%>
-								<span style="margin-left: 12px; font-size: 0.98em; color: #888;">
-									수량: <%=item.getCnt()%>
-								</span>
-							</div>
-							<div class="order-prod-price-row">
-								<span class="order-prod-price"> <%=NumberFormat.getInstance().format(item.getPrice())%>원
-								</span>
-							</div>
-						</div>
-
-						<div class="order-actions-col">
-							<button class="btn btn-outline-secondary btn-sm"
-								onclick="location.href='orderlist/detailform.jsp?order_code=<%=order.getOrderCode()%>'">
-								주문상세</button>
-							<button class="btn btn-outline-secondary btn-sm">리뷰작성</button>
-							<a href="orderlist/takeback.jsp?order_id=<%=order.getOrderId()%>&payment_idx=<%=payment.getIdx()%>&order_sangpum_id=<%=item.getOrderSangpumId()%>"
-								class="btn btn-outline-danger btn-sm">반품신청</a>
-						</div>
-					</div>
-				</div>
-				<%
-				}
-				%>
 			</div>
 			<%
 			}
+			%>
+			</div>
+			<%
+			
 			if (!hasResult) {
 			%>
 			<div class="empty-order">
