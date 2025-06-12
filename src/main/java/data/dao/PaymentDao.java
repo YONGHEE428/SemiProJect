@@ -278,7 +278,7 @@ public class PaymentDao {
     }
 
 	// 반품창에서 써야하는 id값조회
-    public PaymentDto getPaymentByIdx(int idx) throws SQLException { 
+    public PaymentDto getPaymentByIdx(String idx) throws SQLException { 
     	Connection conn=db.getConnection();
     	
         PaymentDto dto = null;
@@ -287,7 +287,7 @@ public class PaymentDao {
         String sql = "SELECT p.*, m.hp FROM payment p JOIN member m ON p.member_num = m.num WHERE p.idx = ?";
         try {
             pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, idx);
+            pstmt.setString(1, idx);
             rs = pstmt.executeQuery();
             if (rs.next()) {
                 dto = new PaymentDto();
