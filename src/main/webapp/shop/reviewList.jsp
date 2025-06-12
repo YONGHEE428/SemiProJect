@@ -1,6 +1,7 @@
 <%@page import="data.dto.ReviewDTO"%>
 <%@page import="java.util.List"%>
 <%@page import="data.dao.ReviewDAO"%>
+<%@page import="data.dao.MemberDao"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -9,6 +10,22 @@
 <meta charset="UTF-8">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 <title>리뷰 목록</title>
+
+<style>
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+</style>
 </head>
 <body>
 <%
@@ -17,11 +34,27 @@
     if (idParam != null && !idParam.trim().isEmpty()) {
         productId = Integer.parseInt(idParam);
     }
+    
+    // 현재 로그인한 사용자의 정보 가져오기
+    String loginId = (String)session.getAttribute("myid");
+    String loginMemberName = null;
+    if(loginId != null) {
+        MemberDao memberDao = new MemberDao();
+        loginMemberName = memberDao.getName(loginId);
+    }
 
     ReviewDAO dao = new ReviewDAO();
     List<ReviewDTO> list = dao.getReviewsByProductId(productId);
+    
+    
 %>
-
+<script>
+function deleteReview(reviewId) {
+    if (confirm('작성하신 리뷰를 삭제하시겠습니까?')) {
+        location.href = 'shop/reviewdelete.jsp?review_id=' + reviewId + '&product_id=<%= productId %>';
+    }
+}
+</script>
 <div class="container mt-4">
     <h5 class="mb-2">리뷰 목록 (<%= list.size() %>개)</h5>
 
@@ -60,7 +93,14 @@
             <div class="border rounded p-3 mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <strong><%= dto.getMemberName() %></strong>
-                    <small class="text-muted"><%= dto.getRegdate() %></small>
+                    <div>
+                        <small class="text-muted me-2"><%= dto.getRegdate() %></small>
+                        <% if (loginMemberName != null && loginMemberName.equals(dto.getMemberName())) { %>
+                            <button type="button" class="delete-btn" onclick="deleteReview('<%= dto.getId() %>')">
+                                삭제
+                            </button>
+                        <% } %>
+                    </div>
                 </div>
 
                 <div class="mb-1">

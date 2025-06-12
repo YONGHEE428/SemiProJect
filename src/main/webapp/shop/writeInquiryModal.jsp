@@ -1,8 +1,12 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<!-- inquiryModal.jsp -->
 <div id="inquiryModal" class="modal-overlay" style="display:none;">
   <div class="modal-box">
     <span class="close-btn" onclick="closeInquiryModal()">×</span>
-    <%@ include file="q&a.jsp" %>
+    <!-- 실제 입력 폼은 writeInquiryModal.jsp 에서 include -->
+    <jsp:include page="/shop/writeInquiryModal.jsp" flush="true">
+      <jsp:param name="product_id" value="${param.product_id}" />
+    </jsp:include>
   </div>
 </div>
 

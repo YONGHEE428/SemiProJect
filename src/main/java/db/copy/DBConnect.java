@@ -21,6 +21,8 @@ public class DBConnect {
 			Class.forName(MySqlDriver);
 			cn = DriverManager.getConnection(URL, "admindyd", "dydgml428!");
 			
+			Statement stmt = cn.createStatement();
+	        stmt.execute("SET time_zone = 'Asia/Seoul'");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("mysql 연결 실패" + e.getMessage());

@@ -95,7 +95,7 @@
       left: -10px;
       position: relative;
       width: 700px;
-      background: white;
+      background: white;	
     }
 
     .right-panel { 
@@ -104,7 +104,7 @@
       max-width:600px;
       position: sticky;
       right: 10px;
-      top: 100px;
+      top: 150px;
       height: 1000px;
       overflow-y: auto;
       padding: 20px 20px 20px 20px;
@@ -179,9 +179,16 @@
     .highlight { font-weight: bold; }
 
     .action-buttons {
-      margin-top: 15px;
+      margin-top: 20px;
       display: flex;
       gap: 10px;
+    }
+
+    .action-buttons button {
+      flex: 1;
+      padding: 15px 0;
+      font-size: 16px;
+      font-weight: 500;
     }
 
     .price-info {
@@ -355,6 +362,32 @@ section h2 {
   font-size: 20px;
   font-weight: bold;
 }
+
+.modern-btn {
+  background-color: black;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.modern-btn:hover {
+  background-color: #333;
+}
+
+.modern-btn.outline {
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+}
+
+.modern-btn.outline:hover {
+  background-color: #f5f5f5;
+}
   </style>
 </head>
 
@@ -390,7 +423,7 @@ section h2 {
   <h2>리뷰</h2>
   <div class="review-write-area mb-3">
     <jsp:include page="reviewwrite.jsp" flush="true" />
-    <button type="button" onclick="openReviewModal()">리뷰 작성</button>
+    <button type="button" class="modern-btn" onclick="openReviewModal()">리뷰 작성</button>
   </div>
   <div id="review-list-container">
     <jsp:include page="reviewList.jsp" flush="true">
@@ -400,13 +433,21 @@ section h2 {
 </section>
 <section id="qna" class="tab-section">
   <h2>문의</h2>
-  <div class="qna-write-area mb-3">
-   <button type="button" onclick="openInquiryModal()">문의 작성</button>
-  <%-- <%@ include file="writeInquiryModal.jsp" %> --%>
+<div class="qna-write-area mb-3">
+    <button type="button" onclick="openInquiryModal()">문의 작성</button>
   </div>
+
+    <!-- 모달 코드(include할 때는 jsp:include 써야 param 전달 가능) -->
+    <jsp:include page="/shop/writeInquiryModal.jsp" flush="true">
+  <jsp:param name="product_id" value="${product.productId}" />
+</jsp:include>
+  </div>
+
+  <!-- ② 문의 목록 include -->
   <div id="qna-list-container">
     <jsp:include page="q&alist.jsp" flush="true">
-      <jsp:param name="product_id" value="<%= product.getProductId() %>" />
+      <jsp:param name="product_id" 
+                 value="${product.productId}" />
     </jsp:include>
   </div>
 </section>
@@ -520,9 +561,12 @@ document.addEventListener("DOMContentLoaded", updateTotalPrice);
     <div class="mt-2"><strong>총 가격:</strong> <span id="Price"></span></div>
 
     <div class="action-buttons">
-      <button id="addToCartBtn" class="btn btn-outline-primary">장바구니</button>
-      <button id="buyNowBtn" class="btn btn-primary">바로구매</button>
+
+
+      <button id="addToCartBtn" class="modern-btn outline">장바구니</button>
+      <button id="buyNowBtn" class="modern-btn">바로구매</button>
     </div>
+
     <script>
     // 장바구니 추가 함수
     function addToCart(redirect) {
@@ -570,11 +614,13 @@ document.addEventListener("DOMContentLoaded", updateTotalPrice);
         addToCart();
     });
 
+
     // 바로구매 버튼 클릭 이벤트
     document.getElementById("buyNowBtn").addEventListener("click", function() {
         addToCart('payment');
     });
     </script>
+
 
     <!-- 오른쪽 하단에 있는 메뉴 -->
     <jsp:include page="guide.jsp" />
@@ -589,7 +635,7 @@ document.addEventListener("DOMContentLoaded", updateTotalPrice);
     </div>
     
     <div style="margin-top: 20px; text-align: right; width: 200px; height:900;" >
-      <img src="sale.png"  alt="여름 아이템 할인 배너" style="max-width: 100%; height: auto;" />
+      <img src="shop/sale.png"  alt="여름 아이템 할인 배너" style="max-width: 100%; height: auto;" />
     </div>
   </div>
 </div>

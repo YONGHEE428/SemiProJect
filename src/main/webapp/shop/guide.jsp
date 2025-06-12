@@ -35,7 +35,7 @@
 
   .slide-panel {
     position: fixed;
-    top: 0;
+    top: 150px;
     right: -100%;
     width: 100%;
     max-width: 400px;

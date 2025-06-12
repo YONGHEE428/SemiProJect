@@ -170,7 +170,39 @@ public class MemberDao {
 		
 		return list;
 	}
-	
+
+    // 역할(role)에 따른 회원 목록 반환
+    public List<MemberDto> getAllMembersByRole(String role) {
+        List<MemberDto> list = new Vector<>();
+        Connection conn = db.getConnection();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "SELECT * FROM member WHERE role = ? ORDER BY id";
+
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, role);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                MemberDto dto = new MemberDto();
+                dto.setNum(rs.getString("num"));
+                dto.setName(rs.getString("name"));
+                dto.setId(rs.getString("id"));
+                dto.setEmail(rs.getString("email"));
+                dto.setBirth(rs.getString("birth"));
+                dto.setHp(rs.getString("hp"));
+                // 필요한 다른 필드도 설정
+                list.add(dto);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            db.dbClose(rs, pstmt, conn);
+        }
+        return list;
+    }
+
 	//num에 대한 dto반환
 	public MemberDto getData(String num)
 	{

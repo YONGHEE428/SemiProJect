@@ -22,8 +22,10 @@
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
 	rel="stylesheet">
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+<!-- <link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"> -->
+	<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <!-- 다음 주소창api -->
 <script
@@ -711,7 +713,7 @@ body {
 					<div class="mt-2">카드결제</div>
 				</button>
 				<button class="btn payment-method-btn" name="pay">
-					<i class="bi bi-n-circle fs-4"></i>
+					  <i class="bi bi-bag fs-4"></i>
 					<div class="mt-2">네이버페이</div>
 				</button>
 				<button class="btn payment-method-btn" name="pay">
@@ -744,6 +746,9 @@ body {
 				<div class="total-amount">
 					<span>총 결제금액</span> <span><%=NumberFormat.getInstance().format(totalPrice)%>원</span>
 				</div>
+				<!-- 금액 계산 -->
+				<input type="hidden" id="finalCalculatedAmount" value="<%=totalPrice%>">
+				
 			</div>
 
 			<input type="hidden" id="selectedPay" name="selectedPay" readonly>
@@ -901,6 +906,8 @@ body {
     			// 할인 금액 초기화
     			$('#coupon-discount').text('0원');
     			$('.total-amount span:last').text('<%= NumberFormat.getInstance().format(totalPrice) %>원');
+                $('#finalCalculatedAmount').val(originalTotalPrice); // hidden 필드도 초기화
+
     			$('#usecoupon').text('선택안함');
     		});
             
@@ -925,11 +932,15 @@ body {
     				// 쿠폰 선택 텍스트 업데이트
     				var couponName = couponType === 'welcome' ? '회원가입 감사 쿠폰' : '6월 생일자 축하 쿠폰';
     				$('#usecoupon').text(couponName + ' (' + discount + '% 할인)');
+    				// 중요: 최종 결제 금액을 hidden 필드나 전역 변수에 저장하여 `payrequest`에서 접근할 수 있도록 합니다.
+                    // hidden input 필드 추가
+                    $('#finalCalculatedAmount').val(finalAmount);
     			} else {
     				// 선택된 쿠폰이 없을 때
     				$('#coupon-discount').text('0원');
     				$('.total-amount span:last').text('<%= NumberFormat.getInstance().format(totalPrice) %>원');
     				$('#usecoupon').text('선택안함');
+    				$('#finalCalculatedAmount').val(<%= totalPrice %>)
     			}
     			
     			// 모달 닫기
@@ -960,6 +971,8 @@ body {
 //UUID는 일반적으로 32개의 16진수 문자로 구성되며, 하이픈으로 구분되어 5개의 그룹으로 나뉘어져요.
 //예시: 550e8400-e29b-41d4-a716-446655440000
 	String preGeneratedMerchantUid = "ORD" + today + "-" + UUID.randomUUID().toString().substring(0, 6).toUpperCase();
+
+	
 %>
       
 const preGeneratedMerchantUid = "<%= preGeneratedMerchantUid %>";
@@ -999,14 +1012,14 @@ console.log("미리 생성된 상점 주문번호:", preGeneratedMerchantUid);
 		// 카드결제
 		function cardPay(merchantUid, memberNum) {
 		    console.log("memberNum:", memberNum); // 이 메시지가 뜨는지 확인
-
+		    const finalAmountForPay = parseInt($("#finalCalculatedAmount").val());
 			/* 콘솔 */
 			console.log({
 			    pg: "kicc",
 			    pay_method: "card",
 			    merchant_uid: merchantUid,
 			    name: '결제테스트',
-			    amount: <%= totalPrice %>, 
+			    amount: finalAmountForPay, 
 			    buyer_email: $("#email").val(),
 			    buyer_name: $("#name").val(),
 			    buyer_tel: $("#hp").val(),
@@ -1022,7 +1035,7 @@ console.log("미리 생성된 상점 주문번호:", preGeneratedMerchantUid);
 				pay_method: "card",
 				merchant_uid: merchantUid,
 				name: '결제테스트',
-				amount: <%=totalPrice%>,  // 실제 계산된 금액으로 변경
+				amount: finalAmountForPay,  // 실제 계산된 금액으로 변경
 				buyer_email: $("#email").val(),
 			    buyer_name: $("#name").val(),
 			    buyer_tel: $("#hp").val(),
