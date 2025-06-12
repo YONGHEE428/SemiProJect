@@ -8,20 +8,30 @@ public class PaymentDto {
     private String merchant_uid;    // 주문번호
     private int member_num;      // 회원번호
     private int amount;            // 결제금액
-
     // 새로 추가될 필드: 누적 취소 금액 (payment 테이블의 `cancelled_amount`와 매핑)
     private int cancelled_amount;
-
     private String addr;
     private String delivery_msg;
 	private String status;         // 결제상태
+	private String hp;             // 연락처
     private Timestamp paymentday;   // 결제일시
-
+    private String buyer_email;
+	private String buyer_name;
     // 새로 추가될 필드: 마지막 환불 처리 일시 (payment 테이블의 `last_refund_date`와 매핑)
     private Timestamp last_refund_date;
 
-    private String hp;             // 연락처
-
+    public String getBuyer_email() {
+  		return buyer_email;
+  	}
+  	public void setBuyer_email(String buyer_email) {
+  		this.buyer_email = buyer_email;
+  	}
+  	public String getBuyer_name() {
+  		return buyer_name;
+  	}
+  	public void setBuyer_name(String buyer_name) {
+  		this.buyer_name = buyer_name;
+  	}
     // --- 기존 필드들에 대한 Getter/Setter ---
     public String getIdx() { // String 타입 유지
 		return idx;

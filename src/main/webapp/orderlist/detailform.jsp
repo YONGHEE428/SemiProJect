@@ -85,10 +85,74 @@ body { background: #f8f9fa; }
 			<div class="col-4 text-secondary">주문자</div>
 			<div class="col-8"><%=item.getMemberName()%></div>
 		</div>
+
+		<!-- 배송 정보 -->
+		<%
+			
+		%>
+		<div>
+			<div class="section-title">배송 정보</div>
+			<div class="row mb-2">
+				<div class="col-4 text-secondary">수령인</div>
+				<div class="col-8"><%=payment.getBuyer_name()%></div>
+			</div>
+			<div class="row mb-2">
+				<div class="col-4 text-secondary">연락처</div>
+				<div class="col-8"><%=payment.getHp() %></div>
+			</div>
+			<div class="row mb-2">
+				<div class="col-4 text-secondary">주소</div>
+				<div class="col-8">
+				<%
+					// --- 주소 포맷팅 로직 시작 ---
+					String fullAddress = payment.getAddr();
+					if (fullAddress != null && !fullAddress.isEmpty()) {
+						String[] addrParts = fullAddress.split(",", 3); // 최대 3부분으로 분리
+						String formattedAddress = "";
+						
+						if (addrParts.length > 0 && !addrParts[0].trim().isEmpty()) {
+							formattedAddress += "[" + addrParts[0].trim() + "]"; // 우편번호에 대괄호
+						}
+						// 기본 주소와 상세 주소는 띄어쓰기로 연결
+						if (addrParts.length > 1 && !addrParts[1].trim().isEmpty()) {
+							if (!formattedAddress.isEmpty()) formattedAddress += " "; // 앞에 내용이 있으면 공백 추가
+							formattedAddress += addrParts[1].trim(); // 기본 주소
+						}
+						if (addrParts.length > 2 && !addrParts[2].trim().isEmpty()) {
+							if (!formattedAddress.isEmpty()) formattedAddress += " "; // 앞에 내용이 있으면 공백 추가 (쉼표 대신)
+							formattedAddress += addrParts[2].trim(); // 상세 주소
+						}
+						out.print(formattedAddress);
+					} else {
+						out.print("-"); // 주소 정보가 없을 경우
+					}
+					// --- 주소 포맷팅 로직 끝 ---
+					%>
+				</div>
+			</div>
+			<div class="row mb-2">
+				<div class="col-4 text-secondary">배송메시지</div>
+				<div class="col-8"><%=payment.getDelivery_msg()%></div>
+			</div>
+		</div>
+		<!-- 결제 정보 -->
+		<div>
+			<div class="section-title">결제 정보</div>
+			<div class="row mb-2">
+				<div class="col-4 text-secondary">결제수단</div>
+				<div class="col-8">신용카드</div>
+			</div>
+			<div class="row mb-2">
+				<div class="col-4 text-secondary">결제상태</div>
+				<div class="col-8">
+					<span class="badge bg-success"><%=payment.getStatus()%></span>
+				</div>
+
 		<div class="row mb-2">
 			<div class="col-4 text-secondary">주문상태</div>
 			<div class="col-8">
 				<span class="badge <%=badgeClass%>"><%=status%></span>
+
 			</div>
 		</div>
 	</div>

@@ -35,6 +35,9 @@ public class PaymentVerifyServlet extends HttpServlet {
              String amountStr = request.getParameter("amount");
              String addr = request.getParameter("addr");
              String deliveryMsg = request.getParameter("delivery_msg");
+             String buyerEmail = request.getParameter("buyer_email");
+             String buyerName = request.getParameter("buyer_name");
+             String hp = request.getParameter("hp"); // hp 파라미터 받기
              
             // 필수 파라미터 검사
             if (impUid == null || merchantUid == null || amountStr == null) {
@@ -84,14 +87,18 @@ public class PaymentVerifyServlet extends HttpServlet {
             }
         
 
-            // XSS 방지를 위한 입력값 정제
+            // XSS 방지를 위한 입력값 정제(sanitizeInput :웹 페이지에 사용자 입력값이
+            // 표시될 때,악의적인 스크립트가 실행되는 것을 막기 위해 
+            // 위험한 특수 문자들을 필터링하고 공백을 정리하는 보안 목적의 함수라고 할 수 있습니다.)
             impUid = sanitizeInput(impUid);
             merchantUid = sanitizeInput(merchantUid);
             addr = sanitizeInput(addr);
             deliveryMsg = sanitizeInput(deliveryMsg);
-            
+            buyerEmail = sanitizeInput(buyerEmail);
+            buyerName = sanitizeInput(buyerName);
+            hp = sanitizeInput(hp); // hp 정제
             // 결제 검증 처리 및 DB 저장
-            boolean isValid = service.processPayment(memberNum, impUid, merchantUid, amount, addr, deliveryMsg);
+            boolean isValid = service.processPayment(memberNum, impUid, merchantUid, amount, addr, deliveryMsg, buyerEmail, buyerName, hp);
 
             if (isValid) {
                 writeJson(response, true, "결제가 성공적으로 완료되었습니다.", memberNum); // memberNum 반환
