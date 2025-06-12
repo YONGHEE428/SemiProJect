@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
@@ -59,24 +59,31 @@ public class PaymentDao {
         Connection conn = db.getConnection();
         PreparedStatement pstmt = null;
         
-        String sql = "INSERT INTO payment (imp_uid, merchant_uid, member_num, amount, addr, delivery_msg, status, paymentday) VALUES (?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO payment (imp_uid, merchant_uid, member_num, amount, addr, delivery_msg, status, paymentday, cancelled_amount, last_refund_date)"
+        		+ " VALUES (?,?,?,?,?,?,?,?,?,?)"; // <-- SQL 쿼리 수정!
         
         try {
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, dto.getImp_uid());
-            pstmt.setString(2, dto.getMerchant_uid());
-            pstmt.setInt(3, dto.getMember_num());
-            pstmt.setInt(4, dto.getAmount());
-            pstmt.setString(5, dto.getAddr());
-            pstmt.setString(6, dto.getDelivery_msg());
-            pstmt.setString(7, dto.getStatus());
-            // 8번째 파라미터: KST (UTC+9) 기준으로 현재 시간을 생성하여 삽입
-            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"));
-            java.sql.Timestamp paymentTimestamp = new java.sql.Timestamp(cal.getTimeInMillis());
-            
-            pstmt.setTimestamp(8, paymentTimestamp); // 8번째 ?에 KST 시간 삽입 (hp 제거로 인덱스 변경 없음)
-            
-            pstmt.execute();
+        	 pstmt = conn.prepareStatement(sql);
+             pstmt.setString(1, dto.getImp_uid());
+             pstmt.setString(2, dto.getMerchant_uid());
+             pstmt.setInt(3, dto.getMember_num());
+             pstmt.setInt(4, dto.getAmount());
+             pstmt.setString(5, dto.getAddr());
+             pstmt.setString(6, dto.getDelivery_msg());
+             pstmt.setString(7, dto.getStatus());
+             
+             // paymentday 설정
+             java.sql.Timestamp paymentTimestamp = new java.sql.Timestamp(System.currentTimeMillis());
+             pstmt.setTimestamp(8, paymentTimestamp); 
+
+             // 환불된 값 cancelled_amount 컬럼 값 설정 (초기값 0)
+             pstmt.setInt(9, dto.getCancelled_amount()); // DTO에 해당 Getter/Setter가 있어야 합니다. (초기에는 0)
+
+             // 새로 추가된 last_refund_date 컬럼 값 설정 (초기값 NULL)
+             // DTO에서 last_refund_date가 null인 경우 null로 설정
+             pstmt.setTimestamp(10, dto.getLast_refund_date()); // DTO에 해당 Getter/Setter가 있어야 합니다. (초기에는 null)
+             
+             pstmt.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {

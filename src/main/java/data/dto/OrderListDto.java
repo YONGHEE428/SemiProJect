@@ -76,7 +76,10 @@ public class OrderListDto {
         private String color;       // 옵션 색상
         private String size;        // 옵션 사이즈
         private int orderSangpumId;
+        private String status;
         
+        public String getStatus() { return status; }
+        public void setStatus(String status) { this.status = status; }      
         public int getOrderSangpumId() {
             return orderSangpumId;
         }

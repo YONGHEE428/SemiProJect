@@ -147,13 +147,15 @@ body {
 </style>
 </head>
 <%
+System.out.println("[페이지명.jsp] session member_num = " + session.getAttribute("member_num"));
+
 String orderSangpumIdStr = request.getParameter("order_sangpum_id");
 String orderIdStr = request.getParameter("order_id");
 String paymentIdxStr = request.getParameter("payment_idx");
 
-if(orderSangpumIdStr == null || orderIdStr == null || paymentIdxStr == null) {
-    out.print("<script>alert('잘못된 접근입니다.');history.back();</script>");
-    return;
+if (orderSangpumIdStr == null || orderIdStr == null || paymentIdxStr == null) {
+	out.print("<script>alert('잘못된 접근입니다.');history.back();</script>");
+	return;
 }
 
 int orderSangpumId = Integer.parseInt(orderSangpumIdStr);
@@ -167,88 +169,100 @@ PaymentDto payment = paymentDao.getPaymentByIdx(paymentIdxStr);
 
 // 주문상품 한 건만 추출
 OrderListDto.OrderItem orderItem = null;
-for(OrderListDto.OrderItem item : order.getItems()) {
-    if(item.getOrderSangpumId() == orderSangpumId) {
-        orderItem = item;
-        break;
-    }
+for (OrderListDto.OrderItem item : order.getItems()) {
+	if (item.getOrderSangpumId() == orderSangpumId) {
+		orderItem = item;
+		break;
+	}
 }
-if(orderItem == null) {
-    out.print("<script>alert('상품 정보가 없습니다.');history.back();</script>");
-    return;
+if (orderItem == null) {
+	out.print("<script>alert('상품 정보가 없습니다.');history.back();</script>");
+	return;
 }
 
 // 환불 예정 금액, 배송비 계산 예시
 int amount = orderItem.getPrice(); // 상품 1개 가격(수량*단가)
 int deliveryFee = (payment.getAmount() >= 100000) ? 0 : 3000;
-int totalRefund = amount; // 필요시 -반품비 등 계산 추가
+//상품금액이 배송비보다 작을 경우 음수가 될 수 있으니 Math.max로 0보다 작아지지 않게 처리
+int totalRefund = Math.max(amount - deliveryFee, 0);
 %>
 <body>
-    <div class="return-container">
-        <div class="return-title">반품 접수</div>
+	<div class="return-container">
+		<div class="return-title">반품 접수</div>
 
-        <form method="post" action="takebackaction.jsp">
-            <input type="hidden" name="order_id" value="<%=orderId%>">
-            <input type="hidden" name="payment_idx" value="<%=payment.getIdx()%>">
-            <input type="hidden" name="order_sangpum_id" value="<%=orderSangpumId%>">
+		<form method="post" action="takebackaction.jsp">
+			<input type="hidden" name="order_id" value="<%=orderId%>"> 
+			<input type="hidden" name="payment_idx" value="<%=payment.getIdx()%>">
+			<input type="hidden" name="order_sangpum_id" value="<%=orderSangpumId%>">
+			<input type="hidden" name="refund_amount" value="<%=totalRefund%>">
+			<input type="hidden" name="pickup_date" value="<%=new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date())%>">
+			<input type="hidden" name="pickup_place" value="<%=payment.getAddr()%>">
+			 <input type="hidden" name="receiver_hp" value="<%=payment.getHp()%>">
+			 <input type="hidden" name="receiver_addr" value="<%=payment.getAddr()%>"><
 
-            <!-- 상품 정보 표시 -->
-            <div class="section-title">반품 상품 정보</div>
-            <div class="product-info-row">
-                <img src="<%=orderItem.getProductImage() != null ? orderItem.getProductImage() : "https://via.placeholder.com/80x80.png?text=No+Image"%>" alt="상품 이미지">
-                <div>
-                    <div style="font-weight: bold; font-size: 1.07rem;"><%=orderItem.getProductName()%></div>
-                    <div style="color: #888; font-size: 0.96rem;">
-                        옵션: <%=orderItem.getColor()%> / <%=orderItem.getSize()%>
-                        <span style="margin-left: 10px;">수량: <%=orderItem.getCnt()%></span>
-                    </div>
-                    <div style="margin-top: 3px; color: #222;">
-                        가격: <%=String.format("%,d 원", orderItem.getPrice())%>
-                    </div>
-                </div>
-            </div>
+			<!-- 상품 정보 표시 -->
+			<div class="section-title">반품 상품 정보</div>
+			<div class="product-info-row">
+				<img
+					src="<%=orderItem.getProductImage() != null ? orderItem.getProductImage()
+		: "https://via.placeholder.com/80x80.png?text=No+Image"%>"
+					alt="상품 이미지">
+				<div>
+					<div style="font-weight: bold; font-size: 1.07rem;"><%=orderItem.getProductName()%></div>
+					<div style="color: #888; font-size: 0.96rem;">
+						옵션:
+						<%=orderItem.getColor()%>
+						/
+						<%=orderItem.getSize()%>
+						<span style="margin-left: 10px;">수량: <%=orderItem.getCnt()%></span>
+					</div>
+					<div style="margin-top: 3px; color: #222;">
+						가격:
+						<%=String.format("%,d 원", orderItem.getPrice())%>
+					</div>
+				</div>
+			</div>
 
-            <!-- 회수, 환불 정보 -->
-            <div class="section-title">회수, 환불 정보를 확인해 주세요</div>
-            <div class="return-info-row">
-                <label>상품 회수지</label> <span class="return-info-value"><%=payment.getAddr()%></span>
-                <a href="#" style="font-size: 0.96em; margin-left: 10px; color: #247;" onclick="alert('주소 변경은 고객센터로 문의하세요'); return false;">변경</a>
-            </div>
-            <div class="return-info-row">
-                <label>연락처</label> <span class="return-info-value"><%=payment.getHp()%></span>
-            </div>
-            <div class="return-info-row">
-                <label>수령인</label> <span class="return-info-value"><%=request.getSession().getAttribute("name")%></span>
-            </div>
+			<!-- 회수, 환불 정보 -->
+			<div class="section-title">회수, 환불 정보를 확인해 주세요</div>
+			<div class="return-info-row">
+				<label>상품 회수지</label> <span class="return-info-value"><%=payment.getAddr()%></span>
+				<a href="#"
+					style="font-size: 0.96em; margin-left: 10px; color: #247;"
+					onclick="alert('주소 변경은 고객센터로 문의하세요'); return false;">변경</a>
+			</div>
+			<div class="return-info-row">
+				<label>연락처</label> <span class="return-info-value"><%=payment.getHp()%></span>
+			</div>
+			<div class="return-info-row">
+				<label>수령인</label> <span class="return-info-value"><%=request.getSession().getAttribute("name")%></span>
+			</div>
 
-            <!-- 환불 안내 -->
-            <div class="return-summary-box">
-                <div class="summary-title">환불 안내</div>
-                <table>
-                    <tr>
-                        <th>상품금액</th>
-                        <td><%=String.format("%,d 원", amount)%></td>
-                    </tr>
-                    <tr>
-                        <th>배송비</th>
-                        <td><%=String.format("%,d 원", deliveryFee)%></td>
-                    </tr>
-                    <tr>
-                        <th>반품비</th>
-                        <td>3000 원</td>
-                    </tr>
-                    <tr>
-                        <th style="border-top: 1.2px solid #eee; padding-top: 9px;" class="total-refund">환불 예정금액</th>
-                        <td style="color: #e04a2e; font-weight: bold; border-top: 1.2px solid #eee; padding-top: 9px;" class="total-refund"><%=String.format("%,d 원", totalRefund)%></td>
-                    </tr>
-                    <tr>
-                        <th>환불 수단</th>
-                        <td>신용카드</td>
-                    </tr>
-                </table>
-            </div>
-            <button type="submit" class="btn btn-primary">반품 신청하기</button>
-        </form>
-    </div>
+			<!-- 환불 안내 -->
+			<div class="return-summary-box">
+				<div class="summary-title">환불 안내</div>
+				<table>
+					<tr>
+						<th>상품금액</th>
+						<td><%=String.format("%,d 원", amount)%></td>
+					</tr>
+					<tr>
+						<th>배송비</th>
+						<td><%=String.format("%,d 원", deliveryFee)%></td>
+					</tr>
+					<tr>
+						<th style="border-top: 1.2px solid #eee; padding-top: 9px;"
+							class="total-refund">환불 예정금액</th>
+						<td
+							style="color: #e04a2e; font-weight: bold; border-top: 1.2px solid #eee; padding-top: 9px;"
+							class="total-refund"><%=String.format("%,d 원", totalRefund)%></td>
+					</tr>
+
+						
+				</table>
+			</div>
+			<button type="submit" class="btn btn-primary">반품 신청하기</button>
+		</form>
+	</div>
 </body>
 </html>
