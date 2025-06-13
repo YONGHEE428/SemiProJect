@@ -253,7 +253,7 @@
        <input type="hidden" value="" id ="pinpass">
        <div class="input-group">
          <input type="text" name="hp" class="form-control"required="required" style="max-width: 330px;" maxlength="11">&nbsp;&nbsp;&nbsp;
-          <button type="button" id="hpCheck" disabled>인증번호 발송</button>
+          <button type="button" id="hpCheck" >인증번호 발송</button>
        </div>
      </div>
      <div class = "pinfield">
@@ -272,7 +272,7 @@
           required="required" style="max-width: 110px;"placeholder="년도">
           <input type="text" name="birth-month" class="form-control" maxlength="2" placeholder="ex)01"
           required="required" style="max-width: 110px;"placeholder="월">
-          <input type="text" name="birth-date	" class="form-control" maxlength="2" placeholder="ex)01"
+          <input type="text" name="birth-date" class="form-control" maxlength="2" placeholder="ex)01"
           required="required" style="max-width: 110px;"placeholder="일">
           </div>
      </div>
@@ -344,7 +344,7 @@
 	  <input type="checkbox" id="agree" style="width: 1.5rem;">
 	</div>
      <div>
-          <button type="submit" id="hewongaip"style="width: 100%;height: 50px;"disabled>저장하기</button>
+          <button type="submit" id="hewongaip"style="width: 100%;height: 50px;"disabled>회원가입</button>
      </div>
   </div>
 </form>
