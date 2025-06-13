@@ -80,8 +80,7 @@
 	%>
 	<script type="text/javascript">
     
-    const id="<%=id != null ? id : ""%>
-		"
+		
 
 		$("#wishchk").click(function() {
 			if (id === "") {
