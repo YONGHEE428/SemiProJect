@@ -347,14 +347,18 @@ section h2 {
   font-size: 20px;
   font-weight: bold;
   
-  .qna-header {
+ .qna-header {
   display: flex;
   align-items: center;
   gap: 16px;
+  margin-bottom: 16px;
 }
 .qna-header h2 {
   margin: 0;
+  font-size: 22px;
+  font-weight: 700;
 }
+
 .qna-header button {
   padding: 6px 14px;
   border-radius: 5px;
@@ -381,6 +385,63 @@ section h2 {
   width: 100%;
   box-sizing: border-box;
   text-align: left;
+}
+
+/* 버튼 공통 스타일 */
+.modern-button {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    text-align: center;
+    width: 100%;
+}
+
+/* 메인 버튼 (바로구매) */
+.btn-primary.modern-button {
+    background-color: #000;
+    color: white;
+    border: none;
+}
+
+.btn-primary.modern-button:hover {
+    background-color: #333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 보조 버튼 (장바구니) */
+.btn-outline-primary.modern-button {
+    background-color: white;
+    color: #000;
+    border: 1.5px solid #000;
+}
+
+.btn-outline-primary.modern-button:hover {
+    background-color: #f8f8f8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 문의 작성 버튼 */
+.inquiry-button {
+    background-color: #f8f8f8;
+    color: #333;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.inquiry-button:hover {
+    background-color: #eee;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
   </style>
 </head>
@@ -424,9 +485,9 @@ section h2 {
 </section>
 
 <section id="qna" class="tab-section">
-  <div class="qna-header" style="display: flex; align-items: center; gap: 16px;">
-    <h2 style="margin:0;">문의</h2>
-    <button type="button" onclick="openInquiryModal()">문의 작성</button>
+  <div class="qna-header">
+    <h2>문의</h2>
+    <button type="button" class="inquiry-button" onclick="openInquiryModal()">문의 작성</button>
   </div>
   <!-- 문의 목록 -->
   <div id="qna-list-container">
@@ -533,9 +594,10 @@ section h2 {
     <div class="mt-2"><strong>총 가격:</strong> <span id="Price"></span></div>
 
     <div class="action-buttons">
-      <button id="addToCartBtn" class="btn btn-outline-primary">장바구니</button>
-      <button id="buyNowBtn" class="btn btn-primary">바로구매</button>
-      
+      <button id="addToCartBtn" class="btn btn-outline-primary modern-button">장바구니</button>
+      <button id="buyNowBtn" class="btn btn-primary modern-button">바로구매</button>
+    </div>
+
     <script>
     // 장바구니 추가 함수
     function addToCart(redirect) {
@@ -588,10 +650,7 @@ section h2 {
         addToCart('payment');
     });
     </script>
-    </div>
-    <br>
-    <br>
-    
+    <br>   
     <!-- 오른쪽 하단에 있는 메뉴 -->
     <jsp:include page="guide.jsp" />
 
@@ -608,7 +667,6 @@ section h2 {
       <img src="shop/sale.png"  alt="여름 아이템 할인 배너" style="max-width: 100%; height: auto;" />
     </div>
   </div>
-</div>
 
 <script>
 function openInquiryModal(){
