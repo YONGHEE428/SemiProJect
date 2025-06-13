@@ -253,6 +253,8 @@ body {
 	font-size: 1.4rem;
 	font-weight: 700;
 	color: #2c3e50;
+	 display: flex;
+    justify-content: space-between; 
 }
 
 /* 체크박스 스타일 */
@@ -773,7 +775,8 @@ body {
 					<span>배송비</span> <span><%=NumberFormat.getInstance().format(deliveryFee)%>원</span>
 				</div>
 				<div class="total-amount">
-					<span>총 결제금액</span> <span><%=NumberFormat.getInstance().format(totalPrice)%>원</span>
+					<span>총 결제금액</span>
+					<span style="text-align: right; flex-grow: 1;"><%=NumberFormat.getInstance().format(totalPrice)%>원</span>
 				</div>
 				<!-- 금액 계산 -->
 				<input type="hidden" id="finalCalculatedAmount" value="<%=totalPrice%>">
