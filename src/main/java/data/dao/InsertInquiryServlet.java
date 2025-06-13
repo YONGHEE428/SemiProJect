@@ -59,7 +59,7 @@ public class InsertInquiryServlet extends HttpServlet {
 
             if (success) {
                 response.sendRedirect(request.getContextPath()
-                        + "/shop/sangpumpage.jsp?product_id=" + productId + "#qna");
+                        + "/index.jsp?main=shop/sangpumpage.jsp&product_id=" + productId + "#qna");
             } else {
                 request.setAttribute("errorMessage", "문의 등록에 실패했습니다.");
                 request.getRequestDispatcher("/shop/error.jsp")
