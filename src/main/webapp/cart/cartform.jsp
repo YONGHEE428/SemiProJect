@@ -296,22 +296,15 @@ body {
 
       // 수량 증가/감소
       $(".quantity-plus, .quantity-minus").click(
-    		  function() {
-    		        let item = $(this).closest(".cart-item");
-    		        let input = item.find(".quantity-input");
-    		        let val = parseInt(input.val());
-
-    		        if ($(this).hasClass("quantity-plus")) {
-    		            if (val >= 5) {
-    		                alert("해당 상품은 5개 이상 주문하실 수 없습니다.");
-    		                return;
-    		            }
-    		            val++;
-    		        } else if (val > 1) {
-    		            val--;
-    		        }
-
-    		        input.val(val);
+            function() {
+               let item = $(this).closest(".cart-item");
+               let input = item.find(".quantity-input");
+               let val = parseInt(input.val());
+               if ($(this).hasClass("quantity-plus"))
+                  val++;
+               else if (val > 1)
+                  val--;
+               input.val(val);
 
                //  수량 변경 시 항목 합계도 업데이트
                let price = parseInt(item.find(".item-unit-price").data(
