@@ -8,13 +8,8 @@
 <%@ page import="java.math.BigDecimal" %>
 <%@ page import="java.text.DecimalFormat" %>
 
-
-
-
 <%
-
     String idParam = request.getParameter("product_id");
-
     int productId = 0;
     if (idParam != null && !idParam.trim().isEmpty()) {
         productId = Integer.parseInt(idParam);
@@ -52,13 +47,8 @@
     boolean checkwish = wdao.checkWish(memberId, productId);
 %>
 
-<!DOCTYPE html>
 <html>
-<%
-    
-    boolean isLoggedIn = session.getAttribute("myid") != null;
-
-%>
+<%boolean isLoggedIn = session.getAttribute("myid") != null; %>
 <head>
   <meta charset="UTF-8">
   <title>Product Detail</title>
@@ -356,6 +346,41 @@
 section h2 {
   font-size: 20px;
   font-weight: bold;
+  
+  .qna-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.qna-header h2 {
+  margin: 0;
+}
+.qna-header button {
+  padding: 6px 14px;
+  border-radius: 5px;
+  border: 1px solid #888;
+  background: #fff;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.tab-section {
+  max-width: 650px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+#review-list-container {
+  margin-top: 16px;
+}
+.review-card {
+  border: 1px solid #e1e1e1;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin-bottom: 18px;
+  background: #fff;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
 }
   </style>
 </head>
@@ -388,8 +413,9 @@ section h2 {
   <h2>상품 설명</h2>
   <%= product.getDescription() %>
 </section>
+
 <section id="reviews" class="tab-section">
-  <h2>리뷰</h2>
+  <h2>&nbsp; 리뷰</h2>
   <div id="review-list-container">
     <jsp:include page="reviewList.jsp" flush="true">
       <jsp:param name="product_id" value="<%= product.getProductId() %>" />
@@ -397,9 +423,9 @@ section h2 {
   </div>
 </section>
 
- <section id="qna" class="tab-section">
-  <h2>문의</h2>
-  <div class="qna-write-area mb-3">
+<section id="qna" class="tab-section">
+  <div class="qna-header" style="display: flex; align-items: center; gap: 16px;">
+    <h2 style="margin:0;">문의</h2>
     <button type="button" onclick="openInquiryModal()">문의 작성</button>
   </div>
   <!-- 문의 목록 -->
@@ -562,7 +588,10 @@ section h2 {
         addToCart('payment');
     });
     </script>
-
+    </div>
+    <br>
+    <br>
+    
     <!-- 오른쪽 하단에 있는 메뉴 -->
     <jsp:include page="guide.jsp" />
 
@@ -580,6 +609,7 @@ section h2 {
     </div>
   </div>
 </div>
+
 <script>
 function openInquiryModal(){
 	  const modal = document.getElementById('inquiryModal');
@@ -631,10 +661,6 @@ function openInquiryModal(){
     });
   });
 
-  document.addEventListener("DOMContentLoaded", function() {
-    const rightPanel = document.querySelector('.right-panel');
-    const productPage = document.querySelector('.product-page');
-  });
 </script>
 
 </body>
