@@ -21,20 +21,26 @@
    String id=request.getParameter("id");
    String name=request.getParameter("name");
    String pass=request.getParameter("pass");
+   String hp = request.getParameter("hp");
+   String birth = request.getParameter("birth-year") + "-" + request.getParameter("birth-month") + "-" + request.getParameter("birth-date");
    String email=request.getParameter("email1")+"@"+request.getParameter("email2");
    
    dto.setId(id);
    dto.setName(name);
    dto.setPass(pass);
+   dto.setHp(hp);
+   dto.setBirth(birth);
    dto.setEmail(email);
    
    //dao_insert
    MemberDao dao=new MemberDao();
    dao.insertMember(dto);
-   
-   //가입성공페이지로 이동
-   response.sendRedirect("../index.jsp?main=member/gaipsuccess.jsp?id="+id);
-%>
+  
+   //가입성공페이지로 이동 %>
+   <script>
+   		alert("<%=name%>님의 " + "회원가입을 환영합니다.");
+   		location.href = "../index.jsp";
+   </script>
 <body>
 
 </body>

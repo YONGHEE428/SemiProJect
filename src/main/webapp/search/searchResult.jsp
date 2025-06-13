@@ -139,7 +139,7 @@
                 if(keyword.contains("반팔") || keyword.contains("반소매") || keyword.contains("긴팔") || keyword.contains("맨투")) {
                     relatedKeyword = "티셔츠";
                     relatedText = "티셔츠 검색결과 보기";
-                } else if(keyword.contains("바지") || keyword.contains("치마") || keyword.contains("버뮤다")) {
+                } else if(keyword.contains("바지") || keyword.contains("버뮤다")) {
                     relatedKeyword = "팬츠";
                     relatedText = "팬츠 검색결과 보기";
                 } else if(keyword.contains("목걸이") || keyword.contains("모자") || keyword.contains("키링")) {
@@ -148,9 +148,17 @@
                 }else if(keyword.contains("샌들") || keyword.contains("운동화") || keyword.contains("축구화") || keyword.contains("부츠")) {
                     relatedKeyword = "신발";
                     relatedText = "신발 검색결과 보기";
+                }else if(keyword.contains("티셔츠")){
+                	relatedKeyword = "티셔츠";
+                }else if(keyword.contains("팬츠")){
+                	relatedKeyword = "팬츠";
+                }else if(keyword.contains("악세서리")){
+                	relatedKeyword = "악세서리";
+                }else if(keyword.contains("신발")){
+                	relatedKeyword = "신발";
                 }
                 
-                if(relatedKeyword != null) {
+                if(!relatedKeyword != null) {
             %>
             <div class="related-search ms-4">
                 <span class="text-muted">이것을 찾으셨나요?</span>
@@ -159,7 +167,7 @@
                 </a>
             </div>
             <%
-                }
+                
             }
             %>
         </div>
@@ -191,7 +199,7 @@ $(function() {
             url: "/SemiProject/data/searchItems.jsp",
             data: {
                 page: 1,
-                keyword: "<%=relatedKeyword%>"
+                keyword: "<%=keyword%>"
             },
             success: function(data) {
                 if (data.length === 0) {
@@ -255,7 +263,7 @@ $(function() {
             url: "/SemiProject/data/searchItems.jsp",
             data: {
                 page: page,
-                keyword: "<%=keyword%>"
+                keyword: "<%=relatedKeyword%>"
             },
             success: function(data) {
                 setTimeout(() => {

@@ -148,12 +148,12 @@ window.addEventListener("DOMContentLoaded", function () {
 
 <body>
   <div class="wrapper">
-   <!--  <div class="backimg">
+   <div class="backimg">
     	<video autoplay muted loop playsinline style="width: 100%;">
   		<source src="SemiImg/ADmain.mp4" type="video/mp4">
   		브라우저가 비디오 태그를 지원하지 않습니다.
 		</video>
-    </div> -->
+    </div>
 
     <div class="title">
       <jsp:include page="layout/title.jsp" />

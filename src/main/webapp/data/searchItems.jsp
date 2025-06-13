@@ -13,6 +13,7 @@
     request.setCharacterEncoding("utf-8");
     
     String keyword = request.getParameter("keyword");
+    System.out.println("실제 검색된거" + keyword);
     int pageNum = Integer.parseInt(request.getParameter("page"));
     int itemsPerPage = 16;
     int start = (pageNum - 1) * itemsPerPage;
