@@ -149,6 +149,7 @@
 </style>
 
 <script type="text/javascript">
+
 <%
 	WishListDao wdao=new WishListDao();
 	MemberDao mdao=new MemberDao();
@@ -171,6 +172,7 @@
 	List<ProductDto> list=pdao.getProductsWithOptionsByCategory(categoryName);
 	
 %>
+var id = "<%= (id != null) ? id : "" %>";
 $(function () {
     
     /* Java 객체인 productIds를 JSON 형식으로 변환하고, 그 결과를 출력 */
