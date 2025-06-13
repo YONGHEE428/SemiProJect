@@ -47,7 +47,22 @@ if(message.equals("sucess")){
 
 if(message.equals("success")){
     CartListDao carDao=new CartListDao();
-    PRoductOptionDao
+    ProductOptionDao productOptionDao =new ProductOptionDao();
+
+    CartListDto cartItem = cartDao.getCartItenByIdx(idx);
+
+    if(cartITem !=null){
+        int optionId=cartItem.getOption_id();
+        ProductOptionDto productOption = productOptionDao.getProductOptionById(optionId);
+
+        if(productOption !=null{
+            int stockQuantity=productOption.getStockQuantity();
+
+            if(requestedCnt>stockQuantity){
+                actualCnt=stockQuantity;
+            }
+        })
+    }
 }
 
 
