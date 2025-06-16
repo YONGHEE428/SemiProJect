@@ -1,4 +1,4 @@
-![Image](https://github.com/user-attachments/assets/3ea84c75-d1a8-46e8-ba3e-385176e3dc3d)
+![Image](https://github.com/user-attachments/assets/a51b5362-b882-4c86-9298-c1fb17927778)
 
 # 쇼핑몰 프로젝트
 쌍용아카데미 제4강의장 1조
