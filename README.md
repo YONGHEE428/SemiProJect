@@ -51,6 +51,7 @@
 # 5. 주요기능
 ## - 5.1 메인 페이지
 ![image](https://github.com/user-attachments/assets/a4b2cdc9-114b-4473-99af-1d2f486031b1)
+<br>
 
 ## - 5.2 관리자 상품 등록/관리 (카테고리별)**
 |<img width="841" alt="스크린샷 2025-06-16 오후 5 13 49" src="https://github.com/user-attachments/assets/6afb2c30-ca49-489d-ae7a-abebf53f0556" />|
@@ -60,12 +61,16 @@
 |<img width="769" alt="스크린샷 2025-06-16 오후 5 13 38" src="https://github.com/user-attachments/assets/16db363c-cd2f-4d0e-beef-31781a5a59f9" />|
 |-|
 |상품 관리 페이지|
- 
+<br>
+
 ## - 5.3 고객용 위시리스트 / 장바구니 / 구매 기능**
+<br>
  
 ## - 5.4 회원가입 시 문자 인증 API 연동**
+<br>
   
 ## - 5.5 결제 기능 및 주문 이력 관리**
+<br>
   
 # 6. 프로젝트 시연
 
