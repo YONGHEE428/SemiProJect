@@ -39,6 +39,12 @@
   <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"><br><img src="https://img.shields.io/badge/bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white">
   
 # 4. ERD
+<img width="858" alt="image" src="https://github.com/user-attachments/assets/7a299fab-a8ce-46ed-90e6-ed0f5749b5d3" />
+
+# 5. 시스템 아키텍쳐
+<img width="1100" alt="image" src="https://github.com/user-attachments/assets/d6e05f9d-fce7-4314-86df-ea76eff38033" />
+
+
 
 # 5. 주요기능
 
