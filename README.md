@@ -47,6 +47,8 @@
 
 
 # 5. 주요기능
++ ** 메인 페이지
++ ![image](https://github.com/user-attachments/assets/a4b2cdc9-114b-4473-99af-1d2f486031b1)
 
 + **관리자 상품 등록/관리 (카테고리별)**
  
