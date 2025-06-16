@@ -52,8 +52,11 @@
 
 + **관리자 상품 등록/관리 (카테고리별)**
 |<img width="841" alt="스크린샷 2025-06-16 오후 5 13 49" src="https://github.com/user-attachments/assets/6afb2c30-ca49-489d-ae7a-abebf53f0556" />|
+|-|
 |상품 수정 페이지|
+
 |<img width="769" alt="스크린샷 2025-06-16 오후 5 13 38" src="https://github.com/user-attachments/assets/16db363c-cd2f-4d0e-beef-31781a5a59f9" />|
+|-|
 |상품 관리 페이지|
  
 + **고객용 위시리스트 / 장바구니 / 구매 기능**
