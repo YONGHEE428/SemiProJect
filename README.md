@@ -70,6 +70,7 @@
 DB가 올려져 있는 aws의 비용문제와 서버 과부하로 인한 속도 저하가 일어나기 때문에 aws s3를 도입하게 되었습니다.
 해당 방식을 통해 비용을 감소시키고 속도를 향상시켰습니다
 <br>
+<br>
 #### 유연하고 확장가능한 상품 db 설계
 ![image](https://github.com/user-attachments/assets/2c91e49d-13ad-4a1a-894e-91959b6f4498)
 
