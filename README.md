@@ -106,7 +106,8 @@ DB가 올려져 있는 aws의 비용문제와 서버 과부하로 인한 속도 
 
 ## - 5.3 고객용 위시리스트 / 장바구니 / 구매 기능
 <br>
- 
+ ![게시판 고객화면 ](https://github.com/user-attachments/assets/c2015dc2-94a0-4c6f-aa2f-3936069d4cae)
+
 ## - 5.4 회원가입 시 문자 인증 API 연동
 <br>
   
