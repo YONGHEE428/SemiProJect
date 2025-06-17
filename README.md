@@ -104,17 +104,29 @@ DB가 올려져 있는 aws의 비용문제와 서버 과부하로 인한 속도 
 
 <br>
 
-## - 5.3 고객용 위시리스트 / 장바구니 / 구매 기능
-<br>
- ![게시판 고객화면 ](https://github.com/user-attachments/assets/c2015dc2-94a0-4c6f-aa2f-3936069d4cae)
+## - 5.3 고객센터 게시판 고객용 / 관리자용
+|![게시판 고객화면 ](https://github.com/user-attachments/assets/99c064b9-32f9-4a4c-9a7d-98c47fe0fc58)|
+|-|
+|고객용 게시판 화면|
 
-## - 5.4 회원가입 시 문자 인증 API 연동
+|![3](https://github.com/user-attachments/assets/1baaf139-7b33-42ad-854c-22ce278318bf)|
+|-|
+|관리자 전용 화면 |
+
+|![1](https://github.com/user-attachments/assets/f644c046-c8da-4c29-9e58-591bf48b3cb6)|
+|-|
+|버튼작동방식 / 팝업창으로 수정창 글쓰기창 구현 |
+
+## - 5.4 고객용 위시리스트 / 장바구니 / 구매 기능
+<br>
+
+## - 5.5 회원가입 시 문자 인증 API 연동
 <br>
   
-## - 5.5 결제 기능 및 주문 이력 관리
+## - 5.6 결제 기능 및 주문 이력 관리
 <br>
 
-## - 5.6 상세 페이지 
+## - 5.7 상세 페이지 
 
 ### 상세페이지 기술 설명
 
