@@ -34,8 +34,28 @@
 + **팀원**  이창연 @changyeonyes
 + **팀원**  원주희 @juxxi054
   
-## - 2.1 역할 분담
+## 2.1 역할 분담
++ **박용희**
++  메인페이지
++  로그인 / 회원가입
++  마이페이지
+  
++ **손현정**
++ 카테고리별 페이지
++ 위시리스트 페이지
++ 결제 페이지
+  
++ **현승윤**
++ 고객센터 페이지
++ 장바구니 페이지
++ 구매, 반품 상세 페이지
 
++ **이창연**
++ 관리자 페이지
+  
++ **원주희**
++ 제품 상세페이지
++ 리뷰,문의 게시판
 
 # 3. 기술 스택
   <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"><img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white"><img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"><img src="https://img.shields.io/badge/jquery-0769AD?style=for-the-badge&logo=jquery&logoColor=white"><br>
