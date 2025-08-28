@@ -72,7 +72,9 @@
 
 # 5. 주요기능
 ## - 5.1 메인 페이지
-![image](https://github.com/user-attachments/assets/a4b2cdc9-114b-4473-99af-1d2f486031b1)
+![image](https://github.com/user-attachments/assets/78c5b875-b286-4dbc-9914-a934e3ee8a58)
+
+
 
 <br>
 
