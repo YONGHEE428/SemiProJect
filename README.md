@@ -1,72 +1,67 @@
 ![Image](https://github.com/user-attachments/assets/a51b5362-b882-4c86-9298-c1fb17927778)
 
-# 쇼핑몰 프로젝트
+# 👕 의류 쇼핑몰 프로젝트
 쌍용아카데미 제4강의장 1조
 
-## 목차
-1. 개요
-2. 팀소개
-3. 기술 스택
-4. ERD
-5. 주요기능
-6. 프로젝트 시연
-7. 후기
+---
 
-# 1. 개요
-**[의류 쇼핑몰 웹사이트 개발 프로젝트 개요]**
+## 📝 목차
+1. [개요](#개요)
+2. [팀소개](#팀소개)
+3. [기술 스택](#기술-스택)
+4. [ERD & 아키텍처](#erd--시스템-아키텍처)
+5. [주요 기능](#주요-기능)
+6. [프로젝트 시연](#프로젝트-시연)
+7. [후기 & 개선점](#후기--개선점)
 
-본 프로젝트는 5인 팀이 협업하여 개발한 세미프로젝트형 의류 쇼핑몰 웹 애플리케이션입니다. 사용자는 카테고리별(Top, Bottom, Outer, Accessory, Shoes)로 등록된 제품을 열람하고, 위시리스트 및 장바구니 기능을 통해 관심 상품을 저장하거나 즉시 결제를 진행할 수 있습니다.
+---
 
-관리자(Admin)는 상품을 등록/수정/삭제할 수 있으며, 실시간으로 주문 및 회원 데이터를 관리할 수 있습니다. 회원가입 시에는 무작위 일련번호를 문자로 전송하는 SMS 인증 API 기능도 포함되어 있어, 인증 기반의 가입 프로세스를 구현하였습니다.
+## 1. 개요
+**의류 쇼핑몰 웹사이트 개발 프로젝트**  
 
-**주요 기능:**
-+ 관리자 상품 등록/관리 (카테고리별)
-+ 고객용 위시리스트 / 장바구니 / 구매 기능
-+ 회원가입 시 문자 인증 API 연동
-+ 결제 기능 및 주문 이력 관리
+- 5인 팀 협업 세미프로젝트  
+- 카테고리별 상품 탐색 (Top, Bottom, Outer, Accessory, Shoes)  
+- 위시리스트, 장바구니, 결제 기능 구현  
+- 관리자 상품 관리 및 실시간 주문/회원 관리  
+- 회원가입 시 SMS 인증 API 적용 → 허위 정보 방지 및 보안 강화  
 
-본 프로젝트는 역할 분담 기반 팀 협업으로 진행되었으며, Git을 통한 버전 관리와 정기적인 회의를 통해 안정적이고 확장 가능한 쇼핑몰 시스템을 구축하였습니다.
+**주요 기능**
+- 관리자 상품 등록/관리 (카테고리별)  
+- 고객용 위시리스트 / 장바구니 / 구매 기능  
+- SMS 인증 기반 회원가입  
+- 결제 기능 및 주문 이력 관리  
 
-# 2. 팀소개
-+ **팀장**  박용희 @dydgml428
-+ **팀원**  손현정 @yjyj0234
-+ **팀원**  현승윤 @hyeonsy99
-+ **팀원**  이창연 @changyeonyes
-+ **팀원**  원주희 @juxxi054
-  
-## 2.1 역할 분담
-### **박용희**
-+  메인페이지
-+  로그인 / 회원가입
-+  마이페이지
-  
-### **손현정**
-+ 카테고리별 페이지
-+ 위시리스트 페이지
-+ 결제 페이지
-  
-### **현승윤**
-+ 고객센터 페이지
-+ 장바구니 페이지
-+ 구매, 반품 상세 페이지
+---
 
-### **이창연**
-+ 관리자 페이지
-  
-### **원주희**
-+ 제품 상세페이지
-+ 리뷰,문의 게시판
+## 2. 팀소개
+| 역할 | 이름 | GitHub |
+|------|------|--------|
+| 팀장 | 박용희 | @dydgml428 |
+| 팀원 | 손현정 | @yjyj0234 |
+| 팀원 | 현승윤 | @hyeonsy99 |
+| 팀원 | 이창연 | @changyeonyes |
+| 팀원 | 원주희 | @juxxi054 |
+
+### 2.1 역할 분담
+- **박용희**: 메인페이지, 로그인/회원가입, 마이페이지  
+- **손현정**: 카테고리별 페이지, 위시리스트, 결제 페이지  
+- **현승윤**: 고객센터, 장바구니, 구매/반품 상세 페이지  
+- **이창연**: 관리자 페이지  
+- **원주희**: 제품 상세페이지, 리뷰/문의 게시판  
+
+---
 
 # 3. 기술 스택
   <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"><img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white"><img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"><img src="https://img.shields.io/badge/jquery-0769AD?style=for-the-badge&logo=jquery&logoColor=white"><br>
   <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"><img src="https://img.shields.io/badge/amazonaws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white"><img src="https://img.shields.io/badge/apache tomcat-F8DC75?style=for-the-badge&logo=apachetomcat&logoColor=white"><br>
   <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"><br><img src="https://img.shields.io/badge/bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white">
   
-# 4. ERD
-<img width="858" alt="image" src="https://github.com/user-attachments/assets/7a299fab-a8ce-46ed-90e6-ed0f5749b5d3" />
-
-# 5. 시스템 아키텍쳐
-<img width="1100" alt="image" src="https://github.com/user-attachments/assets/d6e05f9d-fce7-4314-86df-ea76eff38033" />
+## 4. ERD & 시스템 아키텍처
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/7a299fab-a8ce-46ed-90e6-ed0f5749b5d3" width="80%" />
+  <br><br>
+  <img src="https://github.com/user-attachments/assets/d6e05f9d-fce7-4314-86df-ea76eff38033" width="80%" />
+</div>
 
 
 
@@ -111,9 +106,10 @@ https://github.com/user-attachments/assets/08b61c40-11aa-405e-8e28-8ca116007269
 ## - 5.3 마이페이지
 |<img width="841" alt="마이페이지" src="https://github.com/user-attachments/assets/98b6d676-35cb-4860-a24c-789190e12cbb" />|
 |-|
-|상품 수정 페이지|
+|마이페이지|
+간단한 정보 수정, 내 위시리스트, 장바구니, 구매내역 이동 가능  
 
-
+<img width="1250" height="645" alt="스크린샷 2025-08-28 161241" src="https://github.com/user-attachments/assets/e2c244a7-546e-477a-b894-aa448b869c5f" />
 <br>
 
 ## - 5.4 관리자 상품 등록/관리 (카테고리별)
