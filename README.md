@@ -72,13 +72,51 @@
 
 # 5. 주요기능
 ## - 5.1 메인 페이지
-![image](https://github.com/user-attachments/assets/78c5b875-b286-4dbc-9914-a934e3ee8a58)
 
+https://github.com/user-attachments/assets/08b61c40-11aa-405e-8e28-8ca116007269
+
+<br>
+<br>
+
+### 주요 기술 포인트
+#### 스크롤 시 서버에서 상품 데이터를 JSON으로 비동기 요청해 페이지 단위로 불러오고, 화면에 동적으로 렌더링하는 무한 스크롤 기능
+|![-Clipchamp4-ezgif com-video-to-gif-converter (2)](https://github.com/user-attachments/assets/27321ea4-6f5f-4662-9edc-36fffe02dfcd)|
+|-|
+|클라이언트에서 하단 footer에 도달하면 서버에서 상품 리스트를 10개씩 비동기로 요청하여 랜더링됩니다. 
+사용자가 "다음 페이지" 버튼을 누르지 않아도, 스크롤만 내리면 계속해서 상품을 볼 수 있게하여 몰입감이 높였으며, 
+처음부터 모든 상품을 랜더링 하지 않기때문에 페이지 로딩 속도가 향상시켰습니다.|
+
+<br>
+
+#### 검색기능
+|<img width="577" height="501" alt="스크린샷 2025-06-13 134607" src="https://github.com/user-attachments/assets/62bed57a-ed45-43ed-9305-37fd92ff6cd1" />|
+|<img width="1916" height="909" alt="스크린샷 2025-06-13 143440" src="https://github.com/user-attachments/assets/0350895e-b70a-407e-858b-a17288d45c74" />|
+|-|
+|메뉴바에 검색창을 클릭시 모달창으로 나타납니다. 상위 10개의 검색데이터를 클릭하여 이동할 수 있으며, 직접 상품정보(하의, 바지, 상의, 티셔츠)등을 입력하여 검색페이지로 이동 가능합니다.|
+
+## 5.2 로그인 / 회원가입
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/a4d6fc8d-ad8c-4dd0-adae-ca17e6362010" width="45%" />
+  <img src="https://github.com/user-attachments/assets/d9df4211-984c-4ade-b5ce-89c3da29b946" width="45%" />
+</div>
+
+### 주요 기술 포인트
+#### COOLSMS API를 활용한 인증관리
+<img width="400" height="322" alt="그림1" src="https://github.com/user-attachments/assets/ba36c15e-9f48-4828-8979-5b9b05771f12" />
+<br>
+회원가입 시 사용자가 전화번호를 입력하고 “인증번호 발송” 버튼을 누르면, 해당 번호로 무작위 6자리 인증번호가 전송됩니다. 사용자가 이 인증번호를 정확히 입력한 후 “인증하기” 버튼을 클릭하면 번호 인증이 완료되고, 회원가입 버튼이 활성화되게 하여 사용자는 실제 자신의 전화번호로만 회원가입할 수 있습니다. 허위 정보나 타인의 번호로 가입하는 것을 방지할 수 있으며, 회원가입 과정에서 보안과 신뢰성을 높여 서비스 안전성을 강화하였습니다.
+<br>
+
+## - 5.3 마이페이지
+|<img width="841" alt="마이페이지" src="https://github.com/user-attachments/assets/98b6d676-35cb-4860-a24c-789190e12cbb" />|
+|-|
+|상품 수정 페이지|
 
 
 <br>
 
-## - 5.2 관리자 상품 등록/관리 (카테고리별)
+## - 5.4 관리자 상품 등록/관리 (카테고리별)
 |<img width="841" alt="스크린샷 2025-06-16 오후 5 13 49" src="https://github.com/user-attachments/assets/6afb2c30-ca49-489d-ae7a-abebf53f0556" />|
 |-|
 |상품 수정 페이지|
@@ -106,7 +144,7 @@ DB가 올려져 있는 aws의 비용문제와 서버 과부하로 인한 속도 
 
 <br>
 
-## - 5.3 고객센터 게시판 고객용 / 관리자용
+## - 5.5 고객센터 게시판 고객용 / 관리자용
 |![게시판 고객화면 ](https://github.com/user-attachments/assets/99c064b9-32f9-4a4c-9a7d-98c47fe0fc58)|
 |-|
 |고객용 게시판 화면|
@@ -119,7 +157,7 @@ DB가 올려져 있는 aws의 비용문제와 서버 과부하로 인한 속도 
 |-|
 |버튼작동방식 / 팝업창으로 수정창 글쓰기창 구현 |
 
-## - 5.4 상품 카테고리, 고객용 위시리스트 / 장바구니 / 구매 기능
+## - 5.6 상품 카테고리, 고객용 위시리스트 / 장바구니 / 구매 기능
 <br>
 
 |![cate1](https://github.com/user-attachments/assets/5dbf1395-4d57-48d3-8cf1-6dc9fd9a1411)|
@@ -150,10 +188,10 @@ DB가 올려져 있는 aws의 비용문제와 서버 과부하로 인한 속도 
   제품 상세보기 버튼 클릭시 상세페이지로 이동
 
   위시리스트에서 제거 클릭시 상품이 없어지고, 샵에서 해당 상품의 하트색이 원래대로 돌아감
-## - 5.5 회원가입 시 문자 인증 API 연동
+## - 5.7 회원가입 시 문자 인증 API 연동
 <br>
   
-## - 5.6 결제 기능 및 주문 이력 관리
+## - 5.8 결제 기능 및 주문 이력 관리
 ![Image](https://github.com/user-attachments/assets/9d650813-1533-4787-9d49-555d0473023d)
 
   • 주문목록 : 장바구니에서 선택한상품들을 보여줌
@@ -199,7 +237,7 @@ DB가 올려져 있는 aws의 비용문제와 서버 과부하로 인한 속도 
     
  - 장바구니 상태 갱신 (구매 상품 삭제), 주문 목록 생성등을 포함한 주문 처리진행
      
-## - 5.7 상세 페이지 
+## - 5.9 상세 페이지 
 
 ### 상세페이지 기술 설명
 
