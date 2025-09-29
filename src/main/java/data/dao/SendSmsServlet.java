@@ -9,9 +9,9 @@ import net.nurigo.java_sdk.exceptions.CoolsmsException;
 
 @WebServlet("/SendSmsServlet")
 public class SendSmsServlet extends HttpServlet {
-    private static final String API_KEY = "NCSVFFQSPNIAT4TA";
-    private static final String API_SECRET = "GOSOLL5JIYTCSPBBXUEW9YX8PFIDQQ8E";
-    private static final String FROM_PHONE = "01083375432";
+    private static final String API_KEY = ";
+    private static final String API_SECRET = "";
+    private static final String FROM_PHONE = "";
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String toPhone = request.getParameter("hp");
