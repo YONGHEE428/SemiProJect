@@ -9,7 +9,7 @@ import net.nurigo.java_sdk.exceptions.CoolsmsException;
 
 @WebServlet("/SendSmsServlet")
 public class SendSmsServlet extends HttpServlet {
-    private static final String API_KEY = ";
+    private static final String API_KEY = "";
     private static final String API_SECRET = "";
     private static final String FROM_PHONE = "";
 
